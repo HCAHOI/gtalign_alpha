@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2021-2023 Mindaugas Margelevicius                       *
+ *   Copyright (C) 2021-2026 Mindaugas Margelevicius                       *
  *   Institute of Biotechnology, Vilnius University                        *
  ***************************************************************************/
 
@@ -70,10 +70,19 @@ char ResName2Code(const char* name)
         name[0]==' '
         ?   (name[1]==' '
             ?   (name[2]==' '? 'X': name[2])
-            :   (name[2]==' '? name[1]: 'X')
+            :   (name[2]==' '? name[1]: name[2])
             )
-        :   (name[1]==' '? name[0]: 'X')
-        ;
+        :   (name[1]==' '
+            ?   (/* name[2]==' '?  */name[0]/* : 'X' */)
+            :   (name[2]==' '? name[1]: 'X')
+            );
+        // name[0]==' '
+        // ?   (name[1]==' '
+        //     ?   (name[2]==' '? 'X': name[2])
+        //     :   (name[2]==' '? name[1]: 'X')
+        //     )
+        // :   (name[1]==' '? name[0]: 'X')
+        // ;
 //         (name[0]!=' ' && name[1]==' ')
 //         ?   name[0]
 //         :   ((name[0]==' ' && name[1]!=' ')
