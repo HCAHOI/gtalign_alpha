@@ -12,12 +12,23 @@
 
 #ifdef OS_MS_WINDOWS
 //memory allocation
+/**
+ * @brief 在 Windows 上分配满足指定字节对齐要求的内存。
+ * @param alignment 返回地址必须满足的字节对齐量。
+ * @param size 要分配的字节数。
+ * @return 成功时返回对齐内存地址，失败时返回空指针。
+ */
 inline void* my_aligned_alloc(size_t alignment, size_t size)
 {
     //NOTE: arguments order
     return _aligned_malloc(size, alignment);
 }
 //memory deallocation
+/**
+ * @brief 释放由 Windows 对齐分配器返回的内存。
+ * @param memptr `my_aligned_alloc()` 返回的地址；允许为空指针。
+ * @return 无返回值；`memptr` 指向的内存被释放。
+ */
 inline void my_aligned_free(void* memptr)
 {
     return _aligned_free(memptr);

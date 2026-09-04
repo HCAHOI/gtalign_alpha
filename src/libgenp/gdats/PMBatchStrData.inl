@@ -32,6 +32,24 @@
 // querypmbeg, query field addresses;
 // bdbCpmbeg, reference field addresses;
 // 
+/**
+ * @brief 统计一段候选对应关系的序列相似度，并判断它是否达到预筛选阈值。
+ * @param seqsimthrscore 允许候选进入后续结构精修的序列相似度阈值。
+ * @param qrydst 查询结构在打包字段中的起始偏移。
+ * @param qrylen 查询结构长度。
+ * @param dbstrdst 参考结构在打包字段中的起始偏移。
+ * @param dbstrlen 参考结构长度。
+ * @param qrybegpos 当前无缺口查询片段的起点。
+ * @param rfnbegpos 当前无缺口参考片段的起点。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param rfnRE 参考片段逐位置残基编码。
+ * @param qryRE 查询片段逐位置残基编码。
+ * @param scores 接收逐位置序列替换分数。
+ * @param pxmins 接收每个 SIMD 通道的累计分数。
+ * @param tmp 供 SIMD 归约使用的临时向量。
+ * @return 序列相似度达到 `seqsimthrscore` 时返回 `true`，否则返回 `false`。
+ */
 template<int DIMD>
 inline
 bool PMBatchStrData::CheckAlignmentScore(
