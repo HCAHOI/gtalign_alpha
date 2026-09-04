@@ -37,6 +37,15 @@
 //
 // Constructor
 //
+/**
+ * @brief 构造 `TdClustWriter`，初始化其负责的对齐结果输出状态。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+ * @param rdevnames 供该函数读取或更新的 `rdevnames` 参数。
+ * @param nmaxchunkqueries 控制当前步骤范围或规模的 `nmaxchunkqueries`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TdClustWriter::TdClustWriter( 
     const char* outdirname,
     const std::vector<std::string>& rfilelist,
@@ -99,6 +108,12 @@ TdClustWriter::TdClustWriter(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TdClustWriter`，释放其管理的对齐结果输出资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TdClustWriter::~TdClustWriter()
 {
     MYMSG("TdClustWriter::~TdClustWriter", 3);
@@ -112,6 +127,11 @@ TdClustWriter::~TdClustWriter()
 // -------------------------------------------------------------------------
 // Execute: thread's starting point for execution
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdClustWriter::Execute` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::Execute( void* )
 {
     MYMSG("TdClustWriter::Execute", 3);
@@ -227,6 +247,12 @@ void TdClustWriter::Execute( void* )
 // -------------------------------------------------------------------------
 // OnNewData: process portion of reference data for a block of queries
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdClustWriter::OnNewData` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::OnNewData()
 {
     MYMSG("TdClustWriter::OnNewData", 4);
@@ -268,6 +294,12 @@ void TdClustWriter::OnNewData()
 // -------------------------------------------------------------------------
 // MakeClusters: make clusters once all iterations of SLINK have finished
 //
+/**
+ * @brief 在对齐结果输出中构造 `TdClustWriter::MakeClusters` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::MakeClusters()
 {
     MYMSG("TdClustWriter::MakeClusters", 4);
@@ -363,6 +395,12 @@ void TdClustWriter::MakeClusters()
 // -------------------------------------------------------------------------
 // ArrangeClusters: arrange clusters: set representatives and sort by size
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdClustWriter::ArrangeClusters` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::ArrangeClusters()
 {
     MYMSG("TdClustWriter::ArrangeClusters", 4);
@@ -413,6 +451,12 @@ void TdClustWriter::ArrangeClusters()
 // =========================================================================
 // WriteResultsPlain: write clusters to file(s)
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdClustWriter::WriteResultsPlain` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::WriteResultsPlain()
 {
     MYMSG("TdClustWriter::WriteResultsPlain", 4);
@@ -563,6 +607,18 @@ void TdClustWriter::WriteResultsPlain()
 // sztmpbuf, size of tmpbuf;
 // rdevnames, list of device names;
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdClustWriter::WriteSummaryPlain` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param offset 供该函数读取或更新的 `offset` 参数。
+ * @param tmpbuf 供当前步骤读取或更新的 `tmpbuf` 缓冲区。
+ * @param sztmpbuf 供当前步骤读取或更新的 `sztmpbuf` 缓冲区。
+ * @param rdevnames 供该函数读取或更新的 `rdevnames` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdClustWriter::WriteSummaryPlain( 
     FILE* fp,
     char* const buffer, const int szbuffer, char*& outptr, int& offset,
@@ -619,6 +675,11 @@ void TdClustWriter::WriteSummaryPlain(
 // =========================================================================
 // GetIdFromDesc: generate id from a given description
 //
+/**
+ * @brief 在对齐结果输出中读取 `TdClustWriter::GetIdFromDesc` 对应的数据。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 std::string TdClustWriter::GetIdFromDesc(const std::string& desc) const
 {
     static const char* pdbstr = "pdb";

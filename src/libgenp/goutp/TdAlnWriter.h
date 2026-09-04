@@ -28,6 +28,11 @@
 // -------------------------------------------------------------------------
 
 struct WritersDataDestroyer {
+    /**
+     * @brief 在对齐结果输出中处理 `operator()` 对应的数据。
+     * @param p 供该函数读取或更新的 `p` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void operator()(char* p) const {
         std::free(p);
     };
@@ -56,16 +61,39 @@ public:
     };
 
 public:
+    /**
+     * @brief 构造 `TdAlnWriter`，初始化其负责的对齐结果输出状态。
+     * @param outdirname 接收当前步骤输出的 `outdirname`。
+     * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TdAlnWriter( 
         const char* outdirname,
         const std::vector<std::string>& rfilelist
     );
 
+    /**
+     * @brief 销毁 `TdAlnWriter`，释放其管理的对齐结果输出资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~TdAlnWriter();
 
+    /**
+     * @brief 在对齐结果输出中读取 `GetPrivateMutex` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     std::mutex& GetPrivateMutex() {return mx_dataccess_;}
 
     //{{NOTE: messaging functions accessed from outside!
+    /**
+     * @brief 在对齐结果输出中通知 `Notify` 对应的数据。
+     * @param msg 供该函数读取或更新的 `msg` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Notify(int msg) {
         {//mutex must be unlocked before notifying
             std::lock_guard<std::mutex> lck(mx_dataccess_);
@@ -73,6 +101,11 @@ public:
         }
         cv_msg_.notify_all();
     }
+    /**
+     * @brief 在对齐结果输出中等待 `Wait` 对应的数据。
+     * @param rsp 供该函数读取或更新的 `rsp` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int Wait(int rsp) {
         //wait until the response is received
         std::unique_lock<std::mutex> lck_msg(mx_dataccess_);
@@ -88,6 +121,12 @@ public:
             rsp_msg_ = WRITERTHREAD_MSG_UNSET;
         return rspmsg;
     }
+    /**
+     * @brief 在对齐结果输出中等待 `WaitDone` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WaitDone() {
         for(size_t i = 0; i < parts_qrs_.size();)
         {
@@ -107,6 +146,12 @@ public:
         }
         return rsp_msg_;
     }
+    /**
+     * @brief 在对齐结果输出中处理 `IncreaseQueryNParts` 对应的数据。
+     * @param qrysernrfrom 描述查询结构的 `qrysernrfrom`。
+     * @param qrysernrto 描述查询结构的 `qrysernrto`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void IncreaseQueryNParts(int qrysernrfrom, int qrysernrto) {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         if(qrysernrto < qrysernrfrom)
@@ -134,6 +179,12 @@ public:
 //             cv_msg_.notify_all();
 //         }
 //     }
+    /**
+     * @brief 在对齐结果输出中读取 `GetResponse` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponse() const {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         return rsp_msg_;
@@ -145,6 +196,25 @@ public:
 //     }
     //}}
 
+    /**
+     * @brief 在对齐结果输出中处理 `PushPartOfResults` 对应的数据。
+     * @param qrysernr 描述查询结构的 `qrysernr`。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param qrydesc 描述查询结构的 `qrydesc`。
+     * @param devanme 供该函数读取或更新的 `devanme` 参数。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param duration 供该函数读取或更新的 `duration` 参数。
+     * @param tmsthld 供该函数读取或更新的 `tmsthld` 参数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param annotations 供该函数读取或更新的 `annotations` 参数。
+     * @param alignments 供该函数读取或更新的 `alignments` 参数。
+     * @param srtindxs 供该函数读取或更新的 `srtindxs` 参数。
+     * @param tmscores 当前步骤使用或写回的 `tmscores` 分数。
+     * @param alnptrs 供该函数读取或更新的 `alnptrs` 参数。
+     * @param annotptrs 供该函数读取或更新的 `annotptrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void PushPartOfResults( 
         int qrysernr,
         int nqyposs,
@@ -210,11 +280,54 @@ public:
 
 
 public:
+    /**
+     * @brief 在对齐结果输出中写出 `WritePrognamePlain` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static int WritePrognamePlain( char*& outptr, int maxsize, const int width );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteCommandLinePlain` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void WriteCommandLinePlain(FILE* fp,
         char* const buffer, const int szbuffer, char*& outptr, int& offset);
+    /**
+     * @brief 在对齐结果输出中写出 `WriteCommandLineJSON` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void WriteCommandLineJSON(FILE* fp,
         char* const buffer, const int szbuffer, char*& outptr, int& offset);
+    /**
+     * @brief 在对齐结果输出中写出 `WriteSearchInformationPlain` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @param tmpbuf 供当前步骤读取或更新的 `tmpbuf` 缓冲区。
+     * @param sztmpbuf 供当前步骤读取或更新的 `sztmpbuf` 缓冲区。
+     * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+     * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+     * @param nentries 控制当前步骤范围或规模的 `nentries`。
+     * @param tmsthrld 供该函数读取或更新的 `tmsthrld` 参数。
+     * @param indent 供该函数读取或更新的 `indent` 参数。
+     * @param found 供该函数读取或更新的 `found` 参数。
+     * @param clustering 供该函数读取或更新的 `clustering` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void WriteSearchInformationPlain(FILE* fp,
         char* const buffer, const int szbuffer, char*& outptr, int& offset,
         char* tmpbuf, int sztmpbuf, 
@@ -223,52 +336,198 @@ public:
         const float tmsthrld, const int indent, const bool found,
         const bool clustering = false);
 
+    /**
+     * @brief 在对齐结果输出中处理 `BufferData` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @param data 供该函数读取或更新的 `data` 参数。
+     * @param szdata 供该函数读取或更新的 `szdata` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void BufferData( 
         FILE* fp, 
         char* const buffer, const int szbuffer, char*& outptr, int& offset, 
         const char* data, int szdata );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteToFile` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param data 供该函数读取或更新的 `data` 参数。
+     * @param szdata 供该函数读取或更新的 `szdata` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void WriteToFile( FILE* fp, char* data, int szdata );
 
 protected:
+    /**
+     * @brief 在对齐结果输出中处理 `Execute` 对应的数据。
+     * @param args 供该函数读取或更新的 `args` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Execute( void* args );
 
+    /**
+     * @brief 在对齐结果输出中设置 `SetResponseError` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetResponseError() {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         rsp_msg_ = WRITERTHREAD_MSG_ERROR;
     }
 
+    /**
+     * @brief 在对齐结果输出中处理 `MergeResults` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MergeResults();
+    /**
+     * @brief 在对齐结果输出中写出 `WriteResults` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteResults();
+    /**
+     * @brief 在对齐结果输出中读取 `GetOutputFilename` 对应的数据。
+     * @param outfilename 控制当前步骤范围或规模的 `outfilename`。
+     * @param outdirname 接收当前步骤输出的 `outdirname`。
+     * @param qrydesc 描述查询结构的 `qrydesc`。
+     * @param qrynr 描述查询结构的 `qrynr`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetOutputFilename( 
         std::string& outfilename,
         const char* outdirname,
         const std::string& qrydesc,
         const int qrynr);
+    /**
+     * @brief 在对齐结果输出中写出 `WriteProgname` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteProgname( char*& outptr, int maxsize, const int width );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteQueryDescription` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param desc 供该函数读取或更新的 `desc` 参数。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteQueryDescription(char*& outptr, int maxsize,
         const int qrylen, const char* desc, const int width );
 
+    /**
+     * @brief 在对齐结果输出中写出 `WriteResultsPlain` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteResultsPlain();
+    /**
+     * @brief 在对齐结果输出中写出 `WriteQueryDescriptionPlain` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param desc 供该函数读取或更新的 `desc` 参数。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteQueryDescriptionPlain(char*& outptr, int maxsize,
         const int qrylen, const std::string& desc, const int width );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteSummaryPlain` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+     * @param nentries 控制当前步骤范围或规模的 `nentries`。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param duration 供该函数读取或更新的 `duration` 参数。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteSummaryPlain(char*& outptr,
         const int qrylen, const size_t npossearched, const size_t nentries,
         const int nqystrs, const double duration, const std::string&);
 
+    /**
+     * @brief 在对齐结果输出中写出 `WriteResultsJSON` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteResultsJSON();
+    /**
+     * @brief 在对齐结果输出中写出 `WritePrognameJSON` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WritePrognameJSON( char*& outptr, int maxsize, const int width );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteQueryDescriptionJSON` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param desc 供该函数读取或更新的 `desc` 参数。
+     * @param width 供该函数读取或更新的 `width` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteQueryDescriptionJSON(char*& outptr, int maxsize,
         const int qrylen, const std::string& desc, const int width );
+    /**
+     * @brief 在对齐结果输出中写出 `WriteSearchInformationJSON` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @param tmpbuf 供当前步骤读取或更新的 `tmpbuf` 缓冲区。
+     * @param sztmpbuf 供当前步骤读取或更新的 `sztmpbuf` 缓冲区。
+     * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+     * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+     * @param nentries 控制当前步骤范围或规模的 `nentries`。
+     * @param tmsthld 供该函数读取或更新的 `tmsthld` 参数。
+     * @param found 供该函数读取或更新的 `found` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteSearchInformationJSON(FILE* fp,
         char* const buffer, const int szbuffer, char*& outptr, int& offset,
         char* tmpbuf, int /* sztmpbuf */,
         const std::vector<std::string>& rfilelist,
         const size_t npossearched, const size_t nentries,
         const float tmsthld, const bool found);
+    /**
+     * @brief 在对齐结果输出中写出 `WriteSummaryJSON` 对应的数据。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+     * @param nentries 控制当前步骤范围或规模的 `nentries`。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param duration 供该函数读取或更新的 `duration` 参数。
+     * @param devname 供该函数读取或更新的 `devname` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteSummaryJSON(char*& outptr,
         const int qrylen, const size_t npossearched, const size_t /* nentries */,
         const int nqystrs, const double duration, std::string devname);
 
+    /**
+     * @brief 在对齐结果输出中读取 `GetTotalNumberOfRecords` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetTotalNumberOfRecords() const
     {
         if((int)parts_qrs_.size() <= qrysernr_ || qrysernr_ < 0 )
@@ -282,8 +541,19 @@ protected:
         return ntot;
     }
 
+    /**
+     * @brief 在对齐结果输出中初始化 `InitializeVectors` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void InitializeVectors();
 
+    /**
+     * @brief 在对齐结果输出中处理 `ResizeVectors` 对应的数据。
+     * @param newsize 控制当前步骤范围或规模的 `newsize`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResizeVectors(int newsize) {
         vec_duration_.resize(newsize, 0.0);
         vec_nposschd_.resize(newsize, 0);
@@ -301,6 +571,12 @@ protected:
         vec_annotptrs_.resize(newsize);
     }
 
+    /**
+     * @brief 在对齐结果输出中处理 `ReleaseAllocations` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReleaseAllocations() {
         if((int)parts_qrs_.size() <= qrysernr_ || qrysernr_ < 0 )
             throw MYRUNTIME_ERROR(
@@ -362,6 +638,12 @@ private:
 ////////////////////////////////////////////////////////////////////////////
 // TdAlnWriter INLINES
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteResults` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdAlnWriter::WriteResults()
 {
@@ -378,6 +660,13 @@ void TdAlnWriter::WriteResults()
 
 // -------------------------------------------------------------------------
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteProgname` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int TdAlnWriter::WriteProgname( char*& outptr, int maxsize, const int width )
 {
@@ -391,6 +680,15 @@ int TdAlnWriter::WriteProgname( char*& outptr, int maxsize, const int width )
 
 // -------------------------------------------------------------------------
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteQueryDescription` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int TdAlnWriter::WriteQueryDescription(
     char*& outptr, int maxsize,

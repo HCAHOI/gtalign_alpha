@@ -56,6 +56,12 @@ public:
         PMBatchStrData_TMPBUFFSIZE = 4096
     };
 public:
+    /**
+     * @brief 构造 `PMBatchStrData`，初始化其负责的结构数据读取与布局状态。
+     * @par 参数
+     * 无。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     PMBatchStrData()
     :   tmpbdbCdata_(nullptr),
         bdbCdata_(nullptr),
@@ -75,27 +81,99 @@ public:
 //         memset( szpm2dvfovhd_, 0, pmv2DTotFlds * sizeof(size_t));
     }
 
+    /**
+     * @brief 销毁 `PMBatchStrData`，释放其管理的结构数据读取与布局资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~PMBatchStrData() {}
 
     // *** METHODS ***
+    /**
+     * @brief 在结构数据读取与布局中分配 `AllocateSpace` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AllocateSpace(size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs);
 
     //serialize/deserialize
+    /**
+     * @brief 在结构数据读取与布局中处理 `Serialize` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @param nagents 控制当前步骤范围或规模的 `nagents`。
+     * @param eod 供该函数读取或更新的 `eod` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Serialize(const std::string&, const size_t nagents, const size_t eod) const;
+    /**
+     * @brief 在结构数据读取与布局中处理 `Deserialize` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @param nagents 控制当前步骤范围或规模的 `nagents`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t Deserialize(const std::string&, const size_t nagents);
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `Fallback` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Fallback() {FallbackOvhdPtrs();}
 
     //sort by length; used when all chunk data has been compiled
+    /**
+     * @brief 在结构数据读取与布局中排序 `Sort` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Sort();
 
+    /**
+     * @brief 在结构数据读取与布局中复制 `Copy` 对应的数据。
+     * @param bdbdesc 描述参考结构的 `bdbdesc`。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Copy(const char** bdbdesc, char* const * const bdbpmbeg, char* const * const bdbpmend);
+    /**
+     * @brief 在结构数据读取与布局中复制 `CopyFrom` 对应的数据。
+     * @param bsd 供该函数读取或更新的 `bsd` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CopyFrom(const PMBatchStrData& bsd);
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetPMDataSize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetPMDataSize();
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetPMDataSize1` 对应的数据。
+     * @param structlen 控制当前步骤范围或规模的 `structlen`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetPMDataSize1(size_t structlen);
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetPMDataSizeUB` 对应的数据。
+     * @param totallen 控制当前步骤范围或规模的 `totallen`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetPMDataSizeUB(size_t totallen);
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `ContainsData` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static bool ContainsData(char* const * const bdbpmbeg, char* const * const bdbpmend) {
         return 
             bdbpmbeg[pps2DLen] < bdbpmend[pps2DLen] &&
@@ -104,75 +182,189 @@ public:
             bdbpmbeg[pmv2DCoords] < bdbpmend[pmv2DCoords];
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `ContainsData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ContainsData() const {//whether data is present
         return bdbCpmbeg_[pmv2DCoords] < bdbCpmend_[pmv2DCoords];
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `ContainsDataLast` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ContainsDataLast() const {//whether data has been written for the last structure
         return bdbCpmend_[pmv2DCoords] < bdbCpmendovhd_[pmv2DCoords];
     }
 
     //change/pack structure pointers to include structures indexed in filterdata
+    /**
+     * @brief 在结构数据读取与布局中筛选 `FilterStructs` 对应的数据。
+     * @param bdbdesc 描述参考结构的 `bdbdesc`。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void FilterStructs(
         const char** bdbdesc, char** bdbpmbeg, char** bdbpmend,
         const unsigned int* filterdata);
 
     //length of the structure at the given position/index (NOTE:pointers assumed valid):
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetLengthAt` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetLengthAt(const char* const * const bdbpmbeg, int ndx) {
         return ((INTYPE*)(bdbpmbeg[pps2DLen]))[ndx];
     }
 
     //address of the structure at the given position/index (NOTE:pointers assumed valid):
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetAddressAt` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetAddressAt(const char* const * const bdbpmbeg, int ndx) {
         return ((LNTYPE*)(bdbpmbeg[pps2DDist]))[ndx];
     }
 
     //field of the structure at the given position/index (NOTE:pointers assumed valid):
     template<typename T, int F>
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetFieldAt` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static T GetFieldAt(const char* const * const bdbpmbeg, int ndx) {
         return ((T*)(bdbpmbeg[F]))[ndx];
     }
 
     template<typename T, int F>
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetFieldAt` 对应的数据。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     T GetFieldAt(int ndx) const {return ((T*)(bdbCpmbeg_[F]))[ndx];}
 
     //set a structure field at the given position/index (NOTE:pointers assumed valid):
     template<typename T, int F>
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetFieldAt` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void SetFieldAt(char* const * const bdbpmbeg, int ndx, T value) {
         ((T*)(bdbpmbeg[F]))[ndx] = value;
     }
 
     template<typename T, int F>
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetFieldAt` 对应的数据。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetFieldAt(int ndx, T value) {((T*)(bdbCpmbeg_[F]))[ndx] = value;}
 
     //#structures written in the buffers (NOTE:pointers assumed valid):
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNoStructs` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetNoStructs(char* const * const bdbpmbeg, char* const * const bdbpmend) {
         return (size_t)(bdbpmend[pps2DLen]-bdbpmbeg[pps2DLen]) / SZINTYPE;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNoStructsWritten` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetNoStructsWritten() const {//#structures written in bdbCdata_
         return (size_t)(bdbCpmend_[pps2DLen]-bdbCpmbeg_[pps2DLen]) / SZINTYPE;
     }
 
     //#total positions written in the buffers (NOTE:pointers assumed valid):
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNoPosits` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetNoPosits(char* const * const bdbpmbeg, char* const * const bdbpmend) {
         return (size_t)(bdbpmend[pmv2Drsd]-bdbpmbeg[pmv2Drsd]) / SZCHTYPE;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNoPositsWritten` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetNoPositsWritten() const {//#positions written in bdbCdata_
         return (size_t)(bdbCpmend_[pmv2Drsd]-bdbCpmbeg_[pmv2Drsd]) / SZCHTYPE;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNoPositsOvhd` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetNoPositsOvhd() const {//#positions in the structure being compiled
         return (size_t)(bdbCpmendovhd_[pmv2Drsd]-bdbCpmend_[pmv2Drsd]) / SZCHTYPE;
     }
 
     //{{these methods are for filling by residue one structure at a time
+    /**
+     * @brief 在结构数据读取与布局中处理 `AddOneResidue` 对应的数据。
+     * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+     * @param rsdcode 供该函数读取或更新的 `rsdcode` 参数。
+     * @param resnum 供该函数读取或更新的 `resnum` 参数。
+     * @param restype 供该函数读取或更新的 `restype` 参数。
+     * @param inscode 供该函数读取或更新的 `inscode` 参数。
+     * @param chain 供该函数读取或更新的 `chain` 参数。
+     * @param chord 供该函数读取或更新的 `chord` 参数。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool AddOneResidue(
         int maxstrlen,
         CHTYPE rsdcode, INTYPE resnum, int restype, char inscode, char chain, char chord, 
         FPTYPE coords[pmv2DNoElems]);
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `FinalizeCrntStructure` 对应的数据。
+     * @param filendx 控制当前步骤范围或规模的 `filendx`。
+     * @param strndx 供该函数读取或更新的 `strndx` 参数。
+     * @param globndx 供该函数读取或更新的 `globndx` 参数。
+     * @param moltype 供该函数读取或更新的 `moltype` 参数。
+     * @param description 供该函数读取或更新的 `description` 参数。
+     * @param strchain 供该函数读取或更新的 `strchain` 参数。
+     * @param strmodel 供该函数读取或更新的 `strmodel` 参数。
+     * @param usechaininfo 供该函数读取或更新的 `usechaininfo` 参数。
+     * @param usemodelinfo 供该函数读取或更新的 `usemodelinfo` 参数。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     TPMBSDFinRetCode FinalizeCrntStructure(//finalize the structure being compiled
         size_t filendx, int strndx,
         int globndx, int moltype, const std::string& description, 
@@ -183,25 +375,77 @@ public:
         char* const * const * const querypmends);
     //}}
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `FieldTypeValid` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool FieldTypeValid() const;//whether the field Type is valid across structures
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetFileNdxAt` 对应的数据。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetFileNdxAt(int ndx) const {return tmpclustfilendxs_[ndx];}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStructNdxAt` 对应的数据。
+     * @param ndx 控制当前步骤范围或规模的 `ndx`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetStructNdxAt(int ndx) const {return tmpcluststrndxs_[ndx];}
 
     //get the description of the structure in the overhead buffer
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetOvhdStrDescription` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const char* GetOvhdStrDescription() const;
 
     //copy overhead to another batch object:
+    /**
+     * @brief 在结构数据读取与布局中复制 `CopyOvhdTo` 对应的数据。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     TPMBSDFinRetCode CopyOvhdTo(PMBatchStrData&) const;
 
     //return true if the sequence similairty between the structure in Ovhd and 
     //any of the queries in given blocks is above the threshold
+    /**
+     * @brief 在结构数据读取与布局中处理 `SequenceSimilarityOvhd` 对应的数据。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool SequenceSimilarityOvhd(
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends) const;
 
     template<int DIMD>
+    /**
+     * @brief 在结构数据读取与布局中检查 `CheckAlignmentScore` 对应的数据。
+     * @param seqsimthrscore 当前步骤使用或写回的 `seqsimthrscore` 分数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrybegpos 描述查询结构的 `qrybegpos`。
+     * @param rfnbegpos 描述参考结构的 `rfnbegpos`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param rfnRE 描述参考结构的 `rfnRE`。
+     * @param qryRE 描述查询结构的 `qryRE`。
+     * @param scores 保存或读取对齐分数的缓冲区。
+     * @param pxmins 供该函数读取或更新的 `pxmins` 参数。
+     * @param tmp 供该函数读取或更新的 `tmp` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static bool CheckAlignmentScore(
         const float seqsimthrscore,
         const int qrydst, const int qrylen,
@@ -213,10 +457,29 @@ public:
         float scores[DIMD], float pxmins[DIMD],
         float tmp[DIMD]);
 
+    /**
+     * @brief 在结构数据读取与布局中格式化输出 `Print` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Print() const;
+    /**
+     * @brief 在结构数据读取与布局中格式化输出 `Print` 对应的数据。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     static void Print(char* const * const bdbpmbeg, char* const * const bdbpmend);
 
 private:
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetMaxDataLimits` 对应的数据。
+     * @param maxdatasize 控制当前步骤范围或规模的 `maxdatasize`。
+     * @param maxdatalen 控制当前步骤范围或规模的 `maxdatalen`。
+     * @param maxnstrs 供该函数读取或更新的 `maxnstrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetMaxDataLimits(
         size_t maxdatasize, size_t maxdatalen, size_t maxnstrs)
     {
@@ -225,15 +488,48 @@ private:
         maxnstrs_ = maxnstrs;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中分配 `AllocateSpaceForData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AllocateSpaceForData();
+    /**
+     * @brief 在结构数据读取与布局中分配 `AllocateSpaceForDescriptions` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool AllocateSpaceForDescriptions();
+    /**
+     * @brief 在结构数据读取与布局中分配 `AllocateSpaceForDescPtrs` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AllocateSpaceForDescPtrs();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `FallbackOvhdPtrs` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void FallbackOvhdPtrs() {//fall back overhead pointers
         for(int f = 0; f < pmv2DTotFlds; f++)
             bdbCpmendovhd_[f] = bdbCpmend_[f];
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `FormatDescription` 对应的数据。
+     * @param description 供该函数读取或更新的 `description` 参数。
+     * @param strchain 供该函数读取或更新的 `strchain` 参数。
+     * @param strmodel 供该函数读取或更新的 `strmodel` 参数。
+     * @param usechaininfo 供该函数读取或更新的 `usechaininfo` 参数。
+     * @param usemodelinfo 供该函数读取或更新的 `usemodelinfo` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     std::string FormatDescription(
         std::string description,
         const std::string& strchain, const std::string& strmodel, 
@@ -241,8 +537,18 @@ private:
 
 private:
     template<typename T, int field>
+    /**
+     * @brief 在结构数据读取与布局中排序 `sort_helper_ssfields_assign` 对应的数据。
+     * @param nstts 控制当前步骤范围或规模的 `nstts`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void sort_helper_ssfields_assign(size_t nstts);
     template<int field>
+    /**
+     * @brief 在结构数据读取与布局中排序 `sort_helper_psfields_assign` 对应的数据。
+     * @param nstts 控制当前步骤范围或规模的 `nstts`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void sort_helper_psfields_assign(size_t nstts);
 
 private:
@@ -295,6 +601,13 @@ public:
 // limits of data chunk size, total number of positions (residues), and the 
 // number of structures
 //
+/**
+ * @brief 在结构数据读取与布局中分配 `PMBatchStrData::AllocateSpace` 对应的数据。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void PMBatchStrData::AllocateSpace(
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs)
@@ -312,6 +625,12 @@ void PMBatchStrData::AllocateSpace(
 
 // -------------------------------------------------------------------------
 // GetPMDataSize: get the size of the structure model data written
+/**
+ * @brief 在结构数据读取与布局中读取 `PMBatchStrData::GetPMDataSize` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t PMBatchStrData::GetPMDataSize()
 {
@@ -325,6 +644,11 @@ size_t PMBatchStrData::GetPMDataSize()
 // -------------------------------------------------------------------------
 // GetPMDataSize1: get the size of complete structure model data of one 
 // structure 
+/**
+ * @brief 在结构数据读取与布局中读取 `PMBatchStrData::GetPMDataSize1` 对应的数据。
+ * @param structlen 控制当前步骤范围或规模的 `structlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t PMBatchStrData::GetPMDataSize1(size_t structlen)
 {
@@ -342,6 +666,11 @@ size_t PMBatchStrData::GetPMDataSize1(size_t structlen)
 // -------------------------------------------------------------------------
 // GetPMDataSizeUB: get the max size of complete structure model data when 
 // the total number of positions (residues) is totallen
+/**
+ * @brief 在结构数据读取与布局中读取 `PMBatchStrData::GetPMDataSizeUB` 对应的数据。
+ * @param totallen 控制当前步骤范围或规模的 `totallen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t PMBatchStrData::GetPMDataSizeUB(size_t totallen)
 {
@@ -364,6 +693,18 @@ size_t PMBatchStrData::GetPMDataSizeUB(size_t totallen)
 // chain, chain id of the structure;
 // chord, chain serial number (order) in the structure file;
 // coords, residue coordinates
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::AddOneResidue` 对应的数据。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param rsdcode 供该函数读取或更新的 `rsdcode` 参数。
+ * @param resnum 供该函数读取或更新的 `resnum` 参数。
+ * @param restype 供该函数读取或更新的 `restype` 参数。
+ * @param inscode 供该函数读取或更新的 `inscode` 参数。
+ * @param chain 供该函数读取或更新的 `chain` 参数。
+ * @param chord 供该函数读取或更新的 `chord` 参数。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 bool PMBatchStrData::AddOneResidue(
     int maxstrlen,
@@ -423,6 +764,22 @@ bool PMBatchStrData::AddOneResidue(
 // kept by the buffers associated with the chunk of data;
 // filendx, file index for clustering;
 // strndx, structure index within a file for clustering;
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::FinalizeCrntStructure` 对应的数据。
+ * @param filendx 控制当前步骤范围或规模的 `filendx`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param globndx 供该函数读取或更新的 `globndx` 参数。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @param description 供该函数读取或更新的 `description` 参数。
+ * @param strchain 供该函数读取或更新的 `strchain` 参数。
+ * @param strmodel 供该函数读取或更新的 `strmodel` 参数。
+ * @param usechaininfo 供该函数读取或更新的 `usechaininfo` 参数。
+ * @param usemodelinfo 供该函数读取或更新的 `usemodelinfo` 参数。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 PMBatchStrData::TPMBSDFinRetCode 
 PMBatchStrData::FinalizeCrntStructure(
@@ -525,6 +882,15 @@ PMBatchStrData::FinalizeCrntStructure(
 // -------------------------------------------------------------------------
 // FormatDescription: format structure description;
 // return `move' string
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::FormatDescription` 对应的数据。
+ * @param description 供该函数读取或更新的 `description` 参数。
+ * @param strchain 供该函数读取或更新的 `strchain` 参数。
+ * @param strmodel 供该函数读取或更新的 `strmodel` 参数。
+ * @param usechaininfo 供该函数读取或更新的 `usechaininfo` 参数。
+ * @param usemodelinfo 供该函数读取或更新的 `usemodelinfo` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 std::string PMBatchStrData::FormatDescription(
     std::string description,
@@ -546,6 +912,12 @@ std::string PMBatchStrData::FormatDescription(
 // FieldTypeValid: verify whether the Type field is valid across all 
 // written structures;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::FieldTypeValid` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 bool PMBatchStrData::FieldTypeValid() const
 {
@@ -562,6 +934,11 @@ bool PMBatchStrData::FieldTypeValid() const
 // bsd, batch object to move data to;
 // return false (pmbsdfAbandoned) if the structure is too large to be 
 // kept (should not happen without a bug);
+/**
+ * @brief 在结构数据读取与布局中复制 `PMBatchStrData::CopyOvhdTo` 对应的数据。
+ * @param bsd 供该函数读取或更新的 `bsd` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 PMBatchStrData::TPMBSDFinRetCode
 PMBatchStrData::CopyOvhdTo(PMBatchStrData& bsd) const
@@ -634,6 +1011,12 @@ PMBatchStrData::CopyOvhdTo(PMBatchStrData& bsd) const
 // -------------------------------------------------------------------------
 // GetOvhdStrDescription: get the description of the structure in the 
 // overhead buffer
+/**
+ * @brief 在结构数据读取与布局中读取 `PMBatchStrData::GetOvhdStrDescription` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 const char* PMBatchStrData::GetOvhdStrDescription() const
 {

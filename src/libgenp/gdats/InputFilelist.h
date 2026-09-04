@@ -57,31 +57,131 @@ public:
             FDRFlN
     };
 
+    /**
+     * @brief 构造 `InputFilelist`，初始化其负责的结构数据读取与布局状态。
+     * @param dnamelst 供该函数读取或更新的 `dnamelst` 参数。
+     * @param sfxlst 供该函数读取或更新的 `sfxlst` 参数。
+     * @param clustering 供该函数读取或更新的 `clustering` 参数。
+     * @param construct 供该函数读取或更新的 `construct` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     InputFilelist(const std::vector<std::string>& dnamelst,
                 const std::vector<std::string>& sfxlst,
                 const bool clustering = false,
                 const bool construct = true);
+    /**
+     * @brief 销毁 `InputFilelist`，释放其管理的结构数据读取与布局资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~InputFilelist();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `ConstructFileList` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ConstructFileList();
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetFileTypeFromFilename` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetFileTypeFromFilename(const std::string&);
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStrFilelist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<std::string>& GetStrFilelist() const {return strfilelist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetPntFilelist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<std::string>& GetPntFilelist() const {return pntfilelist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStrFilePositionlist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<size_t>& GetStrFilePositionlist() const {return strfilepositionlist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStrFilesizelist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<size_t>& GetStrFilesizelist() const {return strfilesizelist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStrParenttypelist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<int>& GetStrParenttypelist() const {return strparenttypelist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetStrFiletypelist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<int>& GetStrFiletypelist() const {return strfiletypelist_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetFilendxlist` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<size_t>& GetFilendxlist() const {return filendxlist_;}
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetGlobalIds` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const std::vector<std::vector<int>>& GetGlobalIds() const {return globalids_;}
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetGlobalIds` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     std::vector<std::vector<int>>& GetGlobalIds() {return globalids_;}
 
 protected:
+    /**
+     * @brief 在结构数据读取与布局中处理 `ProcessEntry` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     template<int LEVEL> void ProcessEntry(const std::string&);
+    /**
+     * @brief 在结构数据读取与布局中处理 `AddFile` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @param param2 供该函数读取或更新的 `param2` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AddFile(const std::string&, bool);
+    /**
+     * @brief 在结构数据读取与布局中处理 `AddFilesFromTAR` 对应的数据。
+     * @param string 供该函数读取或更新的 `string` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AddFilesFromTAR(const std::string&);
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `SuffixFound` 对应的数据。
+     * @param entryname 供该函数读取或更新的 `entryname` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool SuffixFound(const std::string& entryname) const
     {
         //verify whether the file suffix is among the specified ones
@@ -98,6 +198,16 @@ protected:
         return true;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `AddEntry` 对应的数据。
+     * @param entryname 供该函数读取或更新的 `entryname` 参数。
+     * @param parentname 供该函数读取或更新的 `parentname` 参数。
+     * @param position 供该函数读取或更新的 `position` 参数。
+     * @param filesize 控制当前步骤范围或规模的 `filesize`。
+     * @param parenttype 供该函数读取或更新的 `parenttype` 参数。
+     * @param filetype 供该函数读取或更新的 `filetype` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void AddEntry(
         const std::string& entryname, const std::string& parentname,
         size_t position, size_t filesize, int parenttype, int filetype)
@@ -143,6 +253,11 @@ public:
 // -------------------------------------------------------------------------
 // GetFileTypeFromFilename: get file type from the filename
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `InputFilelist::GetFileTypeFromFilename` 对应的数据。
+ * @param filename 输入或输出文件路径。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int InputFilelist::GetFileTypeFromFilename(const std::string& filename)
 {
@@ -176,6 +291,12 @@ int InputFilelist::GetFileTypeFromFilename(const std::string& filename)
 // -------------------------------------------------------------------------
 // AddFile: add file to a list of structure files
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `InputFilelist::AddFile` 对应的数据。
+ * @param entryname 供该函数读取或更新的 `entryname` 参数。
+ * @param sfxcheck 供该函数读取或更新的 `sfxcheck` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void InputFilelist::AddFile(const std::string& entryname, bool sfxcheck)
 {

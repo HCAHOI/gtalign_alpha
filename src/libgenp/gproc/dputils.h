@@ -20,6 +20,14 @@
 // querylen, query length (y coord.);
 // blockwidth, oblique block's width (e.g., 32);
 // blocklen, block's length;
+/**
+ * @brief 在通用结构处理中读取 `GetMaxBlockDiagonalElems` 对应的数据。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param querylen 控制当前步骤范围或规模的 `querylen`。
+ * @param blockwidth 供该函数读取或更新的 `blockwidth` 参数。
+ * @param blocklen 控制当前步骤范围或规模的 `blocklen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 unsigned int GetMaxBlockDiagonalElems(
     size_t dbstrlen, size_t querylen, size_t blockwidth, size_t blocklen)

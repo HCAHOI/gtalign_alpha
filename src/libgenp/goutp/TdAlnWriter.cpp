@@ -30,6 +30,12 @@
 //
 // Constructor
 //
+/**
+ * @brief 构造 `TdAlnWriter`，初始化其负责的对齐结果输出状态。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TdAlnWriter::TdAlnWriter( 
     const char* outdirname,
     const std::vector<std::string>& rfilelist)
@@ -74,6 +80,12 @@ TdAlnWriter::TdAlnWriter(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TdAlnWriter`，释放其管理的对齐结果输出资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TdAlnWriter::~TdAlnWriter()
 {
     MYMSG("TdAlnWriter::~TdAlnWriter", 3);
@@ -87,6 +99,11 @@ TdAlnWriter::~TdAlnWriter()
 // -------------------------------------------------------------------------
 // Execute: thread's starting point for execution
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdAlnWriter::Execute` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::Execute( void* )
 {
     MYMSG("TdAlnWriter::Execute", 3);
@@ -185,6 +202,12 @@ void TdAlnWriter::Execute( void* )
 // -------------------------------------------------------------------------
 // MergeResults: merge parts of results
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdAlnWriter::MergeResults` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::MergeResults()
 {
     MYMSG("TdAlnWriter::MergeResults", 4);
@@ -235,6 +258,12 @@ void TdAlnWriter::MergeResults()
 
 // -------------------------------------------------------------------------
 // InitializeVectors: initialize index vectors
+/**
+ * @brief 在对齐结果输出中初始化 `TdAlnWriter::InitializeVectors` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdAlnWriter::InitializeVectors()
 {
@@ -282,6 +311,17 @@ void TdAlnWriter::InitializeVectors()
 // data, data to store in the buffer;
 // szdata, size of the data;
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdAlnWriter::BufferData` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param offset 供该函数读取或更新的 `offset` 参数。
+ * @param data 供该函数读取或更新的 `data` 参数。
+ * @param szdata 供该函数读取或更新的 `szdata` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::BufferData( 
     FILE* fp, 
     char* const buffer, const int szbuffer, char*& outptr, int& offset, 
@@ -315,6 +355,13 @@ void TdAlnWriter::BufferData(
 // -------------------------------------------------------------------------
 // WriteToFile: write data to file
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteToFile` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param data 供该函数读取或更新的 `data` 参数。
+ * @param szdata 供该函数读取或更新的 `szdata` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::WriteToFile(FILE* fp, char* data, int szdata)
 {
     if(fwrite(data, sizeof(char), szdata, fp) != (size_t)szdata)
@@ -329,6 +376,14 @@ void TdAlnWriter::WriteToFile(FILE* fp, char* data, int szdata)
 // qrydesc, query description;
 // qrynr, query serial number;
 //
+/**
+ * @brief 在对齐结果输出中读取 `TdAlnWriter::GetOutputFilename` 对应的数据。
+ * @param outfilename 控制当前步骤范围或规模的 `outfilename`。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param qrydesc 描述查询结构的 `qrydesc`。
+ * @param qrynr 描述查询结构的 `qrynr`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::GetOutputFilename( 
     std::string& outfilename,
     const char* outdirname,

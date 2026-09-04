@@ -39,6 +39,29 @@ const char* TdDataReader::packetfilebasename_ = "__packet__";
 // ndatbufs, number of buffers used to cache data;
 // nagents, number of agents processing each chunk of data read;
 //
+/**
+ * @brief 构造 `TdDataReader`，初始化其负责的结构数据读取与布局状态。
+ * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+ * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+ * @param strfilelist 供该函数读取或更新的 `strfilelist` 参数。
+ * @param pntfilelist 供该函数读取或更新的 `pntfilelist` 参数。
+ * @param strfilepositionlist 供该函数读取或更新的 `strfilepositionlist` 参数。
+ * @param strfilesizelist 控制当前步骤范围或规模的 `strfilesizelist`。
+ * @param strparenttypelist 供该函数读取或更新的 `strparenttypelist` 参数。
+ * @param strfiletypelist 供该函数读取或更新的 `strfiletypelist` 参数。
+ * @param filendxlist 控制当前步骤范围或规模的 `filendxlist`。
+ * @param globalids 供该函数读取或更新的 `globalids` 参数。
+ * @param ndxstartwith 控制当前步骤范围或规模的 `ndxstartwith`。
+ * @param ndxstep 控制当前步骤范围或规模的 `ndxstep`。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param mapped 供该函数读取或更新的 `mapped` 参数。
+ * @param indexed 供该函数读取或更新的 `indexed` 参数。
+ * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @param clustering 供该函数读取或更新的 `clustering` 参数。
+ * @param clustmaster 供该函数读取或更新的 `clustmaster` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TdDataReader::TdDataReader(
     const char* cachedir,
     const std::vector<std::string>& inputlist,
@@ -130,6 +153,12 @@ TdDataReader::TdDataReader(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TdDataReader`，释放其管理的结构数据读取与布局资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TdDataReader::~TdDataReader()
 {
     MYMSG("TdDataReader::~TdDataReader", 3);
@@ -152,6 +181,16 @@ TdDataReader::~TdDataReader()
 // chunkdatasize, chunkdatalen, chunknstrs, max total data size, length, and
 // number of structures in a chunk;
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::GetDbsCacheFlag` 对应的数据。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+ * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int TdDataReader::GetDbsCacheFlag(
     int nagents, 
     const char* cachedir,
@@ -200,6 +239,12 @@ int TdDataReader::GetDbsCacheFlag(
 // -------------------------------------------------------------------------
 // UpdateCacheFlag: update cache flag once
 //
+/**
+ * @brief 在结构数据读取与布局中更新 `TdDataReader::UpdateCacheFlag` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdDataReader::UpdateCacheFlag()
 {
     MYMSG("TdDataReader::UpdateCacheFlag", 3);
@@ -256,6 +301,11 @@ void TdDataReader::UpdateCacheFlag()
 // -------------------------------------------------------------------------
 // Execute: thread's starting point for execution
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `TdDataReader::Execute` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdDataReader::Execute( void* )
 {
     MYMSG("TdDataReader::Execute", 3);
@@ -447,6 +497,17 @@ void TdDataReader::Execute( void* )
 // return whether data has been read;
 // NOTE: data accessed under lock!
 // 
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::GetData` 对应的数据。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TdDataReader::GetData(
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
     const size_t ntotqstrs, const int queryblocks,
@@ -488,6 +549,17 @@ bool TdDataReader::GetData(
 // chunknstrs, limit for the number of structures;
 // NOTE: lock released!
 // 
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::GetNextData` 对应的数据。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdDataReader::GetNextData(
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
     const size_t ntotqstrs, const int queryblocks,
@@ -543,6 +615,20 @@ void TdDataReader::GetNextData(
 // chunknstrs, limit for the number of structures;
 // return true if there are no data to read;
 // 
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::ReadDataChunk` 对应的数据。
+ * @param pbdbCNdx 描述参考结构的 `pbdbCNdx`。
+ * @param pbdbC 描述参考结构的 `pbdbC`。
+ * @param pbdbC_prev 描述参考结构的 `pbdbC_prev`。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TdDataReader::ReadDataChunk( 
     PMBatchStrDataIndex* pbdbCNdx,
     PMBatchStrData* pbdbC, const PMBatchStrData* pbdbC_prev,
@@ -625,6 +711,17 @@ bool TdDataReader::ReadDataChunk(
 // chunknstrs, limit for the number of structures;
 // NOTE: lock released!
 // 
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::GetNextDataClustCache` 对应的数据。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdDataReader::GetNextDataClustCache(
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
     const size_t ntotqstrs, const int queryblocks,
@@ -680,6 +777,20 @@ void TdDataReader::GetNextDataClustCache(
 // chunknstrs, limit for the number of structures;
 // return true if there are no data to read;
 // 
+/**
+ * @brief 在结构数据读取与布局中读取 `TdDataReader::ReadDataChunkClustCache` 对应的数据。
+ * @param pbdbCNdx 描述参考结构的 `pbdbCNdx`。
+ * @param pbdbC 描述参考结构的 `pbdbC`。
+ * @param pbdbC_prev 描述参考结构的 `pbdbC_prev`。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TdDataReader::ReadDataChunkClustCache( 
     PMBatchStrDataIndex* pbdbCNdx,
     PMBatchStrData* pbdbC, const PMBatchStrData* /*pbdbC_prev*/,

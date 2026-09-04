@@ -31,6 +31,12 @@
 // them to the writing thread; use plain format
 // NOTE: all operations performed under lock
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::CompressResultsPlain` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::CompressResultsPlain()
 {
     MYMSG("TdFinalizer::CompressResultsPlain", 4);
@@ -179,6 +185,16 @@ void TdFinalizer::CompressResultsPlain()
 // maxoutlen, maximum length of output description;
 // width, width to wrap the structure description;
 // tmscoreq, tmscorer, TM-scores normalized by the query and reference lengths;
+/**
+ * @brief 在对齐结果输出中构造 `TdFinalizer::MakeAnnotationPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param orgstrndx 供该函数读取或更新的 `orgstrndx` 参数。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::MakeAnnotationPlain( 
     char*& outptr,
@@ -235,6 +251,17 @@ void TdFinalizer::MakeAnnotationPlain(
 // score, score (TM-score/RMSD);
 // querylen, query length;
 // dbstrlen, db structure length;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatScoresPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param orgstrndx 供该函数读取或更新的 `orgstrndx` 参数。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @param score 当前步骤使用或写回的 `score` 分数。
+ * @param querylen 控制当前步骤范围或规模的 `querylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatScoresPlain(
     char*& outptr,
@@ -315,6 +342,18 @@ void TdFinalizer::FormatScoresPlain(
 // dbstrlen, db structure length;
 // width, alignment output width;
 // printsss, print SS assignment information;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatAlignmentPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param orgstrndx 供该函数读取或更新的 `orgstrndx` 参数。
+ * @param dbstr2dst 描述参考结构的 `dbstr2dst`。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @param querylen 控制当前步骤范围或规模的 `querylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatAlignmentPlain(
     char*& outptr,
@@ -412,6 +451,12 @@ void TdFinalizer::FormatAlignmentPlain(
 // -------------------------------------------------------------------------
 // outptr, pointer to the output buffer;
 // strndx, structure index in the results list;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatFooterPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatFooterPlain(
     char*& outptr,
@@ -447,6 +492,13 @@ void TdFinalizer::FormatFooterPlain(
 // szalns, size of complete alignments (with descriptions);
 // szalnswodesc, size of alignments without descriptions;
 //
+/**
+ * @brief 在对齐结果输出中读取 `TdFinalizer::GetSizeOfCompressedResultsPlain` 对应的数据。
+ * @param szannot 供该函数读取或更新的 `szannot` 参数。
+ * @param szalns 供该函数读取或更新的 `szalns` 参数。
+ * @param szalnswodesc 供该函数读取或更新的 `szalnswodesc` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::GetSizeOfCompressedResultsPlain(
     size_t* szannot, size_t* szalns, size_t* szalnswodesc) const

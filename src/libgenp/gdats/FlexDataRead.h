@@ -67,6 +67,23 @@ class FlexDataRead
     static constexpr size_t maxlnwidth = 128;//max line width
 
 public:
+    /**
+     * @brief 构造 `FlexDataRead`，初始化其负责的结构数据读取与布局状态。
+     * @param strfilelist 供该函数读取或更新的 `strfilelist` 参数。
+     * @param pntfilelist 供该函数读取或更新的 `pntfilelist` 参数。
+     * @param strfilepositionlist 供该函数读取或更新的 `strfilepositionlist` 参数。
+     * @param strfilesizelist 控制当前步骤范围或规模的 `strfilesizelist`。
+     * @param strparenttypelist 供该函数读取或更新的 `strparenttypelist` 参数。
+     * @param strfiletypelist 供该函数读取或更新的 `strfiletypelist` 参数。
+     * @param filendxlist 控制当前步骤范围或规模的 `filendxlist`。
+     * @param globalids 供该函数读取或更新的 `globalids` 参数。
+     * @param ndxstartwith 控制当前步骤范围或规模的 `ndxstartwith`。
+     * @param ndxstep 控制当前步骤范围或规模的 `ndxstep`。
+     * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+     * @param clustering 供该函数读取或更新的 `clustering` 参数。
+     * @param clustmaster 供该函数读取或更新的 `clustmaster` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     FlexDataRead(
             const std::vector<std::string>& strfilelist,
             const std::vector<std::string>& pntfilelist,
@@ -82,15 +99,51 @@ public:
             const bool clustering = false,
             const bool clustmaster = false);
 
+    /**
+     * @brief 销毁 `FlexDataRead`，释放其管理的结构数据读取与布局资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     virtual ~FlexDataRead();
 
+    /**
+     * @brief 在结构数据读取与布局中销毁 `Destroy` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void Destroy();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `Open` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void Open();//open database
+    /**
+     * @brief 在结构数据读取与布局中处理 `Close` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void Close();//close file and reset associated data
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetMapped` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool GetMapped() const {return mapped_;}
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `EndOfData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool EndOfData() {
         bool eod = (filendxlist_.size() <= currentfilendx_)
             ?   true
@@ -103,16 +156,42 @@ public:
         return ((int)globalids_[currentfilendx_].size() < structcounter_[currentfilendx_]);
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `Eof` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool Eof() const { return EofDirect(); }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetGlobalId` 对应的数据。
+     * @param filendx 控制当前步骤范围或规模的 `filendx`。
+     * @param strndx 供该函数读取或更新的 `strndx` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetGlobalId(size_t filendx, int strndx) const {
         if(globalids_.size() <= filendx) return INT_MAX;
         if((int)globalids_[filendx].size() <= strndx) return INT_MAX;
         return globalids_[filendx][strndx];
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetCurrentFileSize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetCurrentFileSize() const {return db_filesize_;}
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadData` 对应的数据。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadData(
         PMBatchStrData&,
         const int queryblocks,
@@ -120,28 +199,79 @@ public:
         char* const * const * const querypmends);
 
 protected:
+    /**
+     * @brief 在结构数据读取与布局中处理 `Execute` 对应的数据。
+     * @param args 供该函数读取或更新的 `args` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Execute(void* args);
+    /**
+     * @brief 在结构数据读取与布局中初始化 `Initializer` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Initializer();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `FileTypeIsZip` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool FileTypeIsZip() const {
         return
             InputFilelist::FDRFlZip <= db_filetype_ &&
             db_filetype_ <= InputFilelist::FDRFlPDBxmmCIFZip;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `NextDataPage` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void NextDataPage() {
         if(FileTypeIsZip()) NextDataPageZip();
         else NextDataPageDirect();
     }
+    /**
+     * @brief 在结构数据读取与布局中处理 `NextDataPageDirect` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void NextDataPageDirect();
+    /**
+     * @brief 在结构数据读取与布局中处理 `NextDataPageZip` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void NextDataPageZip();
 
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadDataPDB` 对应的数据。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadDataPDB(
         PMBatchStrData&,
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends);
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadDataCIF` 对应的数据。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadDataCIF(
         PMBatchStrData&,
         const int queryblocks,
@@ -149,8 +279,20 @@ protected:
         char* const * const * const querypmends);
 
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `MoveDataFromPageToProfileBuffer` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MoveDataFromPageToProfileBuffer();
 
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetZipPageData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetZipPageData() {
         if(/* z_stream_.avail_in &&  */z_stream_.next_in) {
             //z_stream_ was not reset before
@@ -165,12 +307,24 @@ protected:
         current_zipdata_.pagenr_ = 0;
         current_zipdata_.pageoff_ = 0;
     }
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetCurrentPageData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetCurrentPageData() {
         current_strdata_.datlen_ = 0;
         current_strdata_.curpos_ = 0;
         current_strdata_.pagenr_ = 0;
         current_strdata_.pageoff_ = 0;
     }
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetProfileBufferData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetProfileBufferData() {
         profile_buffer_.datlen_ = 0;
         profile_buffer_.curpos_ = 0;
@@ -178,23 +332,50 @@ protected:
         profile_buffer_.pageoff_ = 0;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `MoveBlockOfData` 对应的数据。
+     * @param stream 执行该操作的 CUDA 流。
+     * @param szstream 执行异步计算的 CUDA 流。
+     * @param dstpos 接收目标数据的 `dstpos`。
+     * @param srcpos 提供输入数据的 `srcpos`。
+     * @param srclen 控制当前步骤范围或规模的 `srclen`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MoveBlockOfData( 
         char* stream, size_t szstream, 
         size_t dstpos, size_t srcpos, size_t srclen );
 
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `EofDirect` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool EofDirect() const {
         return
             db_filesize_ <= current_strdata_.pageoff_ &&
             profile_buffer_.datlen_ <= profile_buffer_.curpos_;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetEof` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetEof() {
         profile_buffer_.curpos_ = profile_buffer_.datlen_;
         current_strdata_.pageoff_ = db_filesize_;
     }
 
 
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetDbMetaData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetDbMetaData() {
         db_position_ = 0;
         db_filesize_ = 0;
@@ -205,6 +386,12 @@ protected:
         db_entrydesc_.clear();
     }
 
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetDbMetaData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetDbMetaData() {
         ResetDbMetaData();
         if(filendxlist_.size() <= currentfilendx_)
@@ -224,22 +411,93 @@ protected:
             std::fill(structcounter_.begin(), structcounter_.end(), 0);
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetPageSize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetPageSize() const {return current_strdata_.pagesize_;}
+    /**
+     * @brief 在结构数据读取与布局中处理 `ObtainPageSize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static ssize_t ObtainPageSize();
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetProfileBuffer` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     TCharStream* GetProfileBuffer() {return &profile_buffer_;}
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetProfileBufferPosition` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetProfileBufferPosition() {profile_buffer_.curpos_ = 0;}
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `ValidFileDescriptor` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ValidFileDescriptor();
+    /**
+     * @brief 在结构数据读取与布局中处理 `InvalidateFileDescriptor` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void InvalidateFileDescriptor();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `OpenFile` 对应的数据。
+     * @param param1 供该函数读取或更新的 `param1` 参数。
+     * @param param2 供该函数读取或更新的 `param2` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void OpenFile(const char*, size_t);
+    /**
+     * @brief 在结构数据读取与布局中处理 `CloseFile` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CloseFile();
 
+    /**
+     * @brief 在结构数据读取与布局中处理 `MapFile` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MapFile();
+    /**
+     * @brief 在结构数据读取与布局中处理 `UnmapFile` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UnmapFile();
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadPage` 对应的数据。
+     * @param TCharStream 执行异步计算的 CUDA 流。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadPage(TCharStream&);
+    /**
+     * @brief 在结构数据读取与布局中处理 `InflatePage` 对应的数据。
+     * @param z_chstr 供该函数读取或更新的 `z_chstr` 参数。
+     * @param out_chstr 接收当前步骤输出的 `out_chstr`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool InflatePage(TCharStream& z_chstr, TCharStream& out_chstr);
 
 private:
@@ -303,6 +561,12 @@ private:
 // -------------------------------------------------------------------------
 // MoveDataFromPageToProfileBuffer: move data from the current page to the
 // file buffer and accordingly adjust the data within the structures
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::MoveDataFromPageToProfileBuffer` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::MoveDataFromPageToProfileBuffer()
 {
@@ -359,6 +623,15 @@ void FlexDataRead::MoveDataFromPageToProfileBuffer()
 // dstpos, destination position in the stream;
 // srcpos, source position in the stream;
 // srclen, size of a block to move;
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::MoveBlockOfData` 对应的数据。
+ * @param stream 执行该操作的 CUDA 流。
+ * @param szstream 执行异步计算的 CUDA 流。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @param srcpos 提供输入数据的 `srcpos`。
+ * @param srclen 控制当前步骤范围或规模的 `srclen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::MoveBlockOfData( 
     char* stream, size_t szstream, 
@@ -400,6 +673,12 @@ void FlexDataRead::MoveBlockOfData(
 // -------------------------------------------------------------------------
 // GetPageSize: get the system page size
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::ObtainPageSize` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 ssize_t FlexDataRead::ObtainPageSize()
 {
@@ -414,6 +693,12 @@ ssize_t FlexDataRead::ObtainPageSize()
 
 // -------------------------------------------------------------------------
 // OpenFile: open one of the files for reading
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::OpenFile` 对应的数据。
+ * @param filename 输入或输出文件路径。
+ * @param position 供该函数读取或更新的 `position` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::OpenFile(const char* filename, size_t position)
 {
@@ -469,6 +754,12 @@ void FlexDataRead::OpenFile(const char* filename, size_t position)
 }
 
 // CloseFile: close the file opened
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::CloseFile` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::CloseFile()
 {
@@ -485,6 +776,12 @@ void FlexDataRead::CloseFile()
 
 // -------------------------------------------------------------------------
 // MapFile: memory-map the current file for reading
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::MapFile` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::MapFile()
 {
@@ -543,6 +840,12 @@ void FlexDataRead::MapFile()
 }
 
 // UnmapFile: unmap the opened file
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::UnmapFile` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::UnmapFile()
 {
@@ -569,6 +872,12 @@ void FlexDataRead::UnmapFile()
 
 // -------------------------------------------------------------------------
 // ValidFileDescriptor: get a flag of whether the file descriptor is valid
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::ValidFileDescriptor` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 bool FlexDataRead::ValidFileDescriptor()
 {
@@ -585,6 +894,12 @@ bool FlexDataRead::ValidFileDescriptor()
         ;// );
 }
 // InvalidateFileDescriptor: invalidate the given file descriptor
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::InvalidateFileDescriptor` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FlexDataRead::InvalidateFileDescriptor()
 {

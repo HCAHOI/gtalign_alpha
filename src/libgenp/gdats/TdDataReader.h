@@ -72,6 +72,29 @@ public:
     };
 
 public:
+    /**
+     * @brief 构造 `TdDataReader`，初始化其负责的结构数据读取与布局状态。
+     * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+     * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+     * @param strfilelist 供该函数读取或更新的 `strfilelist` 参数。
+     * @param pntfilelist 供该函数读取或更新的 `pntfilelist` 参数。
+     * @param strfilepositionlist 供该函数读取或更新的 `strfilepositionlist` 参数。
+     * @param strfilesizelist 控制当前步骤范围或规模的 `strfilesizelist`。
+     * @param strparenttypelist 供该函数读取或更新的 `strparenttypelist` 参数。
+     * @param strfiletypelist 供该函数读取或更新的 `strfiletypelist` 参数。
+     * @param filendxlist 控制当前步骤范围或规模的 `filendxlist`。
+     * @param globalids 供该函数读取或更新的 `globalids` 参数。
+     * @param ndxstartwith 控制当前步骤范围或规模的 `ndxstartwith`。
+     * @param ndxstep 控制当前步骤范围或规模的 `ndxstep`。
+     * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+     * @param mapped 供该函数读取或更新的 `mapped` 参数。
+     * @param indexed 供该函数读取或更新的 `indexed` 参数。
+     * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+     * @param nagents 控制当前步骤范围或规模的 `nagents`。
+     * @param clustering 供该函数读取或更新的 `clustering` 参数。
+     * @param clustmaster 供该函数读取或更新的 `clustmaster` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TdDataReader(
         const char* cachedir,
         const std::vector<std::string>& inputlist,
@@ -93,9 +116,31 @@ public:
         const bool clustering = false,
         const bool clustmaster = false
     );
+    /**
+     * @brief 构造 `TdDataReader`，初始化其负责的结构数据读取与布局状态。
+     * @par 参数
+     * 无。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TdDataReader();
+    /**
+     * @brief 销毁 `TdDataReader`，释放其管理的结构数据读取与布局资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~TdDataReader();
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetDbsCacheFlag` 对应的数据。
+     * @param nagents 控制当前步骤范围或规模的 `nagents`。
+     * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+     * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static int GetDbsCacheFlag(
         int nagents, 
         const char* cachedir,
@@ -105,6 +150,15 @@ public:
     // std::mutex& GetPrivateMutex() {return mx_dataccess_;}
 
     //{{NOTE: messaging functions accessed from outside!
+    /**
+     * @brief 在结构数据读取与布局中通知 `Notify` 对应的数据。
+     * @param msg 供该函数读取或更新的 `msg` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Notify(
         int msg,
         size_t ntotqstrs = 0,
@@ -122,6 +176,12 @@ public:
         }
         cv_msg_.notify_one();
     }
+    /**
+     * @brief 在结构数据读取与布局中等待 `Wait` 对应的数据。
+     * @param rsp1 供该函数读取或更新的 `rsp1` 参数。
+     * @param rsp2 供该函数读取或更新的 `rsp2` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int Wait(int rsp1, int rsp2 = TREADER_MSG_ERROR) {
         //wait until a response arrives
         std::unique_lock<std::mutex> lck_msg(mx_dataccess_);
@@ -140,10 +200,22 @@ public:
             rsp_msg_ = TREADER_MSG_UNSET;
         return rspmsg;
     }
+    /**
+     * @brief 在结构数据读取与布局中处理 `Rewind` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Rewind() {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         rewind_ = true;
     }
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetResponseAsync` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponseAsync() const {
         //get a response if available
         std::unique_lock<std::mutex> lck(mx_dataccess_, std::defer_lock);
@@ -151,10 +223,22 @@ public:
         if(lck.try_lock()) rsp = rsp_msg_;
         return rsp;
     }
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetResponse` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponse() const {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         return rsp_msg_;
     }
+    /**
+     * @brief 在结构数据读取与布局中重置 `ResetResponse` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetResponse() {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         if( rsp_msg_!= TREADER_MSG_ERROR )
@@ -162,6 +246,17 @@ public:
     }
     //}}
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetbdbCdata` 对应的数据。
+     * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param bdbCNdxpmbeg 描述参考结构的 `bdbCNdxpmbeg`。
+     * @param bdbCNdxpmend 描述参考结构的 `bdbCNdxpmend`。
+     * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+     * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetbdbCdata(
         char**& bdbCdescs,
         char**& bdbCpmbeg, char**& bdbCpmend,
@@ -179,6 +274,15 @@ public:
         *lastchunk = lastchunk_;
     }
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetbdbCdata` 对应的数据。
+     * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+     * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetbdbCdata(
         char**& bdbCdescs,
         char**& bdbCpmbeg, char**& bdbCpmend,
@@ -202,6 +306,13 @@ public:
 //             memcpy( szpm2dvfields, szpm2dvfields_, pmv2DTotFlds * sizeof(size_t));
     }
 
+    /**
+     * @brief 在结构数据读取与布局中设置 `SetChunkDataAttributes` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetChunkDataAttributes( 
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs)
     {
@@ -212,28 +323,86 @@ public:
     }
 
 protected:
+    /**
+     * @brief 在结构数据读取与布局中处理 `Execute` 对应的数据。
+     * @param args 供该函数读取或更新的 `args` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Execute(void* args);
 
+    /**
+     * @brief 在结构数据读取与布局中更新 `UpdateCacheFlag` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateCacheFlag();
 
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetData` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool GetData(
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
         const size_t ntotqstrs,
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends);
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNextData` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetNextData(
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
         const size_t ntotqstrs,
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends);
+    /**
+     * @brief 在结构数据读取与布局中读取 `GetNextDataClustCache` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetNextDataClustCache(
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs,
         const size_t ntotqstrs,
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends);
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadDataChunk` 对应的数据。
+     * @param PMBatchStrDataIndex 供该函数读取或更新的 `PMBatchStrDataIndex` 参数。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadDataChunk(
         PMBatchStrDataIndex*,
         PMBatchStrData*, const PMBatchStrData*, 
@@ -242,6 +411,20 @@ protected:
         const int queryblocks,
         char* const * const * const querypmbegs,
         char* const * const * const querypmends);
+    /**
+     * @brief 在结构数据读取与布局中读取 `ReadDataChunkClustCache` 对应的数据。
+     * @param PMBatchStrDataIndex 供该函数读取或更新的 `PMBatchStrDataIndex` 参数。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param PMBatchStrData 供该函数读取或更新的 `PMBatchStrData` 参数。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+     * @param queryblocks 描述查询结构的 `queryblocks`。
+     * @param querypmbegs 描述查询结构的 `querypmbegs`。
+     * @param querypmends 描述查询结构的 `querypmends`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool ReadDataChunkClustCache(
         PMBatchStrDataIndex*,
         PMBatchStrData*, const PMBatchStrData*, 

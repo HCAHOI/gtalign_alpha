@@ -29,6 +29,11 @@
 // template helpers: assignemnt of the block of position-specific field 
 // using temporary buffer
 template <typename T, int field>
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::index_helper_psfields_assign` 对应的数据。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::index_helper_psfields_assign(size_t nposs)
 {
     const size_t szT = TPM2DIndexFieldSize::szvfs_[field];
@@ -44,6 +49,11 @@ void PMBatchStrDataIndex::index_helper_psfields_assign(size_t nposs)
 
 // index_helper_psfields_adjend: adjust the end pointer for a field
 template <typename T, int field>
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::index_helper_psfields_adjend` 对应的数据。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::index_helper_psfields_adjend(size_t nposs)
 {
     const size_t szT = TPM2DIndexFieldSize::szvfs_[field];
@@ -53,6 +63,11 @@ void PMBatchStrDataIndex::index_helper_psfields_adjend(size_t nposs)
 // -------------------------------------------------------------------------
 // MakeIndex: index all structures present in the object strs;
 // 
+/**
+ * @brief 在结构数据读取与布局中构造 `PMBatchStrDataIndex::MakeIndex` 对应的数据。
+ * @param strs 供该函数读取或更新的 `strs` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::MakeIndex(const PMBatchStrData& strs)
 {
     static const std::string preamb = "PMBatchStrData::MakeIndex: ";
@@ -137,9 +152,22 @@ void PMBatchStrDataIndex::MakeIndex(const PMBatchStrData& strs)
 // local position-specific field assigner
 struct TL_ps_field_assigner {
     char** l_bdbpmbeg_, **l_bdbpmend_;
+    /**
+     * @brief 构造 `TL_ps_field_assigner`，初始化其负责的结构数据读取与布局状态。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TL_ps_field_assigner(char** bdbpmbeg, char** bdbpmend)
     : l_bdbpmbeg_(bdbpmbeg), l_bdbpmend_(bdbpmend) {}
     template<typename T, int field>
+    /**
+     * @brief 在结构数据读取与布局中写入 `assign` 对应的数据。
+     * @param newaddr 控制当前步骤范围或规模的 `newaddr`。
+     * @param address 供该函数读取或更新的 `address` 参数。
+     * @param length 控制当前步骤范围或规模的 `length`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void assign(unsigned int newaddr, unsigned int address, unsigned int length) {
         if(newaddr < address)
             std::copy(
@@ -154,6 +182,15 @@ struct TL_ps_field_assigner {
 // indexed in filterdata;
 // NOTE: must be called before the same procedure is applied to PMBatchStrData!
 //
+/**
+ * @brief 在结构数据读取与布局中筛选 `PMBatchStrDataIndex::FilterStructs` 对应的数据。
+ * @param bdbndxpmbeg 描述参考结构的 `bdbndxpmbeg`。
+ * @param bdbndxpmend 描述参考结构的 `bdbndxpmend`。
+ * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+ * @param bdbpmend 描述参考结构的 `bdbpmend`。
+ * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::FilterStructs(
     char** bdbndxpmbeg, char** bdbndxpmend,
     char* const* bdbpmbeg, char* const* bdbpmend,
@@ -193,6 +230,11 @@ void PMBatchStrDataIndex::FilterStructs(
 // AllocateSpace: allocate space for indexed structure data;
 // totlen, total length to allocate for indexed data;
 // 
+/**
+ * @brief 在结构数据读取与布局中分配 `PMBatchStrDataIndex::AllocateSpace` 对应的数据。
+ * @param totlen 控制当前步骤范围或规模的 `totlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::AllocateSpace(size_t totlen)
 {
     MYMSG("PMBatchStrDataIndex::AllocateSpace",4);
@@ -262,6 +304,15 @@ void PMBatchStrDataIndex::AllocateSpace(size_t totlen)
 // end, current index of the end position (exclusive) of a structure;
 // dimndx, current dimension index;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::ConstructKdtree` 对应的数据。
+ * @param crds 供该函数读取或更新的 `crds` 参数。
+ * @param ptrs 供该函数读取或更新的 `ptrs` 参数。
+ * @param begin 供该函数读取或更新的 `begin` 参数。
+ * @param end 供该函数读取或更新的 `end` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int PMBatchStrDataIndex::ConstructKdtree(
     FPTYPE* crds[ndims_], INTYPE* ptrs[nPtrs_],
     int begin, int end, int dimndx)
@@ -292,6 +343,17 @@ int PMBatchStrDataIndex::ConstructKdtree(
 // nestndx, index of the nearest node;
 // nestdst, distance to the nearest node;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::NNRecursive` 对应的数据。
+ * @param address 供该函数读取或更新的 `address` 参数。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param crds 供该函数读取或更新的 `crds` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param nvisited 控制当前步骤范围或规模的 `nvisited`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param nestdst 控制当前步骤范围或规模的 `nestdst`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::NNRecursive(
     int address, int root, FPTYPE crds[ndims_], int dimndx,
     int& nvisited, int& nestndx, float& nestdst) const
@@ -330,6 +392,17 @@ void PMBatchStrDataIndex::NNRecursive(
 // nestndx, index of the nearest node;
 // nestdst, distance to the nearest node;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::NNIterative` 对应的数据。
+ * @param address 供该函数读取或更新的 `address` 参数。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param crds 供该函数读取或更新的 `crds` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param nvisited 控制当前步骤范围或规模的 `nvisited`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param nestdst 控制当前步骤范围或规模的 `nestdst`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::NNIterative(
     int address, int root, FPTYPE crds[ndims_], int dimndx,
     int& nvisited, int& nestndx, float& nestdst) const
@@ -393,6 +466,16 @@ void PMBatchStrDataIndex::NNIterative(
 // nestndx, index of the nearest node;
 // nestdst, distance to the nearest node;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrDataIndex::NNNaive` 对应的数据。
+ * @param address 供该函数读取或更新的 `address` 参数。
+ * @param len 控制当前步骤范围或规模的 `len`。
+ * @param crds 供该函数读取或更新的 `crds` 参数。
+ * @param nvisited 控制当前步骤范围或规模的 `nvisited`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param nestdst 控制当前步骤范围或规模的 `nestdst`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::NNNaive(
     int address, int len, FPTYPE crds[ndims_],
     int& nvisited, int& nestndx, float& nestdst) const
@@ -414,6 +497,12 @@ void PMBatchStrDataIndex::NNNaive(
 // Search: search the point with the coordinates crds where the object strs 
 // serves as a container for meta-data (length, total number of positions)
 // 
+/**
+ * @brief 在结构数据读取与布局中搜索 `PMBatchStrDataIndex::Search` 对应的数据。
+ * @param strs 供该函数读取或更新的 `strs` 参数。
+ * @param crds 供该函数读取或更新的 `crds` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::Search(const PMBatchStrData& strs, FPTYPE crds[ndims_]) const
 {
     static const std::string preamb = "PMBatchStrDataIndex::Search: ";
@@ -489,6 +578,12 @@ void PMBatchStrDataIndex::Search(const PMBatchStrData& strs, FPTYPE crds[ndims_]
 // -------------------------------------------------------------------------
 // Print: print data in the buffers to stdout for testing
 // 
+/**
+ * @brief 在结构数据读取与布局中格式化输出 `PMBatchStrDataIndex::Print` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrDataIndex::Print() const
 {
     size_t nposs = GetNoPositsWritten();

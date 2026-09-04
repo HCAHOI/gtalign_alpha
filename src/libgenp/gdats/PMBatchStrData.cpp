@@ -32,6 +32,11 @@
 // template helpers: assignemnt of the block of structure-specific field 
 // using temporary buffer
 template <typename T, int field>
+/**
+ * @brief 在结构数据读取与布局中排序 `PMBatchStrData::sort_helper_ssfields_assign` 对应的数据。
+ * @param nstts 控制当前步骤范围或规模的 `nstts`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::sort_helper_ssfields_assign(size_t nstts)
 {
     const size_t szT = TPM2DVectorFieldSize::szvfs_[field];
@@ -51,6 +56,11 @@ void PMBatchStrData::sort_helper_ssfields_assign(size_t nstts)
 }
 
 // specific instantiation for field pps2DDist
+/**
+ * @brief 在结构数据读取与布局中排序 `PMBatchStrData::sort_helper_ssfields_assign<unsigned int, pps2DDist>` 对应的数据。
+ * @param nstts 控制当前步骤范围或规模的 `nstts`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 template<>
 void PMBatchStrData::sort_helper_ssfields_assign<LNTYPE,pps2DDist>(size_t nstts)
 {
@@ -77,6 +87,11 @@ void PMBatchStrData::sort_helper_ssfields_assign<LNTYPE,pps2DDist>(size_t nstts)
 // assignemnt of the block of position-specific field 
 // using temporary buffer
 template <int field>
+/**
+ * @brief 在结构数据读取与布局中排序 `PMBatchStrData::sort_helper_psfields_assign` 对应的数据。
+ * @param nstts 控制当前步骤范围或规模的 `nstts`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::sort_helper_psfields_assign(size_t nstts)
 {
     const size_t szfld = TPM2DVectorFieldSize::szvfs_[field];
@@ -107,6 +122,12 @@ void PMBatchStrData::sort_helper_psfields_assign(size_t nstts)
 // Sort: sort data by length in-place; NOTE: used when all chunk data has 
 // been compiled (after finalization)
 //
+/**
+ * @brief 在结构数据读取与布局中排序 `PMBatchStrData::Sort` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::Sort()
 {
     if(!tmpbdbCdata_)
@@ -169,9 +190,21 @@ void PMBatchStrData::Sort()
 // local structure-specific field assigner
 struct TL_ss_field_assigner {
     char** l_bdbpmbeg_, **l_bdbpmend_;
+    /**
+     * @brief 构造 `TL_ss_field_assigner`，初始化其负责的结构数据读取与布局状态。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TL_ss_field_assigner(char** bdbpmbeg, char** bdbpmend)
     : l_bdbpmbeg_(bdbpmbeg), l_bdbpmend_(bdbpmend) {}
     template<typename T, int field>
+    /**
+     * @brief 在结构数据读取与布局中写入 `assign` 对应的数据。
+     * @param newndx 控制当前步骤范围或规模的 `newndx`。
+     * @param n 控制当前步骤范围或规模的 `n`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void assign(unsigned int newndx, unsigned int n) {
         if(newndx < n)
             ((T*)(l_bdbpmbeg_[field]))[newndx] = ((T*)(l_bdbpmbeg_[field]))[n];
@@ -182,9 +215,22 @@ struct TL_ss_field_assigner {
 // local position-specific field assigner
 struct TL_ps_field_assigner {
     char** l_bdbpmbeg_, **l_bdbpmend_;
+    /**
+     * @brief 构造 `TL_ps_field_assigner`，初始化其负责的结构数据读取与布局状态。
+     * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+     * @param bdbpmend 描述参考结构的 `bdbpmend`。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TL_ps_field_assigner(char** bdbpmbeg, char** bdbpmend)
     : l_bdbpmbeg_(bdbpmbeg), l_bdbpmend_(bdbpmend) {}
     template<typename T, int field>
+    /**
+     * @brief 在结构数据读取与布局中写入 `assign` 对应的数据。
+     * @param newaddr 控制当前步骤范围或规模的 `newaddr`。
+     * @param address 供该函数读取或更新的 `address` 参数。
+     * @param length 控制当前步骤范围或规模的 `length`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void assign(unsigned int newaddr, unsigned int address, unsigned int length) {
         if(newaddr < address)
             std::copy(
@@ -198,6 +244,14 @@ struct TL_ps_field_assigner {
 // FilterStructs: change/pack structure pointers to include structures
 // indexed in filterdata
 //
+/**
+ * @brief 在结构数据读取与布局中筛选 `PMBatchStrData::FilterStructs` 对应的数据。
+ * @param bdbdesc 描述参考结构的 `bdbdesc`。
+ * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+ * @param bdbpmend 描述参考结构的 `bdbpmend`。
+ * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::FilterStructs(
     const char** bdbdesc, char** bdbpmbeg, char** bdbpmend,
     const unsigned int* filterdata)
@@ -246,6 +300,13 @@ void PMBatchStrData::FilterStructs(
 // -------------------------------------------------------------------------
 // Copy: copy essential data from source arrays
 // 
+/**
+ * @brief 在结构数据读取与布局中复制 `PMBatchStrData::Copy` 对应的数据。
+ * @param bdbdesc 描述参考结构的 `bdbdesc`。
+ * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+ * @param bdbpmend 描述参考结构的 `bdbpmend`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::Copy(
     const char** bdbdesc,
     char* const * const bdbpmbeg, char* const * const bdbpmend)
@@ -286,6 +347,11 @@ void PMBatchStrData::Copy(
 // CopyFrom: copy essential data, including bdbCpmendovhd_, from source to
 // this object
 // 
+/**
+ * @brief 在结构数据读取与布局中复制 `PMBatchStrData::CopyFrom` 对应的数据。
+ * @param bsd 供该函数读取或更新的 `bsd` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::CopyFrom(const PMBatchStrData& bsd)
 {
     MYMSG("PMBatchStrData::CopyFrom",4);
@@ -332,6 +398,12 @@ void PMBatchStrData::CopyFrom(const PMBatchStrData& bsd)
 // AllocateSpaceForData: allocate space for structure data plus 
 // space for the end addresses of structure descriptions
 // 
+/**
+ * @brief 在结构数据读取与布局中分配 `PMBatchStrData::AllocateSpaceForData` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::AllocateSpaceForData()
 {
     MYMSG("PMBatchStrData::AllocateSpaceForData",4);
@@ -412,6 +484,12 @@ void PMBatchStrData::AllocateSpaceForData()
 // -------------------------------------------------------------------------
 // AllocateSpaceForDescriptions: allocate space for structure descriptions
 // 
+/**
+ * @brief 在结构数据读取与布局中分配 `PMBatchStrData::AllocateSpaceForDescriptions` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PMBatchStrData::AllocateSpaceForDescriptions()
 {
     assert(PMBSdatDEFDESCLEN > 4);
@@ -438,6 +516,12 @@ bool PMBatchStrData::AllocateSpaceForDescriptions()
 // AllocateSpaceForDescPtrs: allocate space for pointers to the 
 // descriptions of each structure
 // 
+/**
+ * @brief 在结构数据读取与布局中分配 `PMBatchStrData::AllocateSpaceForDescPtrs` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::AllocateSpaceForDescPtrs()
 {
     static const std::string preamb = "PMBatchStrData::AllocateSpaceForDescPtrs: ";
@@ -480,6 +564,13 @@ void PMBatchStrData::AllocateSpaceForDescPtrs()
 // Serialize: serialize packed structures;
 // eod, end-of-data flag
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::Serialize` 对应的数据。
+ * @param fname 供该函数读取或更新的 `fname` 参数。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @param eod 供该函数读取或更新的 `eod` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::Serialize(
     const std::string& fname,
     // const PMBatchStrDataIndex& index,
@@ -531,6 +622,12 @@ void PMBatchStrData::Serialize(
 // NOTE: this method should be called after a call to AllocateSpace!
 // NOTE: should be called before Sort since bdbCptrdescs_ aren't rearranged!
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::Deserialize` 对应的数据。
+ * @param fname 供该函数读取或更新的 `fname` 参数。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 size_t PMBatchStrData::Deserialize(
     const std::string& fname,
     // PMBatchStrDataIndex& index,
@@ -615,6 +712,12 @@ size_t PMBatchStrData::Deserialize(
 // -------------------------------------------------------------------------
 // Print: print data in the buffers to stdout for testing
 // 
+/**
+ * @brief 在结构数据读取与布局中格式化输出 `PMBatchStrData::Print` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::Print() const
 {
     size_t nstts = GetNoStructsWritten();
@@ -659,6 +762,12 @@ void PMBatchStrData::Print() const
 // -------------------------------------------------------------------------
 // Print: print data in the buffers to stdout for testing
 // 
+/**
+ * @brief 在结构数据读取与布局中格式化输出 `PMBatchStrData::Print` 对应的数据。
+ * @param bdbpmbeg 描述参考结构的 `bdbpmbeg`。
+ * @param bdbpmend 描述参考结构的 `bdbpmend`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void PMBatchStrData::Print(char* const * const bdbpmbeg, char* const * const bdbpmend)
 {
     size_t nstts = GetNoStructs(bdbpmbeg, bdbpmend);
@@ -712,6 +821,13 @@ void PMBatchStrData::Print(char* const * const bdbpmbeg, char* const * const bdb
 // querypmbegs, beginning addresses of the query fields;
 // querypmends, end addresses of the query fields;
 // 
+/**
+ * @brief 在结构数据读取与布局中处理 `PMBatchStrData::SequenceSimilarityOvhd` 对应的数据。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PMBatchStrData::SequenceSimilarityOvhd(
     const int queryblocks,
     char* const * const * const querypmbegs,

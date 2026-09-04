@@ -58,6 +58,11 @@
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中处理 `isNASS` 对应的数据。
+ * @param sss 供该函数读取或更新的 `sss` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 bool isNASS(const char sss) {return (sss >= pmnasOPEN) && (sss <= pmnasUNPAIRED);}
@@ -65,6 +70,11 @@ bool isNASS(const char sss) {return (sss >= pmnasOPEN) && (sss <= pmnasUNPAIRED)
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中处理 `isloop` 对应的数据。
+ * @param sss 供该函数读取或更新的 `sss` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 bool isloop(const char sss) {return (sss == pmvTURN) || (sss == pmvLOOP);}
@@ -72,6 +82,12 @@ bool isloop(const char sss) {return (sss == pmvTURN) || (sss == pmvLOOP);}
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中处理 `helix_strnd` 对应的数据。
+ * @param ss1 供该函数读取或更新的 `ss1` 参数。
+ * @param ss2 供该函数读取或更新的 `ss2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 bool helix_strnd(const char ss1, const char ss2) {
@@ -91,6 +107,11 @@ enum TGTMoleculeTypes {
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中读取 `GetMoleculeType` 对应的数据。
+ * @param typefieldvalue 供该函数读取或更新的 `typefieldvalue` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 int GetMoleculeType(int typefieldvalue) {
@@ -100,6 +121,12 @@ int GetMoleculeType(int typefieldvalue) {
 
 //{{GetWatermarkedOnType/[Cmb]WatermarkOnType: write/return a 
 // watermark based on molecule type
+/**
+ * @brief 在结构数据读取与布局中读取 `GetWatermarkedOnType` 对应的数据。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int GetWatermarkedOnType(int moltype, int value) {
     if(moltype == gtmtProtein) return -value;
@@ -107,6 +134,12 @@ int GetWatermarkedOnType(int moltype, int value) {
     return value;
 }
 
+/**
+ * @brief 在结构数据读取与布局中处理 `WatermarkOnType` 对应的数据。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void WatermarkOnType(int moltype, int& value) {
     value = abs(value);
@@ -114,6 +147,13 @@ void WatermarkOnType(int moltype, int& value) {
     // if(moltype == gtmtNA);
 }
 
+/**
+ * @brief 在结构数据读取与布局中处理 `CmbWatermarkOnType` 对应的数据。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @param addedvalue 供该函数读取或更新的 `addedvalue` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void CmbWatermarkOnType(int moltype, int addedvalue, int* value) {
     if(moltype == gtmtProtein) *value += -addedvalue;
@@ -126,6 +166,12 @@ void CmbWatermarkOnType(int moltype, int addedvalue, int* value) {
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中处理 `MoleculeTypesCompatible` 对应的数据。
+ * @param typefieldvalue1 供该函数读取或更新的 `typefieldvalue1` 参数。
+ * @param typefieldvalue2 供该函数读取或更新的 `typefieldvalue2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 int MoleculeTypesCompatible(int typefieldvalue1, int typefieldvalue2) {
@@ -136,6 +182,11 @@ int MoleculeTypesCompatible(int typefieldvalue1, int typefieldvalue2) {
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中读取 `GetComplexTypeLength` 对应的数据。
+ * @param typefieldvalue 供该函数读取或更新的 `typefieldvalue` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 int GetComplexTypeLength(int typefieldvalue) {
@@ -148,6 +199,14 @@ int GetComplexTypeLength(int typefieldvalue) {
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在结构数据读取与布局中读取 `GetComplexResultantType` 对应的数据。
+ * @param cpxtype 供该函数读取或更新的 `cpxtype` 参数。
+ * @param cpxlen 控制当前步骤范围或规模的 `cpxlen`。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @param mollen 控制当前步骤范围或规模的 `mollen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 #endif
 void GetComplexResultantType(int& cpxtype, int& cpxlen, int moltype, int mollen) {
@@ -157,6 +216,11 @@ void GetComplexResultantType(int& cpxtype, int& cpxlen, int moltype, int mollen)
     cpxtype = GetMoleculeType(cpxlen);
 }
 
+/**
+ * @brief 在结构数据读取与布局中读取 `GetMoleculeTypeStr` 对应的数据。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 const char* GetMoleculeTypeStr(int moltype) {
     if(moltype == gtmtProtein) return "Protein";

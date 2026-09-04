@@ -42,6 +42,23 @@
 // -------------------------------------------------------------------------
 // Constructor
 //
+/**
+ * @brief 构造 `FlexDataRead`，初始化其负责的结构数据读取与布局状态。
+ * @param strfilelist 供该函数读取或更新的 `strfilelist` 参数。
+ * @param pntfilelist 供该函数读取或更新的 `pntfilelist` 参数。
+ * @param strfilepositionlist 供该函数读取或更新的 `strfilepositionlist` 参数。
+ * @param strfilesizelist 控制当前步骤范围或规模的 `strfilesizelist`。
+ * @param strparenttypelist 供该函数读取或更新的 `strparenttypelist` 参数。
+ * @param strfiletypelist 供该函数读取或更新的 `strfiletypelist` 参数。
+ * @param filendxlist 控制当前步骤范围或规模的 `filendxlist`。
+ * @param globalids 供该函数读取或更新的 `globalids` 参数。
+ * @param ndxstartwith 控制当前步骤范围或规模的 `ndxstartwith`。
+ * @param ndxstep 控制当前步骤范围或规模的 `ndxstep`。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param clustering 供该函数读取或更新的 `clustering` 参数。
+ * @param clustmaster 供该函数读取或更新的 `clustmaster` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 FlexDataRead::FlexDataRead(
     const std::vector<std::string>& strfilelist,
     const std::vector<std::string>& pntfilelist,
@@ -90,6 +107,12 @@ FlexDataRead::FlexDataRead(
 // -------------------------------------------------------------------------
 // Initializer: initialize data for object construction
 //
+/**
+ * @brief 在结构数据读取与布局中初始化 `FlexDataRead::Initializer` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::Initializer()
 {
     //fieldndxs_[nciffields] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
@@ -149,6 +172,12 @@ void FlexDataRead::Initializer()
 // -------------------------------------------------------------------------
 // Destructor
 //
+/**
+ * @brief 销毁 `FlexDataRead`，释放其管理的结构数据读取与布局资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 FlexDataRead::~FlexDataRead()
 {
     MYMSG("FlexDataRead::~FlexDataRead",4);
@@ -158,6 +187,12 @@ FlexDataRead::~FlexDataRead()
 // -------------------------------------------------------------------------
 // Destroy: destroy allocated resources and close files
 //
+/**
+ * @brief 在结构数据读取与布局中销毁 `FlexDataRead::Destroy` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::Destroy()
 {
     MYMSG("FlexDataRead::Destroy",4);
@@ -188,6 +223,12 @@ void FlexDataRead::Destroy()
 // -------------------------------------------------------------------------
 // Open: make a file list for processing individual files
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::Open` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::Open()
 {
     MYMSG("FlexDataRead::Open",4);
@@ -200,6 +241,12 @@ void FlexDataRead::Open()
 // -------------------------------------------------------------------------
 // Close: close a file or database
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::Close` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::Close()
 {
     MYMSG("FlexDataRead::Close",8);
@@ -219,6 +266,14 @@ void FlexDataRead::Close()
 // -------------------------------------------------------------------------
 // ReadData: read structure data from file(s)
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `FlexDataRead::ReadData` 对应的数据。
+ * @param bsd 供该函数读取或更新的 `bsd` 参数。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool FlexDataRead::ReadData(
     PMBatchStrData& bsd,
     const int queryblocks,
@@ -279,6 +334,14 @@ bool FlexDataRead::ReadData(
 // return false if bsd data buffers are full and no additional data can be 
 // stored
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `FlexDataRead::ReadDataPDB` 对应的数据。
+ * @param bsd 供该函数读取或更新的 `bsd` 参数。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool FlexDataRead::ReadDataPDB(
     PMBatchStrData& bsd,
     const int queryblocks,
@@ -550,6 +613,14 @@ bool FlexDataRead::ReadDataPDB(
 // return false if bsd data buffers are full and no additional data can be 
 // stored
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `FlexDataRead::ReadDataCIF` 对应的数据。
+ * @param bsd 供该函数读取或更新的 `bsd` 参数。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool FlexDataRead::ReadDataCIF(
     PMBatchStrData& bsd,
     const int queryblocks,
@@ -948,6 +1019,12 @@ bool FlexDataRead::ReadDataCIF(
 // =========================================================================
 // NextDataPageZip: read and cache the next page from the zip file;
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::NextDataPageZip` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::NextDataPageZip()
 {
     MYMSG("FlexDataRead::NextDataPageZip",8);
@@ -958,6 +1035,12 @@ void FlexDataRead::NextDataPageZip()
 // -------------------------------------------------------------------------
 // NextDataPageDirect: read and cache the next page from the file;
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::NextDataPageDirect` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void FlexDataRead::NextDataPageDirect()
 {
     MYMSG("FlexDataRead::NextDataPageDirect",8);
@@ -971,6 +1054,11 @@ void FlexDataRead::NextDataPageDirect()
 // NOTE: the data buffer field of chstr is assumed to be preallocated to the
 // page size
 //
+/**
+ * @brief 在结构数据读取与布局中读取 `FlexDataRead::ReadPage` 对应的数据。
+ * @param chstr 供该函数读取或更新的 `chstr` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool FlexDataRead::ReadPage(TCharStream& chstr)
 {
     MYMSG("FlexDataRead::ReadPage",8);
@@ -1029,6 +1117,12 @@ bool FlexDataRead::ReadPage(TCharStream& chstr)
 // character streams are modified on exit;
 // NOTE: the data buffer field is assumed to be preallocated to the page size;
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `FlexDataRead::InflatePage` 对应的数据。
+ * @param z_chstr 供该函数读取或更新的 `z_chstr` 参数。
+ * @param out_chstr 接收当前步骤输出的 `out_chstr`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool FlexDataRead::InflatePage(TCharStream& z_chstr, TCharStream& out_chstr)
 {
     MYMSG("FlexDataRead::InflatePage",8);

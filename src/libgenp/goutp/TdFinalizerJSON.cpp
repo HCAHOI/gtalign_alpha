@@ -31,6 +31,12 @@
 // them to the writing thread; use JSON format
 // NOTE: all operations performed under lock
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::CompressResultsJSON` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::CompressResultsJSON()
 {
     MYMSG( "TdFinalizer::CompressResultsJSON", 4 );
@@ -176,6 +182,15 @@ void TdFinalizer::CompressResultsJSON()
 // alnlen, alignment length;
 // dbstrlen, reference structure length;
 // tmscore, TM-score;
+/**
+ * @brief 在对齐结果输出中构造 `TdFinalizer::MakeAnnotationJSON` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::MakeAnnotationJSON( 
     char*& outptr,
@@ -232,6 +247,13 @@ void TdFinalizer::MakeAnnotationJSON(
 // outptr, pointer to the output buffer;
 // strndx, structure index in the results list;
 // alnlen, alignment length;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatScoresJSON` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatScoresJSON(
     char*& outptr,
@@ -286,6 +308,17 @@ void TdFinalizer::FormatScoresJSON(
 // alnlen, alignment length;
 // querylen, query length;
 // dbstrlen, db structure length;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatAlignmentJSON` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param orgstrndx 供该函数读取或更新的 `orgstrndx` 参数。
+ * @param dbstr2dst 描述参考结构的 `dbstr2dst`。
+ * @param alnlen 控制当前步骤范围或规模的 `alnlen`。
+ * @param querylen 控制当前步骤范围或规模的 `querylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatAlignmentJSON(
     char*& outptr,
@@ -358,6 +391,12 @@ void TdFinalizer::FormatAlignmentJSON(
 // -------------------------------------------------------------------------
 // outptr, pointer to the output buffer;
 // strndx, structure index in the results list;
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FormatFooterJSON` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::FormatFooterJSON(
     char*& outptr,
@@ -394,6 +433,13 @@ void TdFinalizer::FormatFooterJSON(
 // szalns, size of complete alignments (with descriptions);
 // szalnswodesc, size of alignments without descriptions;
 //
+/**
+ * @brief 在对齐结果输出中读取 `TdFinalizer::GetSizeOfCompressedResultsJSON` 对应的数据。
+ * @param szannot 供该函数读取或更新的 `szannot` 参数。
+ * @param szalns 供该函数读取或更新的 `szalns` 参数。
+ * @param szalnswodesc 供该函数读取或更新的 `szalnswodesc` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdFinalizer::GetSizeOfCompressedResultsJSON(
     size_t* szannot, size_t* szalns, size_t* szalnswodesc) const

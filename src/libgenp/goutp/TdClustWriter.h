@@ -65,6 +65,15 @@ public:
     };
 
 public:
+    /**
+     * @brief 构造 `TdClustWriter`，初始化其负责的对齐结果输出状态。
+     * @param outdirname 接收当前步骤输出的 `outdirname`。
+     * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+     * @param rdevnames 供该函数读取或更新的 `rdevnames` 参数。
+     * @param nmaxchunkqueries 控制当前步骤范围或规模的 `nmaxchunkqueries`。
+     * @param nagents 控制当前步骤范围或规模的 `nagents`。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TdClustWriter( 
         const char* outdirname,
         const std::vector<std::string>& rfilelist,
@@ -73,9 +82,20 @@ public:
         const int nagents
     );
 
+    /**
+     * @brief 销毁 `TdClustWriter`，释放其管理的对齐结果输出资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~TdClustWriter();
 
     //{{NOTE: messaging functions accessed from outside!
+    /**
+     * @brief 在对齐结果输出中通知 `Notify` 对应的数据。
+     * @param msg 供该函数读取或更新的 `msg` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Notify(int msg) {
         {//mutex must be unlocked before notifying
             std::lock_guard<std::mutex> lck(mx_dataccess_);
@@ -83,6 +103,12 @@ public:
         }
         cv_msg_.notify_all();
     }
+    /**
+     * @brief 在对齐结果输出中等待 `Wait` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int Wait(/* int rsp */) {
         //wait until the response is received
         std::unique_lock<std::mutex> lck_msg(mx_dataccess_);
@@ -100,6 +126,12 @@ public:
         //     rsp_msg_ = CLSTWRTTHREAD_MSG_UNSET;
         return rspmsg;
     }
+    /**
+     * @brief 在对齐结果输出中等待 `WaitDone` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WaitDone() {
         for(size_t i = 0; i < parts_qrs_.size();)
         {
@@ -119,6 +151,13 @@ public:
         }
         return rsp_msg_;
     }
+    /**
+     * @brief 在对齐结果输出中处理 `IncreaseQueryNParts` 对应的数据。
+     * @param agent 供该函数读取或更新的 `agent` 参数。
+     * @param qrysernrfrom 描述查询结构的 `qrysernrfrom`。
+     * @param qrysernrto 描述查询结构的 `qrysernrto`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void IncreaseQueryNParts(int agent, int qrysernrfrom, int qrysernrto) {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         if(qrysernrto < qrysernrfrom)
@@ -135,6 +174,12 @@ public:
         for(int qsn = qrysernrfrom; qsn <= qrysernrto; qsn++)
             parts_qrs_[qsn]++;
     }
+    /**
+     * @brief 在对齐结果输出中处理 `IncreaseQueryNParts` 对应的数据。
+     * @param qrysernrfrom 描述查询结构的 `qrysernrfrom`。
+     * @param qrysernrto 描述查询结构的 `qrysernrto`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void IncreaseQueryNParts(int qrysernrfrom, int qrysernrto) {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         if(qrysernrto < qrysernrfrom)
@@ -145,6 +190,12 @@ public:
         for(int qsn = qrysernrfrom; qsn <= qrysernrto; qsn++)
             parts_qrs_[qsn]++;
     }
+    /**
+     * @brief 在对齐结果输出中读取 `GetResponse` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponse() const {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         return rsp_msg_;
@@ -152,6 +203,24 @@ public:
     //}}
 
     //{{results submission part
+    /**
+     * @brief 在对齐结果输出中处理 `PushPartOfResults` 对应的数据。
+     * @param qrysernrbeg 描述查询结构的 `qrysernrbeg`。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param querydesc 描述查询结构的 `querydesc`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param qrscnt 供该函数读取或更新的 `qrscnt` 参数。
+     * @param cnt 供该函数读取或更新的 `cnt` 参数。
+     * @param passedstats 供该函数读取或更新的 `passedstats` 参数。
+     * @param h_results 接收当前步骤输出的 `h_results`。
+     * @param sz_alndata 供该函数读取或更新的 `sz_alndata` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void PushPartOfResults( 
         int qrysernrbeg,
         int /* nqyposs */, int nqystrs,
@@ -277,8 +346,19 @@ public:
     //}}
 
 protected:
+    /**
+     * @brief 在对齐结果输出中处理 `Execute` 对应的数据。
+     * @param args 供该函数读取或更新的 `args` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Execute( void* args );
 
+    /**
+     * @brief 在对齐结果输出中设置 `SetResponseError` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetResponseError() {
         std::lock_guard<std::mutex> lck(mx_dataccess_);
         rsp_msg_ = CLSTWRTTHREAD_MSG_ERROR;
@@ -286,11 +366,22 @@ protected:
 
     OMPDECLARE_GetOutputAlnDataField
     template<typename T, int field>
+    /**
+     * @brief 在对齐结果输出中读取 `GetOutputAlnDataField` 对应的数据。
+     * @param h_results 接收当前步骤输出的 `h_results`。
+     * @param strndx 供该函数读取或更新的 `strndx` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     T GetOutputAlnDataField(const char* h_results, int strndx) const
     {
         return *(T*)((float*)h_results + nTDP2OutputAlnData * strndx + field);
     }
 
+    /**
+     * @brief 在对齐结果输出中读取 `GetValidatedVecIndexForQrynum` 对应的数据。
+     * @param qrynum 描述查询结构的 `qrynum`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetValidatedVecIndexForQrynum(size_t qrynum) const
     {
         if(parts_qrs_.size() <= qrynum)
@@ -304,12 +395,24 @@ protected:
         return vecndx;
     }
 
+    /**
+     * @brief 在对齐结果输出中读取 `GetBigDistance` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     float GetBigDistance() const {
         static const int sortby = CLOptions::GetO_SORT();
         if(sortby == CLOptions::osRMSD) return 100.0f;
         return 1.0f;//(1.0f - CLUST_RNDTMSCORE);
     }
 
+    /**
+     * @brief 在对齐结果输出中处理 `ResizeVectors` 对应的数据。
+     * @param agent 供该函数读取或更新的 `agent` 参数。
+     * @param newsize 控制当前步骤范围或规模的 `newsize`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResizeVectors(int agent, int newsize)
     {
         static const float largedst = GetBigDistance();
@@ -331,17 +434,76 @@ protected:
         }
     }
 
+    /**
+     * @brief 在对齐结果输出中读取 `GetIdFromDesc` 对应的数据。
+     * @param desc 供该函数读取或更新的 `desc` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     std::string GetIdFromDesc(const std::string& desc) const;
 
+    /**
+     * @brief 在对齐结果输出中处理 `OnNewData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void OnNewData();
+    /**
+     * @brief 在对齐结果输出中处理 `SLINK` 对应的数据。
+     * @param ndxnewquery 控制当前步骤范围或规模的 `ndxnewquery`。
+     * @param vecndx 供该函数读取或更新的 `vecndx` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SLINK(int ndxnewquery, int vecndx);
+    /**
+     * @brief 在对齐结果输出中处理 `CLINK` 对应的数据。
+     * @param ndxnewquery 控制当前步骤范围或规模的 `ndxnewquery`。
+     * @param vecndx 供该函数读取或更新的 `vecndx` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CLINK(int ndxnewquery, int vecndx);
 
+    /**
+     * @brief 在对齐结果输出中构造 `MakeClusters` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MakeClusters();
+    /**
+     * @brief 在对齐结果输出中处理 `ArrangeClusters` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ArrangeClusters();
+    /**
+     * @brief 在对齐结果输出中写出 `WriteResults` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteResults();
 
+    /**
+     * @brief 在对齐结果输出中写出 `WriteResultsPlain` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteResultsPlain();
+    /**
+     * @brief 在对齐结果输出中写出 `WriteSummaryPlain` 对应的数据。
+     * @param fp 供该函数读取或更新的 `fp` 参数。
+     * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+     * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+     * @param outptr 接收当前步骤输出的 `outptr`。
+     * @param offset 供该函数读取或更新的 `offset` 参数。
+     * @param tmpbuf 供当前步骤读取或更新的 `tmpbuf` 缓冲区。
+     * @param sztmpbuf 供当前步骤读取或更新的 `sztmpbuf` 缓冲区。
+     * @param rdevnames 供该函数读取或更新的 `rdevnames` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteSummaryPlain( 
         FILE* fp,
         char* const buffer, const int szbuffer, char*& outptr, int& offset,
@@ -404,6 +566,12 @@ private:
 // data points (Sibson, 1973);
 // NOTE: necessary allocations assumed to be done before;
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdClustWriter::SLINK` 对应的数据。
+ * @param ndxnewquery 控制当前步骤范围或规模的 `ndxnewquery`。
+ * @param vecndx 供该函数读取或更新的 `vecndx` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdClustWriter::SLINK(int ndxnewquery, int vecndx)
 {
@@ -434,6 +602,12 @@ void TdClustWriter::SLINK(int ndxnewquery, int vecndx)
 // ndxnewquery data points (Defays, 1977);
 // NOTE: necessary allocations assumed to be done before;
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdClustWriter::CLINK` 对应的数据。
+ * @param ndxnewquery 控制当前步骤范围或规模的 `ndxnewquery`。
+ * @param vecndx 供该函数读取或更新的 `vecndx` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdClustWriter::CLINK(int ndxnewquery, int vecndx)
 {
@@ -488,6 +662,12 @@ void TdClustWriter::CLINK(int ndxnewquery, int vecndx)
 
 // -------------------------------------------------------------------------
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdClustWriter::WriteResults` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void TdClustWriter::WriteResults()
 {

@@ -94,6 +94,11 @@ TdFinalizer::TdFinalizer(
 }
 #endif
 
+/**
+ * @brief 构造 `TdFinalizer`，初始化其负责的对齐结果输出状态。
+ * @param writer 供该函数读取或更新的 `writer` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TdFinalizer::TdFinalizer(
     TdAlnWriter* writer)
 :   tobj_(NULL),
@@ -140,6 +145,12 @@ TdFinalizer::TdFinalizer(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TdFinalizer`，释放其管理的对齐结果输出资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TdFinalizer::~TdFinalizer()
 {
     MYMSG("TdFinalizer::~TdFinalizer", 3);
@@ -153,6 +164,11 @@ TdFinalizer::~TdFinalizer()
 // -------------------------------------------------------------------------
 // Execute: thread's starting point for execution
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::Execute` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::Execute(void*)
 {
     MYMSG("TdFinalizer::Execute", 3);
@@ -268,6 +284,12 @@ void TdFinalizer::Execute(void*)
 // queries, format results for each query and pass them to the writer;
 // NOTE: all operations performed under lock
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::FinalizeQueries` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::FinalizeQueries()
 {
     MYMSG("TdFinalizer::FinalizeQueries", 3);
@@ -337,6 +359,12 @@ void TdFinalizer::FinalizeQueries()
 // alignment writer;
 // NOTE: all operations performed under lock
 //
+/**
+ * @brief 在对齐结果输出中处理 `TdFinalizer::PassResultsToWriter` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::PassResultsToWriter()
 {
     MYMSG("TdFinalizer::PassResultsToWriter", 4);
@@ -367,6 +395,12 @@ void TdFinalizer::PassResultsToWriter()
 // SortCompressedResults: sort formatted results;
 // NOTE: all operations performed under lock
 //
+/**
+ * @brief 在对齐结果输出中排序 `TdFinalizer::SortCompressedResults` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::SortCompressedResults()
 {
     MYMSG("TdFinalizer::SortCompressedResults", 4);
@@ -392,6 +426,12 @@ void TdFinalizer::SortCompressedResults()
 // -------------------------------------------------------------------------
 // PrintCompressedResults: print formatted alignments
 //
+/**
+ * @brief 在对齐结果输出中格式化输出 `TdFinalizer::PrintCompressedResults` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdFinalizer::PrintCompressedResults() const
 {
     MYMSG("TdFinalizer::PrintCompressedResults", 4);

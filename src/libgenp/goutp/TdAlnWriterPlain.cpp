@@ -21,6 +21,12 @@
 // -------------------------------------------------------------------------
 // WriteResultsPlain: write merged results to file
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteResultsPlain` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::WriteResultsPlain()
 {
     MYMSG("TdAlnWriter::WriteResultsPlain", 4);
@@ -154,6 +160,13 @@ void TdAlnWriter::WriteResultsPlain()
 // width, text width used for wrapping;
 // return the number of bytes written;
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WritePrognamePlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int TdAlnWriter::WritePrognamePlain(char*& outptr, int maxsize, const int width)
 {
     static const int sznl = (int)strlen(NL) * 3 + 1;
@@ -220,6 +233,15 @@ int TdAlnWriter::WritePrognamePlain(char*& outptr, int maxsize, const int width)
 // outptr, varying address of the pointer pointing to a location in the buffer;
 // offset, outptr offset from the beginning of the buffer (fill size);
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteCommandLinePlain` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param offset 供该函数读取或更新的 `offset` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::WriteCommandLinePlain(
     FILE* fp,
     char* const buffer, const int szbuffer, char*& outptr, int& offset)
@@ -260,6 +282,15 @@ void TdAlnWriter::WriteCommandLinePlain(
 // width, width to wrap the query description;
 // return the number of bytes written;
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteQueryDescriptionPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param maxsize 控制当前步骤范围或规模的 `maxsize`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int TdAlnWriter::WriteQueryDescriptionPlain( 
     char*& outptr,
     int maxsize,
@@ -314,6 +345,24 @@ int TdAlnWriter::WriteQueryDescriptionPlain(
 // annotlen, annotation length;
 // found, whether any structures have been found;
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteSearchInformationPlain` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param szbuffer 供当前步骤读取或更新的 `szbuffer` 缓冲区。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param offset 供该函数读取或更新的 `offset` 参数。
+ * @param tmpbuf 供当前步骤读取或更新的 `tmpbuf` 缓冲区。
+ * @param sztmpbuf 供当前步骤读取或更新的 `sztmpbuf` 缓冲区。
+ * @param rfilelist 供该函数读取或更新的 `rfilelist` 参数。
+ * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+ * @param nentries 控制当前步骤范围或规模的 `nentries`。
+ * @param tmsthld 供该函数读取或更新的 `tmsthld` 参数。
+ * @param indent 供该函数读取或更新的 `indent` 参数。
+ * @param found 供该函数读取或更新的 `found` 参数。
+ * @param clustering 供该函数读取或更新的 `clustering` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdAlnWriter::WriteSearchInformationPlain( 
     FILE* fp,
     char* const buffer, const int szbuffer, char*& outptr, int& offset,
@@ -418,6 +467,17 @@ void TdAlnWriter::WriteSearchInformationPlain(
 // devname, device name;
 // return the number of bytes written;
 //
+/**
+ * @brief 在对齐结果输出中写出 `TdAlnWriter::WriteSummaryPlain` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param npossearched 控制当前步骤范围或规模的 `npossearched`。
+ * @param nentries 控制当前步骤范围或规模的 `nentries`。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param duration 供该函数读取或更新的 `duration` 参数。
+ * @param devname 供该函数读取或更新的 `devname` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int TdAlnWriter::WriteSummaryPlain( 
     char*& outptr,
     const int qrylen,

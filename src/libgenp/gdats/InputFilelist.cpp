@@ -45,6 +45,14 @@ const std::string InputFilelist::knownexts_[] = {
 // -------------------------------------------------------------------------
 // Constructor
 //
+/**
+ * @brief 构造 `InputFilelist`，初始化其负责的结构数据读取与布局状态。
+ * @param dnamelst 供该函数读取或更新的 `dnamelst` 参数。
+ * @param sfxlst 供该函数读取或更新的 `sfxlst` 参数。
+ * @param clustering 供该函数读取或更新的 `clustering` 参数。
+ * @param construct 供该函数读取或更新的 `construct` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 InputFilelist::InputFilelist(
     const std::vector<std::string>& dnamelst, 
     const std::vector<std::string>& sfxlst,
@@ -81,6 +89,12 @@ InputFilelist::InputFilelist(
 // -------------------------------------------------------------------------
 // Destructor
 //
+/**
+ * @brief 销毁 `InputFilelist`，释放其管理的结构数据读取与布局资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 InputFilelist::~InputFilelist()
 {
     MYMSG("InputFilelist::~InputFilelist",4);
@@ -89,6 +103,11 @@ InputFilelist::~InputFilelist()
 // -------------------------------------------------------------------------
 // AddFilesFromTAR: add files from a tar archive to a list of structure files
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `InputFilelist::AddFilesFromTAR` 对应的数据。
+ * @param entryname 供该函数读取或更新的 `entryname` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InputFilelist::AddFilesFromTAR(const std::string& entryname)
 {
     enum {
@@ -207,6 +226,12 @@ void InputFilelist::AddFilesFromTAR(const std::string& entryname)
 // ConstructFileList: construct a file list to be processed; sort the 
 // files by size
 //
+/**
+ * @brief 在结构数据读取与布局中处理 `InputFilelist::ConstructFileList` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InputFilelist::ConstructFileList()
 {
     static const int nofilesort = CLOptions::GetNOFILESORT();
@@ -240,6 +265,11 @@ void InputFilelist::ConstructFileList()
 // maxlevel (MAXLEVEL for template version), maximum recursion level
 //
 template<int LEVEL>
+/**
+ * @brief 在结构数据读取与布局中处理 `InputFilelist::ProcessEntry` 对应的数据。
+ * @param entryname 供该函数读取或更新的 `entryname` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InputFilelist::ProcessEntry(const std::string& entryname)
 {
     if(file_exists(entryname.c_str())) {
@@ -284,6 +314,11 @@ void InputFilelist::ProcessEntry(const std::string& entryname)
 }
 
 // -------------------------------------------------------------------------
+/**
+ * @brief 在结构数据读取与布局中处理 `InputFilelist::ProcessEntry` 对应的数据。
+ * @param entryname 供该函数读取或更新的 `entryname` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 template<>
 void InputFilelist::ProcessEntry<0>(
     const std::string& entryname)
