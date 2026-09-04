@@ -25,6 +25,15 @@
 // wrkmemaux, auxiliary working memory;
 // NOTE: thread block is 1D and processes query-reference structure pairs;
 // 
+/**
+ * @brief 在CUDA 对齐流水线中检查 `CheckMaxCoverage` 对应的数据。
+ * @param covthreshold 供该函数读取或更新的 `covthreshold` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CheckMaxCoverage(
     const float covthreshold,
     const int ntotqstrs,

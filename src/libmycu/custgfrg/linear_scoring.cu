@@ -40,6 +40,21 @@
 // positional scores;
 // 
 template<int SECSTRFILT>
+/**
+ * @brief 在CUDA 片段种子评分中处理 `PositionalScoresFromIndexLinear` 对应的数据。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param stepx5 供该函数读取或更新的 `stepx5` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void PositionalScoresFromIndexLinear(
     const int stacksize,
@@ -216,6 +231,20 @@ INSTANTIATE_PositionalScoresFromIndexLinear(1);
 // positional scores;
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ReduceScoresLinear` 对应的数据。
+ * @param stepx5 供该函数读取或更新的 `stepx5` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ReduceScoresLinear(
     const bool stepx5,
@@ -376,6 +405,17 @@ void ReduceScoresLinear(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 片段种子评分中保存 `SaveBestScoreAndConfigLinear` 对应的数据。
+ * @param stepx5 供该函数读取或更新的 `stepx5` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SaveBestScoreAndConfigLinear(
     const bool stepx5,
@@ -444,6 +484,13 @@ void SaveBestScoreAndConfigLinear(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 片段种子评分中保存 `SaveBestScoreAndConfigAmongBestsLinear` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SaveBestScoreAndConfigAmongBestsLinear(
     const uint ndbCstrs,

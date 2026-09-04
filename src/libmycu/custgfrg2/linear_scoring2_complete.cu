@@ -38,6 +38,21 @@
 // wrkmemtmibest, working memory for best-performing transformation matrices;
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ScoreFragmentBasedSuperpositionsLinearly2` 对应的数据。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void ScoreFragmentBasedSuperpositionsLinearly2(
     const int stacksize,

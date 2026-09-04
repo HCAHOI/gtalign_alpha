@@ -24,6 +24,15 @@
 // NOTE: thread block is 2D (y-dim=2 for indices and addresses) and
 // NOTE: processes the reference structures over all queries for flags;
 // 
+/**
+ * @brief 在CUDA 对齐流水线中构造 `MakeDbCandidateList` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void MakeDbCandidateList(
     const uint nqystrs,
     const uint ndbCstrs,
@@ -136,6 +145,18 @@ __global__ void MakeDbCandidateList(
 // NOTE: thread block is 1D and processes a fragment of each reference structure;
 // NOTE: thread block's x-dimension assumed to be 32!
 // 
+/**
+ * @brief 在CUDA 对齐流水线中处理 `ReformatStructureDataPartStore` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxndbCposs 描述参考结构的 `maxndbCposs`。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void ReformatStructureDataPartStore(
     const uint nqystrs,
     const uint ndbCstrs,
@@ -281,6 +302,17 @@ __global__ void ReformatStructureDataPartStore(
 // NOTE: thread block is 1D and processes a fragment of each reference structure;
 // NOTE: thread block's x-dimension assumed to be 32!
 // 
+/**
+ * @brief 在CUDA 对齐流水线中处理 `ReformatStructureDataPartLoad` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param maxndbCposs 描述参考结构的 `maxndbCposs`。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param ndbCstrs2 控制当前步骤范围或规模的 `ndbCstrs2`。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void ReformatStructureDataPartLoad(
     const uint nqystrs,
     const uint maxndbCposs,

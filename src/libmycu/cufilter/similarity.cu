@@ -26,6 +26,15 @@
 // NOTE: query-reference structures;
 // NOTE: block size is warp size! appropriate synchronization is used!
 // 
+/**
+ * @brief 在CUDA 对齐流水线中校验 `VerifyAlignmentScore` 对应的数据。
+ * @param seqsimthrscore 当前步骤使用或写回的 `seqsimthrscore` 分数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void VerifyAlignmentScore(
     const float seqsimthrscore,
     const uint nqystrs,

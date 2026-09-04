@@ -40,6 +40,22 @@
 // -------------------------------------------------------------------------
 // preinitialize1: initialize memory before starting calculations
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中预初始化 `stage1::preinitialize1` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param condition4filter1 供该函数读取或更新的 `condition4filter1` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::preinitialize1(
     cudaStream_t streamproc,
     const bool condition4filter1,
@@ -105,6 +121,41 @@ void stage1::preinitialize1(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在 GPU 上运行第一阶段：并行寻找片段种子、精修刚体变换，再用 DP 迭代改善对应关系。
+ * @param stgraphs 供该函数读取或更新的 `stgraphs` 参数。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxndpiters 动态规划精修允许的最大迭代次数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+ * @param prescore 进入后续精修前要求的预筛选分数阈值。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param scores 保存或读取对齐分数的缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::run_stage1(
     std::map<CGKey,MyCuGraph>& stgraphs,
     cudaStream_t streamproc,
@@ -196,6 +247,28 @@ void stage1::run_stage1(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_findfrag2` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_findfrag2(
     cudaStream_t streamproc,
     int stepinit,
@@ -273,6 +346,28 @@ void stage1::stage1_findfrag2(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_findfrag` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_findfrag(
     cudaStream_t streamproc,
     int stepinit,
@@ -475,6 +570,31 @@ void stage1::stage1_findfrag(
 // scoring aligned fragments: calculate cross-covariances 
 // and rotation matrices
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_findfrag_subiter1` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_copyto 控制当前步骤范围或规模的 `nblcks_copyto`。
+ * @param nthrds_copyto 控制当前步骤范围或规模的 `nthrds_copyto`。
+ * @param nblcks_copyfrom 控制当前步骤范围或规模的 `nblcks_copyfrom`。
+ * @param nthrds_copyfrom 控制当前步骤范围或规模的 `nthrds_copyfrom`。
+ * @param nblcks_tfm 控制当前步骤范围或规模的 `nblcks_tfm`。
+ * @param nthrds_tfm 控制当前步骤范围或规模的 `nthrds_tfm`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_findfrag_subiter1(
     cudaStream_t streamproc,
@@ -530,6 +650,39 @@ void stage1::stage1_findfrag_subiter1(
 // and save scores, calculate cross-covariances for alignment positions 
 // within given distances, and optionally calculate rotation matrices
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_findfrag_subiter2` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_findd2 控制当前步骤范围或规模的 `nblcks_findd2`。
+ * @param nthrds_findd2 控制当前步骤范围或规模的 `nthrds_findd2`。
+ * @param nblcks_scinit 控制当前步骤范围或规模的 `nblcks_scinit`。
+ * @param nthrds_scinit 控制当前步骤范围或规模的 `nthrds_scinit`。
+ * @param nblcks_scores 当前步骤使用或写回的 `nblcks_scores` 分数。
+ * @param nthrds_scores 当前步骤使用或写回的 `nthrds_scores` 分数。
+ * @param nblcks_copyto 控制当前步骤范围或规模的 `nblcks_copyto`。
+ * @param nthrds_copyto 控制当前步骤范围或规模的 `nthrds_copyto`。
+ * @param nblcks_copyfrom 控制当前步骤范围或规模的 `nblcks_copyfrom`。
+ * @param nthrds_copyfrom 控制当前步骤范围或规模的 `nthrds_copyfrom`。
+ * @param nblcks_tfm 控制当前步骤范围或规模的 `nblcks_tfm`。
+ * @param nthrds_tfm 控制当前步骤范围或规模的 `nthrds_tfm`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_findfrag_subiter2(
     cudaStream_t streamproc,
@@ -613,6 +766,39 @@ void stage1::stage1_findfrag_subiter2(
 // within given distances, optionally calculate rotation matrices, and
 // calculate and save scores only 
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_findfrag_subiter3` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_findd2 控制当前步骤范围或规模的 `nblcks_findd2`。
+ * @param nthrds_findd2 控制当前步骤范围或规模的 `nthrds_findd2`。
+ * @param nblcks_scinit 控制当前步骤范围或规模的 `nblcks_scinit`。
+ * @param nthrds_scinit 控制当前步骤范围或规模的 `nthrds_scinit`。
+ * @param nblcks_scores 当前步骤使用或写回的 `nblcks_scores` 分数。
+ * @param nthrds_scores 当前步骤使用或写回的 `nthrds_scores` 分数。
+ * @param nblcks_copyto 控制当前步骤范围或规模的 `nblcks_copyto`。
+ * @param nthrds_copyto 控制当前步骤范围或规模的 `nthrds_copyto`。
+ * @param nblcks_copyfrom 控制当前步骤范围或规模的 `nblcks_copyfrom`。
+ * @param nthrds_copyfrom 控制当前步骤范围或规模的 `nthrds_copyfrom`。
+ * @param nblcks_tfm 控制当前步骤范围或规模的 `nblcks_tfm`。
+ * @param nthrds_tfm 控制当前步骤范围或规模的 `nthrds_tfm`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_findfrag_subiter3(
     cudaStream_t streamproc,
@@ -724,6 +910,30 @@ void stage1::stage1_findfrag_subiter3(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_fragscore` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_fragscore(
     cudaStream_t streamproc,
     const uint maxnsteps,
@@ -945,6 +1155,34 @@ void stage1::stage1_fragscore(
 // dbstrnlen, length of the smallest reference;
 //
 template<bool CONDITIONAL, int SECONDARYUPDATE>
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag` 对应的数据。
+ * @param stgraphs 供该函数读取或更新的 `stgraphs` 参数。
+ * @param fragbydp 供该函数读取或更新的 `fragbydp` 参数。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_refinefrag(
     std::map<CGKey,MyCuGraph>& /* stgraphs */,
     const int fragbydp,
@@ -1033,6 +1271,30 @@ INSTANTIATE_stage1__stage1_refinefrag(false,SECONDARYUPDATE_CONDITIONAL);
 // dbstrnlen, length of the smallest reference;
 //
 template<bool CONDITIONAL, int SECONDARYUPDATE>
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_helper2` 对应的数据。
+ * @param fragbydp 供该函数读取或更新的 `fragbydp` 参数。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_refinefrag_helper2(
     const int fragbydp,
     const int nmaxconvit,
@@ -1193,6 +1455,34 @@ void stage1::stage1_refinefrag_helper2(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_helper` 对应的数据。
+ * @param stgraphs 供该函数读取或更新的 `stgraphs` 参数。
+ * @param fragbydp 供该函数读取或更新的 `fragbydp` 参数。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_refinefrag_helper(
     std::map<CGKey,MyCuGraph>& stgraphs,
     const int fragbydp,
@@ -1474,6 +1764,26 @@ void stage1::stage1_refinefrag_helper(
 // boundaries of initially identified fragments and saving transformation 
 // matrices which imply best scores;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_subiter1` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_conv 控制当前步骤范围或规模的 `nblcks_conv`。
+ * @param nthrds_conv 控制当前步骤范围或规模的 `nthrds_conv`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_refinefrag_subiter1(
     cudaStream_t streamproc,
@@ -1511,6 +1821,49 @@ void stage1::stage1_refinefrag_subiter1(
 // and save scores, calculate cross-covariances for alignment positions 
 // within given distances, and optionally calculate rotation matrices
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_subiter2` 对应的数据。
+ * @param lastsubiter 供该函数读取或更新的 `lastsubiter` 参数。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param cit 供该函数读取或更新的 `cit` 参数。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_findd2 控制当前步骤范围或规模的 `nblcks_findd2`。
+ * @param nthrds_findd2 控制当前步骤范围或规模的 `nthrds_findd2`。
+ * @param nblcks_scinit 控制当前步骤范围或规模的 `nblcks_scinit`。
+ * @param nthrds_scinit 控制当前步骤范围或规模的 `nthrds_scinit`。
+ * @param nblcks_scores 当前步骤使用或写回的 `nblcks_scores` 分数。
+ * @param nthrds_scores 当前步骤使用或写回的 `nthrds_scores` 分数。
+ * @param nblcks_savetm 控制当前步骤范围或规模的 `nblcks_savetm`。
+ * @param nthrds_savetm 控制当前步骤范围或规模的 `nthrds_savetm`。
+ * @param nblcks_saveccd 控制当前步骤范围或规模的 `nblcks_saveccd`。
+ * @param nthrds_saveccd 控制当前步骤范围或规模的 `nthrds_saveccd`。
+ * @param nblcks_conv 控制当前步骤范围或规模的 `nblcks_conv`。
+ * @param nthrds_conv 控制当前步骤范围或规模的 `nthrds_conv`。
+ * @param nblcks_copyto 控制当前步骤范围或规模的 `nblcks_copyto`。
+ * @param nthrds_copyto 控制当前步骤范围或规模的 `nthrds_copyto`。
+ * @param nblcks_copyfrom 控制当前步骤范围或规模的 `nblcks_copyfrom`。
+ * @param nthrds_copyfrom 控制当前步骤范围或规模的 `nthrds_copyfrom`。
+ * @param nblcks_tfm 控制当前步骤范围或规模的 `nblcks_tfm`。
+ * @param nthrds_tfm 控制当前步骤范围或规模的 `nthrds_tfm`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_refinefrag_subiter2(
     bool lastsubiter,
@@ -1657,6 +2010,28 @@ void stage1::stage1_refinefrag_subiter2(
 // boundaries of fragments identified by DP and saving transformation 
 // matrices which imply best scores;
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_dp_subiter1` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_conv 控制当前步骤范围或规模的 `nblcks_conv`。
+ * @param nthrds_conv 控制当前步骤范围或规模的 `nthrds_conv`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_refinefrag_dp_subiter1(
     cudaStream_t streamproc,
@@ -1698,6 +2073,52 @@ void stage1::stage1_refinefrag_dp_subiter1(
 // and save scores, calculate cross-covariances for alignment positions 
 // within given distances, and optionally calculate rotation matrices
 //
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_refinefrag_dp_subiter2` 对应的数据。
+ * @param fragbydp 供该函数读取或更新的 `fragbydp` 参数。
+ * @param lastsubiter 供该函数读取或更新的 `lastsubiter` 参数。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param cit 供该函数读取或更新的 `cit` 参数。
+ * @param nblcks_init 控制当前步骤范围或规模的 `nblcks_init`。
+ * @param nthrds_init 控制当前步骤范围或规模的 `nthrds_init`。
+ * @param nblcks_ccmtx 控制当前步骤范围或规模的 `nblcks_ccmtx`。
+ * @param nthrds_ccmtx 控制当前步骤范围或规模的 `nthrds_ccmtx`。
+ * @param nblcks_findd2 控制当前步骤范围或规模的 `nblcks_findd2`。
+ * @param nthrds_findd2 控制当前步骤范围或规模的 `nthrds_findd2`。
+ * @param nblcks_scinit 控制当前步骤范围或规模的 `nblcks_scinit`。
+ * @param nthrds_scinit 控制当前步骤范围或规模的 `nthrds_scinit`。
+ * @param nblcks_scores 当前步骤使用或写回的 `nblcks_scores` 分数。
+ * @param nthrds_scores 当前步骤使用或写回的 `nthrds_scores` 分数。
+ * @param nblcks_savetm 控制当前步骤范围或规模的 `nblcks_savetm`。
+ * @param nthrds_savetm 控制当前步骤范围或规模的 `nthrds_savetm`。
+ * @param nblcks_saveccd 控制当前步骤范围或规模的 `nblcks_saveccd`。
+ * @param nthrds_saveccd 控制当前步骤范围或规模的 `nthrds_saveccd`。
+ * @param nblcks_conv 控制当前步骤范围或规模的 `nblcks_conv`。
+ * @param nthrds_conv 控制当前步骤范围或规模的 `nthrds_conv`。
+ * @param nblcks_copyto 控制当前步骤范围或规模的 `nblcks_copyto`。
+ * @param nthrds_copyto 控制当前步骤范围或规模的 `nthrds_copyto`。
+ * @param nblcks_copyfrom 控制当前步骤范围或规模的 `nblcks_copyfrom`。
+ * @param nthrds_copyfrom 控制当前步骤范围或规模的 `nthrds_copyfrom`。
+ * @param nblcks_tfm 控制当前步骤范围或规模的 `nblcks_tfm`。
+ * @param nthrds_tfm 控制当前步骤范围或规模的 `nthrds_tfm`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void stage1::stage1_refinefrag_dp_subiter2(
     int fragbydp,
@@ -1856,6 +2277,37 @@ void stage1::stage1_refinefrag_dp_subiter2(
 // dbstrnlen, length of the smallest reference;
 //
 template<bool GAP0, bool PRESCREEN, bool WRKMEMTM1>
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage1::stage1_dprefine` 对应的数据。
+ * @param stgraphs 供该函数读取或更新的 `stgraphs` 参数。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxndpiters 动态规划精修允许的最大迭代次数。
+ * @param prescorethr 进入后续精修前要求的预筛选分数阈值。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::stage1_dprefine(
     std::map<CGKey,MyCuGraph>& stgraphs,
     cudaStream_t streamproc,
@@ -2034,6 +2486,25 @@ INSTANTIATE_stage1__stage1_dprefine(false,false,true);
 // dbstr1len, length of the largest reference;
 //
 template<bool COMPLETEAPPROACH, bool ANCHORRGN, bool BANDED, bool GAP0>
+/**
+ * @brief 在CUDA 候选搜索与精修中运行 `stage1::RunDP` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::RunDP(
     cudaStream_t streamproc,
     const float gapcost,
@@ -2068,6 +2539,25 @@ void stage1::RunDP(
 // dbstr1len, length of the largest reference;
 //
 template<bool ANCHORRGN, bool BANDED, bool GAP0>
+/**
+ * @brief 在CUDA 候选搜索与精修中运行 `stage1::RunTDintensiveDP` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::RunTDintensiveDP(
     cudaStream_t streamproc,
     const float gapcost,
@@ -2131,6 +2621,24 @@ void stage1::RunTDintensiveDP(
 // dbstr1len, length of the largest reference;
 //
 template<bool ANCHORRGN, bool BANDED, bool GAP0>
+/**
+ * @brief 在CUDA 候选搜索与精修中运行 `stage1::RunCompleteDP` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage1::RunCompleteDP(
     cudaStream_t streamproc,
     const float gapcost,

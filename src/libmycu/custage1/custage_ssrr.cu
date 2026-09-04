@@ -40,6 +40,40 @@
 // dbstrnlen, length of the smallest reference;
 //
 template<bool USESEQSCORING>
+/**
+ * @brief 在 GPU 上运行二级结构及可选序列相似性引导的候选搜索与精修阶段。
+ * @param stgraphs 供该函数读取或更新的 `stgraphs` 参数。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+ * @param prescore 进入后续精修前要求的预筛选分数阈值。
+ * @param maxndpiters 动态规划精修允许的最大迭代次数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param scores 保存或读取对齐分数的缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage_ssrr::run_stage_ssrr(
     std::map<CGKey,MyCuGraph>& stgraphs,
     cudaStream_t streamproc,
@@ -190,6 +224,27 @@ INSTANTIATE_stage_ssrr__run_stage_ssrr(true);
 // dbstrnlen, length of the smallest reference;
 //
 template<bool USESEQSCORING>
+/**
+ * @brief 在CUDA 候选搜索与精修中处理 `stage_ssrr::stage_ssrr_align` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void stage_ssrr::stage_ssrr_align(
     cudaStream_t streamproc,
     const uint maxnsteps,

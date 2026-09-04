@@ -42,6 +42,12 @@ void ScoreFragmentBasedSuperpositionsLinearly2(
 // additional buffer for REVERSE transformation;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中复制 `CopyCCMDataToTFM_REVERSETfm_Complete` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CopyCCMDataToTFM_REVERSETfm_Complete(
     const float* __restrict__ ccmCache,
     float* __restrict__ tfmCache)
@@ -95,6 +101,26 @@ void CopyCCMDataToTFM_REVERSETfm_Complete(
 // 
 template<int SECSTRFILT, bool WRTNDX = false>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ProduceAlignmentUsingIndex2_Complete` 对应的数据。
+ * @param maxalnlen 控制当前步骤范围或规模的 `maxalnlen`。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param trtStack 供该函数读取或更新的 `trtStack` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void ProduceAlignmentUsingIndex2_Complete(
     int& maxalnlen,
     const int stacksize,
@@ -202,6 +228,21 @@ void ProduceAlignmentUsingIndex2_Complete(
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中计算 `CalcCCMatrices64_SWFTscan_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64_SWFTscan_Complete(
     const uint qryndx,
     const uint ndbCposs,
@@ -292,6 +333,25 @@ void CalcCCMatrices64_SWFTscan_Complete(
 // 
 template<int SZQNXCH>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中计算 `CalcScoresUnrl_SWFTscanProgressive_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param qnxCache 供该函数读取或更新的 `qnxCache` 参数。
+ * @param maxCache 供该函数读取或更新的 `maxCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float CalcScoresUnrl_SWFTscanProgressive_Complete(
     const uint qryndx,
     const uint ndbCposs,

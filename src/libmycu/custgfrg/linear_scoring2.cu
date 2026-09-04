@@ -51,6 +51,33 @@
 // 
 template<int SECSTRFILT>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ProduceAlignmentUsingIndex2ReferenceHelper` 对应的数据。
+ * @param dSMEM 供当前步骤读取或更新的 `dSMEM` 缓冲区。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void ProduceAlignmentUsingIndex2ReferenceHelper(
     float* __restrict__ dSMEM,
     const int stacksize,
@@ -241,6 +268,33 @@ void ProduceAlignmentUsingIndex2ReferenceHelper(
 // 
 template<int SECSTRFILT>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ProduceAlignmentUsingIndex2QueryHelper` 对应的数据。
+ * @param dSMEM 供当前步骤读取或更新的 `dSMEM` 缓冲区。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void ProduceAlignmentUsingIndex2QueryHelper(
     float* __restrict__ dSMEM,
     const int stacksize,
@@ -425,6 +479,24 @@ void ProduceAlignmentUsingIndex2QueryHelper(
 // tmpdpalnpossbuffer, temporary buffers of found coordinates;
 // 
 template<int SECSTRFILT>
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ProduceAlignmentUsingIndex2` 对应的数据。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ProduceAlignmentUsingIndex2(
     const int stacksize,
@@ -509,6 +581,25 @@ INSTANTIATE_ProduceAlignmentUsingIndex2(1);
 // except that the alignments are produced using dynamically selected index
 // 
 template<int SECSTRFILT, int NANOSS>
+/**
+ * @brief 在CUDA 片段种子评分中处理 `ProduceAlignmentUsingDynamicIndex2` 对应的数据。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ProduceAlignmentUsingDynamicIndex2(
     const int stacksize,
@@ -661,6 +752,23 @@ INSTANTIATE_ProduceAlignmentUsingDynamicIndex2(1,0);
 // tmpdpalnpossbuffer, temporary buffers of found coordinates;
 // 
 template<int SECSTRFILT>
+/**
+ * @brief 在CUDA 片段种子评分中处理 `PositionalCoordsFromIndexLinear2` 对应的数据。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void PositionalCoordsFromIndexLinear2(
     const int stacksize,
@@ -852,6 +960,23 @@ INSTANTIATE_PositionalCoordsFromIndexLinear2(1);
 // tmpdpalnpossbuffer, temporary buffers of aligned coordinates;
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 片段种子评分中构造 `MakeAlignmentLinear2` 对应的数据。
+ * @param complete 供该函数读取或更新的 `complete` 参数。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void MakeAlignmentLinear2(
     const bool complete,

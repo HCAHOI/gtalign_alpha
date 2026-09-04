@@ -86,6 +86,21 @@ __global__ void SaveBestScoreAndConfigAmongBestsLinear(
 // 
 template<int SECSTRFILT>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `NNByIndex` 对应的数据。
+ * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param nestdst 控制当前步骤范围或规模的 `nestdst`。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @param rss 供该函数读取或更新的 `rss` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void NNByIndex(
     int STACKSIZE,
     int& nestndx, float& nestdst,
@@ -250,6 +265,23 @@ void NNByIndex(
 //
 template<int SECSTRFILT>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `NNByIndexReference` 对应的数据。
+ * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param rxn 供该函数读取或更新的 `rxn` 参数。
+ * @param ryn 供该函数读取或更新的 `ryn` 参数。
+ * @param rzn 供该函数读取或更新的 `rzn` 参数。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param qss 供该函数读取或更新的 `qss` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void NNByIndexReference(
     int STACKSIZE,
     int& nestndx,
@@ -339,6 +371,17 @@ void NNByIndexReference(
 // qrylen, query length;
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 片段种子评分中处理 `NNNaiveTest` 对应的数据。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param nestdst 控制当前步骤范围或规模的 `nestdst`。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void NNNaiveTest(
     int& nestndx, float& nestdst,
     float rx, float ry, float rz,
