@@ -25,6 +25,11 @@ struct myresnamehash
 {
     //simple hash for 3-letter residue names
     //NOTE: name3 is expected to contain at least 3 bytes
+    /**
+     * @brief 在通用工具中处理 `operator()` 对应的数据。
+     * @param name3 控制当前步骤范围或规模的 `name3`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     std::size_t operator()(const char* name3) const noexcept
     {
         constexpr std::size_t seed = 131;
@@ -36,6 +41,12 @@ struct myresnameequal_to
 {
     //simple equal_to functional for 3-letter residue names
     //NOTE: name31 and name32 are expected to contain at least 3 bytes
+    /**
+     * @brief 在通用工具中处理 `operator()` 对应的数据。
+     * @param name31 控制当前步骤范围或规模的 `name31`。
+     * @param name32 控制当前步骤范围或规模的 `name32`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool operator()(const char* name31, const char* name32) const
     {
         return name31[0]==name32[0] && name31[1]==name32[1] && 
@@ -48,6 +59,12 @@ struct myresnameequal_to
 // names and codes
 //
 struct ResidueMap {
+    /**
+     * @brief 构造 `ResidueMap`，初始化其负责的通用工具状态。
+     * @par 参数
+     * 无。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     ResidueMap();
     std::unordered_map<const char*, char, myresnamehash, myresnameequal_to> 
         name2codemap_;
@@ -62,6 +79,11 @@ struct ResidueMap _gRM;
 // -------------------------------------------------------------------------
 // function definitions:
 //
+/**
+ * @brief 在通用工具中处理 `ResName2Code` 对应的数据。
+ * @param name 控制当前步骤范围或规模的 `name`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 char ResName2Code(const char* name)
 {
     auto itcode = _gRM.name2codemap_.find(name);
@@ -97,6 +119,11 @@ char ResName2Code(const char* name)
     return itcode->second;
 }
 
+/**
+ * @brief 在通用工具中处理 `ResCode2Name` 对应的数据。
+ * @param code 供该函数读取或更新的 `code` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 const char* ResCode2Name(char code)
 {
     auto itname = _gRM.code2namemap_.find(code);
@@ -107,6 +134,12 @@ const char* ResCode2Name(char code)
 
 // -------------------------------------------------------------------------
 // test hash functions:
+/**
+ * @brief 在通用工具中处理 `testmyresnamehash` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void testmyresnamehash()
 {
     fprintf(stdout, "Name-to-code stats:\n");
@@ -123,6 +156,12 @@ void testmyresnamehash()
 // -------------------------------------------------------------------------
 // Constructor:
 //
+/**
+ * @brief 构造 `ResidueMap`，初始化其负责的通用工具状态。
+ * @par 参数
+ * 无。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 ResidueMap::ResidueMap()
 {
     //names to codes:
@@ -206,6 +245,12 @@ const float GONNET_FREQRATIOS[NEA * NEA] = {
 // -------------------------------------------------------------------------
 // _GONNET_SCORES_: calculate scaled Gonnet scores 
 //
+/**
+ * @brief 构造 `_GONNET_SCORES_`，初始化其负责的通用工具状态。
+ * @par 参数
+ * 无。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 _GONNET_SCORES_::_GONNET_SCORES_()
 {
     //scaling constant for Gonnet frequencies:

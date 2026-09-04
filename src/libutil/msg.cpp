@@ -42,6 +42,12 @@ bool        ERRORSRECORDED = false;
 // -------------------------------------------------------------------------
 // set global variables
 //
+/**
+ * @brief 在通用工具中设置 `SetProgramName` 对应的数据。
+ * @param name 控制当前步骤范围或规模的 `name`。
+ * @param version 供该函数读取或更新的 `version` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetProgramName( const char* name, const char* version )
 {
     PROGDIR = my_dirname( name );
@@ -50,12 +56,23 @@ void SetProgramName( const char* name, const char* version )
         PROGVERSION = version;
 }
 
+/**
+ * @brief 在通用工具中设置 `SetArguments` 对应的数据。
+ * @param pargc 供该函数读取或更新的 `pargc` 参数。
+ * @param pargv 供该函数读取或更新的 `pargv` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetArguments( int* pargc, char*** pargv )
 {
     __PARGC__ = pargc;
     __PARGV__ = pargv;
 }
 
+/**
+ * @brief 在通用工具中设置 `SetVerboseMode` 对应的数据。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetVerboseMode( int value )
 {
     VERBOSE = value;
@@ -64,6 +81,12 @@ void SetVerboseMode( int value )
 // -------------------------------------------------------------------------
 // messaging routines
 //
+/**
+ * @brief 在通用工具中处理 `error` 对应的数据。
+ * @param str 供该函数读取或更新的 `str` 参数。
+ * @param putnl 供该函数读取或更新的 `putnl` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void error( const char* str, bool putnl )
 {
     ERRORSRECORDED = true;
@@ -77,6 +100,13 @@ void error( const char* str, bool putnl )
         fprintf( stderr, "ERROR: %s%s", str, NL);
 }
 
+/**
+ * @brief 在通用工具中处理 `warning` 对应的数据。
+ * @param str 供该函数读取或更新的 `str` 参数。
+ * @param putnl 供该函数读取或更新的 `putnl` 参数。
+ * @param minlevel 供该函数读取或更新的 `minlevel` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void warning( const char* str, bool putnl, int/* minlevel*/)
 {
 //     if( VERBOSE < minlevel )
@@ -92,6 +122,12 @@ void warning( const char* str, bool putnl, int/* minlevel*/)
         fprintf( stderr, "WARNING: %s%s", str, NL);
 }
 
+/**
+ * @brief 在通用工具中检查 `checkforwarnings` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void checkforwarnings()
 {
     if( !WARNINGSRECORDED && !ERRORSRECORDED)
@@ -104,6 +140,13 @@ void checkforwarnings()
                 ERRORSRECORDED? "ERRORS": "WARNINGS", NL);
 }
 
+/**
+ * @brief 在通用工具中处理 `message` 对应的数据。
+ * @param str 供该函数读取或更新的 `str` 参数。
+ * @param putnl 供该函数读取或更新的 `putnl` 参数。
+ * @param minlevel 供该函数读取或更新的 `minlevel` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void message( const char* str, bool putnl, int minlevel )
 {
     if( VERBOSE < minlevel )
@@ -132,6 +175,11 @@ void message( const char* str, bool putnl, int minlevel )
                 str, NL);
 }
 
+/**
+ * @brief 在通用工具中处理 `progname_and_version` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void progname_and_version( FILE* fp )
 {
     if( PROGNAME )
@@ -146,6 +194,11 @@ void progname_and_version( FILE* fp )
 // print_cmdline: print command line to string;
 // NOTE: space for outstr assumed to be preallocated!
 //
+/**
+ * @brief 在通用工具中格式化输出 `print_cmdline` 对应的数据。
+ * @param outstr 接收当前步骤输出的 `outstr`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int print_cmdline(char* outstr)
 {
     if(!outstr) return 0;
@@ -163,6 +216,11 @@ int print_cmdline(char* outstr)
 // -------------------------------------------------------------------------
 // print_dtime: print date and local time
 //
+/**
+ * @brief 在通用工具中格式化输出 `print_dtime` 对应的数据。
+ * @param minlevel 供该函数读取或更新的 `minlevel` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void print_dtime(int minlevel)
 {
     if( VERBOSE < minlevel )
@@ -185,6 +243,12 @@ void print_dtime(int minlevel)
 // date and time info to string;
 // NOTE: space for tmstr assumed to be preallocated!
 //
+/**
+ * @brief 在通用工具中读取 `getdtime` 对应的数据。
+ * @param tmstr 供该函数读取或更新的 `tmstr` 参数。
+ * @param sztmstr 供该函数读取或更新的 `sztmstr` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 size_t getdtime(char* tmstr, size_t sztmstr)
 {
     if(tmstr == NULL || sztmstr < 1) return 0;
@@ -197,6 +261,11 @@ size_t getdtime(char* tmstr, size_t sztmstr)
 // -------------------------------------------------------------------------
 // path-processing functions
 //
+/**
+ * @brief 在通用工具中处理 `my_basename` 对应的数据。
+ * @param name 控制当前步骤范围或规模的 `name`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 const char* my_basename( const char* name )
 {
     const char* bp = NULL;
@@ -210,6 +279,11 @@ const char* my_basename( const char* name )
 // my_dirname: return directory name given pathname; if directory is not
 //  found in the given path, return the current directory (`.')
 //
+/**
+ * @brief 在通用工具中处理 `my_dirname` 对应的数据。
+ * @param name 控制当前步骤范围或规模的 `name`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 const char* my_dirname( const char* name )
 {
     static const size_t size = KBYTE;
@@ -259,6 +333,14 @@ const char* my_dirname( const char* name )
 // usage: returns <instructions> translated by appropriately inserting
 //     program name, version, and date information
 //
+/**
+ * @brief 在通用工具中处理 `usage` 对应的数据。
+ * @param path 供该函数读取或更新的 `path` 参数。
+ * @param instructions 供该函数读取或更新的 `instructions` 参数。
+ * @param version 供该函数读取或更新的 `version` 参数。
+ * @param date 供该函数读取或更新的 `date` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 std::string usage( const char* path, const char* instructions, const char* version, const char* date )
 {
     size_t pos;
@@ -318,6 +400,12 @@ std::string usage( const char* path, const char* instructions, const char* versi
 // file_print: redirect formatted output string to file; file
 //     pointer (vpn) must be preintialized and must be valid
 //
+/**
+ * @brief 在通用工具中处理 `file_print` 对应的数据。
+ * @param vpn 供该函数读取或更新的 `vpn` 参数。
+ * @param format 供该函数读取或更新的 `format` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int file_print( void* vpn, const char* format, ... )
 {
     if( !vpn )
@@ -344,6 +432,12 @@ int file_print( void* vpn, const char* format, ... )
 //     string, which is assumed to have enough space to contain information;
 //     string pointer (vpn) must be preallocated and must be valid
 //
+/**
+ * @brief 在通用工具中处理 `string_print` 对应的数据。
+ * @param vpn 供该函数读取或更新的 `vpn` 参数。
+ * @param format 供该函数读取或更新的 `format` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int string_print( void* vpn, const char* format, ... )
 {
     if( !vpn )

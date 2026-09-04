@@ -31,18 +31,45 @@
 
 // the OPER argument in the following macro represents operator along with 
 // operand, e.g., `*0.01'.
+/**
+ * @brief 声明一个命令行选项的存储变量和只读 getter。
+ * @param NAME 选项名，同时参与生成变量名和 getter 名。
+ * @param TYPE 选项在内存中的存储类型。
+ * @param TYPECAST getter 返回时采用的类型转换。
+ * @param OPER getter 返回前附加到存储值后的运算。
+ * @return 宏展开后生成 `GetNAME()`；getter 返回转换后的当前选项值。
+ */
 #define DECLAREOPTION( NAME, TYPE, TYPECAST, OPER ) \
   extern TYPE val##NAME##_; \
   static inline TYPECAST Get##NAME() { return (TYPECAST)val##NAME##_ OPER; } \
   ; // void Read##NAME();
 
+/**
+ * @brief 声明一个可由命令行赋值的选项 getter 与赋值函数。
+ * @param NAME 选项名，同时参与生成函数名。
+ * @param TYPE 选项的存储和赋值类型。
+ * @param TYPECAST getter 返回时采用的类型转换。
+ * @param OPER getter 返回前附加到存储值后的运算。
+ * @return 宏展开后生成 getter 和 `AssignCLOptNAME()`；getter 返回当前选项值。
+ */
 #define CLDECLAREOPTION( NAME, TYPE, TYPECAST, OPER ) \
     DECLAREOPTION( NAME, TYPE, TYPECAST, OPER ); \
     void AssignCLOpt##NAME( TYPE );
 
+/**
+ * @brief 调用指定命令行选项的赋值函数。
+ * @param NAME 要写入的命令行选项名。
+ * @param VALUE 要保存到该选项的值。
+ * @return 宏本身无返回值；展开后的赋值函数更新对应全局选项状态。
+ */
 #define CLOPTASSIGN( NAME, VALUE ) \
     CLOptions::AssignCLOpt##NAME( VALUE );
 
+/**
+ * @brief 把核酸原子名称转换为 GTAlign 内部原子类型枚举。
+ * @param snaatype P、C3'、C4'、C5'、O3' 或 O5' 等原子名称。
+ * @return 返回匹配的 `gtnaat*` 枚举；未知名称返回 `gtnaatOther`。
+ */
 inline int GetNAAtomType(std::string snaatype)
 {
     if(snaatype == "C3'") return gtnaatC3p;
@@ -223,6 +250,12 @@ CLDECLAREOPTION( IO_FILEMAP, int, int, );
 CLDECLAREOPTION( IO_UNPINNED, int, int, );
 
 //accompanying program options
+/**
+ * @brief 在通用工具中读取 `GetC_GapCost` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline float GetC_GapCost()
 {
     switch(GetC_GAPCOST()) {
@@ -232,6 +265,12 @@ inline float GetC_GapCost()
     }
     return LOCALN_GAP_COST_D;
 }
+/**
+ * @brief 在通用工具中读取 `GetC_SeedRuleValue` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline int GetC_SeedRuleValue()
 {
     switch(GetC_SEEDRULE()) {

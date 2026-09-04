@@ -24,6 +24,12 @@
 // -------------------------------------------------------------------------
 // file_exists: check if file exists; return true if it does
 //
+/**
+ * @brief 在通用工具中处理 `file_exists` 对应的数据。
+ * @param name 控制当前步骤范围或规模的 `name`。
+ * @param mode 供该函数读取或更新的 `mode` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool file_exists( const char* name,
 #ifdef OS_MS_WINDOWS
 	unsigned short
@@ -63,6 +69,12 @@ bool file_exists( const char* name,
 // -------------------------------------------------------------------------
 // file_size: get the file size for a given filename
 //
+/**
+ * @brief 在通用工具中处理 `file_size` 对应的数据。
+ * @param filename 输入或输出文件路径。
+ * @param size 控制当前步骤范围或规模的 `size`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int file_size(const char* filename, size_t* size)
 {
 #ifdef OS_MS_WINDOWS
@@ -92,6 +104,11 @@ int file_size(const char* filename, size_t* size)
 // -------------------------------------------------------------------------
 // mymkdir: make a directory; returns -1 on error;
 //
+/**
+ * @brief 在通用工具中处理 `mymkdir` 对应的数据。
+ * @param pathname 供该函数读取或更新的 `pathname` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int mymkdir(const char* pathname)
 {
 #ifdef OS_MS_WINDOWS
@@ -106,6 +123,15 @@ int mymkdir(const char* pathname)
 // -------------------------------------------------------------------------
 // skip_comments: skip comments at the current position of file
 //
+/**
+ * @brief 在通用工具中处理 `skip_comments` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param bufsize 控制当前步骤范围或规模的 `bufsize`。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param cc 供该函数读取或更新的 `cc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int skip_comments( FILE* fp, char* buffer, size_t bufsize, size_t* readlen, char cc )
 {
     size_t  len;
@@ -158,6 +184,13 @@ int skip_comments( FILE* fp, char* buffer, size_t bufsize, size_t* readlen, char
 // -------------------------------------------------------------------------
 // skip_comments: skip comments and read full line from file into buffer
 //
+/**
+ * @brief 在通用工具中处理 `skip_comments` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param cc 供该函数读取或更新的 `cc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int skip_comments( FILE* fp, std::string& buffer, char cc )
 {
     size_t  len;
@@ -224,6 +257,15 @@ int skip_comments( FILE* fp, std::string& buffer, char cc )
 // cc, comment character;
 //
 template<typename F, typename A1>
+/**
+ * @brief 在通用工具中处理 `skip_comments` 对应的数据。
+ * @param source 供该函数读取或更新的 `source` 参数。
+ * @param func 供该函数读取或更新的 `func` 参数。
+ * @param arg 供该函数读取或更新的 `arg` 参数。
+ * @param length 控制当前步骤范围或规模的 `length`。
+ * @param cc 供该函数读取或更新的 `cc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int skip_comments( TCharStream* source, F func, A1* arg, size_t* length, char cc )
 {
@@ -269,6 +311,13 @@ int skip_comments( TCharStream* source, F func, A1* arg, size_t* length, char cc
 // skip_comments: a version of skip_comments that reads a full 
 // line from a character stream into the buffer
 //
+/**
+ * @brief 在通用工具中处理 `skip_comments` 对应的数据。
+ * @param source 供该函数读取或更新的 `source` 参数。
+ * @param buffer 供当前步骤读取或更新的 `buffer` 缓冲区。
+ * @param cc 供该函数读取或更新的 `cc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int skip_comments( TCharStream* source, std::string& buffer, char cc )
 {
     buffer.erase();
@@ -284,6 +333,15 @@ int skip_comments( TCharStream* source, std::string& buffer, char cc )
 // length, length of data starting from address ptr;
 // cc, comment character;
 //
+/**
+ * @brief 在通用工具中处理 `skip_comments` 对应的数据。
+ * @param source 供该函数读取或更新的 `source` 参数。
+ * @param ptr 供该函数读取或更新的 `ptr` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @param length 控制当前步骤范围或规模的 `length`。
+ * @param cc 供该函数读取或更新的 `cc` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int skip_comments( TCharStream* source, char*& ptr, size_t, size_t* length, char cc )
 {
     *length = 0;
@@ -297,6 +355,14 @@ int skip_comments( TCharStream* source, char*& ptr, size_t, size_t* length, char
 // -------------------------------------------------------------------------
 // read_double: read double value
 //
+/**
+ * @brief 在通用工具中读取 `read_double` 对应的数据。
+ * @param readfrom 供该函数读取或更新的 `readfrom` 参数。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param membuf 供当前步骤读取或更新的 `membuf` 缓冲区。
+ * @param rbytes 供该函数读取或更新的 `rbytes` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int read_double( const char* readfrom, size_t readlen, double* membuf, size_t* rbytes )
 {
     const char* p = readfrom;
@@ -351,6 +417,14 @@ int read_double( const char* readfrom, size_t readlen, double* membuf, size_t* r
 // -------------------------------------------------------------------------
 // read_float: read single-precision value
 //
+/**
+ * @brief 在通用工具中读取 `read_float` 对应的数据。
+ * @param readfrom 供该函数读取或更新的 `readfrom` 参数。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param membuf 供当前步骤读取或更新的 `membuf` 缓冲区。
+ * @param rbytes 供该函数读取或更新的 `rbytes` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int read_float( const char* readfrom, size_t readlen, float* membuf, size_t* rbytes )
 {
     const char* p = readfrom;
@@ -406,6 +480,14 @@ int read_float( const char* readfrom, size_t readlen, float* membuf, size_t* rby
 // -------------------------------------------------------------------------
 // read_integer: read integer value
 //
+/**
+ * @brief 在通用工具中读取 `read_integer` 对应的数据。
+ * @param readfrom 供该函数读取或更新的 `readfrom` 参数。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param membuf 供当前步骤读取或更新的 `membuf` 缓冲区。
+ * @param rbytes 供该函数读取或更新的 `rbytes` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int read_integer( const char* readfrom, size_t readlen, int* membuf, size_t* rbytes )
 {
     const char* p = readfrom;
@@ -461,6 +543,14 @@ int read_integer( const char* readfrom, size_t readlen, int* membuf, size_t* rby
 // -------------------------------------------------------------------------
 // read_llinteger: read long long integer value
 //
+/**
+ * @brief 在通用工具中读取 `read_llinteger` 对应的数据。
+ * @param readfrom 供该函数读取或更新的 `readfrom` 参数。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param membuf 供当前步骤读取或更新的 `membuf` 缓冲区。
+ * @param rbytes 供该函数读取或更新的 `rbytes` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int read_llinteger( const char* readfrom, size_t readlen, long long int* membuf, size_t* rbytes )
 {
     const char* p = readfrom;
@@ -516,6 +606,14 @@ int read_llinteger( const char* readfrom, size_t readlen, long long int* membuf,
 // -------------------------------------------------------------------------
 // read_symbol: read single character
 //
+/**
+ * @brief 在通用工具中读取 `read_symbol` 对应的数据。
+ * @param readfrom 供该函数读取或更新的 `readfrom` 参数。
+ * @param readlen 控制当前步骤范围或规模的 `readlen`。
+ * @param membuf 供当前步骤读取或更新的 `membuf` 缓冲区。
+ * @param rbytes 供该函数读取或更新的 `rbytes` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int read_symbol( const char* readfrom, size_t readlen, char* membuf, size_t* rbytes )
 {
     const char* p = readfrom;

@@ -12,6 +12,11 @@
 // -------------------------------------------------------------------------
 // PutNL: put a new line delimiter in the output character string;
 // returns the number of bytes written;
+/**
+ * @brief 在通用工具中处理 `PutNL` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int PutNL( char*& outptr ) {
     static const char* nl = NL;
@@ -31,6 +36,18 @@ int PutNL( char*& outptr ) {
 // outpos, current position in the output buffer;
 // linepos, current position in the current output line;
 // addsep, add a separator in the output list of alignments;
+/**
+ * @brief 在通用工具中处理 `FormatDescription` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param maxoutlen 控制当前步骤范围或规模的 `maxoutlen`。
+ * @param indent 供该函数读取或更新的 `indent` 参数。
+ * @param width 供该函数读取或更新的 `width` 参数。
+ * @param outpos 接收当前步骤输出的 `outpos`。
+ * @param linepos 供该函数读取或更新的 `linepos` 参数。
+ * @param addsep 供该函数读取或更新的 `addsep` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FormatDescription( 
     char*& outptr,
@@ -104,6 +121,15 @@ void FormatDescription(
 // desclen, description length;
 // maxoutlen, maximum length of output description;
 // outpos, current position in the output buffer;
+/**
+ * @brief 在通用工具中处理 `FormatDescriptionJSON` 对应的数据。
+ * @param outptr 接收当前步骤输出的 `outptr`。
+ * @param desc 供该函数读取或更新的 `desc` 参数。
+ * @param desclen 控制当前步骤范围或规模的 `desclen`。
+ * @param maxoutlen 控制当前步骤范围或规模的 `maxoutlen`。
+ * @param outpos 接收当前步骤输出的 `outpos`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void FormatDescriptionJSON( 
     char*& outptr,

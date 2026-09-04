@@ -24,6 +24,13 @@ const char* ggosTer = "--";
 //
 // constructor
 //
+/**
+ * @brief 构造 `MyGetopt`，初始化其负责的通用工具状态。
+ * @param opts 供该函数读取或更新的 `opts` 参数。
+ * @param argv 命令行参数字符串数组。
+ * @param argc 命令行参数个数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 MyGetopt::MyGetopt( const myoption* opts, const char *argv[], int argc )
 :   ncnt_( 0 ),
     stopped_( false ),
@@ -36,6 +43,12 @@ MyGetopt::MyGetopt( const myoption* opts, const char *argv[], int argc )
 
 // destructor
 //
+/**
+ * @brief 销毁 `MyGetopt`，释放其管理的通用工具资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 MyGetopt::~MyGetopt()
 {
     argv_ = NULL;
@@ -44,6 +57,13 @@ MyGetopt::~MyGetopt()
 // -------------------------------------------------------------------------
 // Init: initialize object
 //
+/**
+ * @brief 在通用工具中初始化 `MyGetopt::Init` 对应的数据。
+ * @param options 供该函数读取或更新的 `options` 参数。
+ * @param argv 命令行参数字符串数组。
+ * @param argc 命令行参数个数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MyGetopt::Init( const myoption* options, const char *argv[], int argc )
 {
     size_t  n;
@@ -72,6 +92,11 @@ void MyGetopt::Init( const myoption* options, const char *argv[], int argc )
 //      stopped; the processing is stopped on the end of the command line or 
 //      options terminator `--'.
 //
+/**
+ * @brief 在通用工具中读取 `MyGetopt::GetNextOption` 对应的数据。
+ * @param argument 供该函数读取或更新的 `argument` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int MyGetopt::GetNextOption( std::string* argument )
 {
     if( stopped_ )

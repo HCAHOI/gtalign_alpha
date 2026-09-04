@@ -35,8 +35,22 @@
 // =========================================================================
 // declarations:
 //
+/**
+ * @brief 在命令行入口中处理 `SplitString` 对应的数据。
+ * @param argstring 供该函数读取或更新的 `argstring` 参数。
+ * @param option 需要解析或处理的选项名称。
+ * @param string 供该函数读取或更新的 `string` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SplitString(std::string argstring, std::string option, std::vector<std::string>&);
 
+/**
+ * @brief 将命令行字符串解析为整数，并统一报告非法输入。
+ * @param retval 接收解析成功后的整数。
+ * @param strval 待解析的命令行字符串。
+ * @param errstr 解析失败时交给错误处理器的提示文本。
+ * @return 成功返回 0；字符串非法或数值转换失败时返回 `EXIT_FAILURE`。
+ */
 inline int mystring2int(int& retval, const std::string& strval, const char* errstr)
 {
     char* p;
@@ -49,6 +63,13 @@ inline int mystring2int(int& retval, const std::string& strval, const char* errs
     return 0;
 }
 
+/**
+ * @brief 将命令行字符串解析为单精度浮点数，并统一报告非法输入。
+ * @param retval 接收解析成功后的浮点数。
+ * @param strval 待解析的命令行字符串。
+ * @param errstr 解析失败时交给错误处理器的提示文本。
+ * @return 成功返回 0；字符串非法或数值转换失败时返回 `EXIT_FAILURE`。
+ */
 inline int mystring2float(float& retval, const std::string& strval, const char* errstr)
 {
     char* p;
@@ -63,6 +84,12 @@ inline int mystring2float(float& retval, const std::string& strval, const char* 
 
 // =========================================================================
 
+/**
+ * @brief 解析 GTAlign 命令行选项，并启动结构对齐、搜索或聚类任务。
+ * @param argc 命令行参数个数。
+ * @param argv 命令行参数字符串数组。
+ * @return 成功返回 `EXIT_SUCCESS`，初始化或运行失败时返回 `EXIT_FAILURE`。
+ */
 int main( int argc, char *argv[] )
 {
     int c;
@@ -980,6 +1007,13 @@ printf(" %f %f %f   %d %d %d\n",sum1,sum2,sum3, sum1==sum2,sum1==sum3,sum2==sum3
 // option, option name;
 // vlist, vector of split values
 //
+/**
+ * @brief 按逗号拆分一个命令行选项的值列表，并拒绝空条目。
+ * @param argstring 以逗号分隔的原始值字符串。
+ * @param option 需要解析或处理的选项名称。
+ * @param vlist 接收拆分后的非空值列表；调用前的内容会被清空。
+ * @return 无返回值；拆分结果写入 `vlist`，非法列表通过异常报告。
+ */
 void SplitString(std::string argstring, std::string option, std::vector<std::string>& vlist)
 {
     MYMSG( "Main::SplitString", 5 );
@@ -1000,4 +1034,3 @@ void SplitString(std::string argstring, std::string option, std::vector<std::str
     auto last = std::unique(vlist.begin(), vlist.end());
     vlist.erase(last, vlist.end());
 }
-

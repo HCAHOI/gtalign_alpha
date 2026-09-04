@@ -24,11 +24,22 @@ inline void my_aligned_free(void* memptr)
 }
 #else
 //memory allocation
+/**
+ * @brief 在通用工具中处理 `my_aligned_alloc` 对应的数据。
+ * @param alignment 供该函数读取或更新的 `alignment` 参数。
+ * @param size 控制当前步骤范围或规模的 `size`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline void* my_aligned_alloc(size_t alignment, size_t size)
 {
     return aligned_alloc(alignment, size);
 }
 //memory deallocation
+/**
+ * @brief 在通用工具中处理 `my_aligned_free` 对应的数据。
+ * @param memptr 供当前步骤读取或更新的 `memptr` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline void my_aligned_free(void* memptr)
 {
     return free(memptr);

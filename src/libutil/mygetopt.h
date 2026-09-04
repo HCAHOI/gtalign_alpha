@@ -37,13 +37,44 @@ struct myoption {
 //
 class MyGetopt {
 public:
+    /**
+     * @brief 构造 `MyGetopt`，初始化其负责的通用工具状态。
+     * @param myoption 供该函数读取或更新的 `myoption` 参数。
+     * @param argv 命令行参数字符串数组。
+     * @param argc 命令行参数个数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MyGetopt( const myoption*, const char *argv[], int argc );
+    /**
+     * @brief 销毁 `MyGetopt`，释放其管理的通用工具资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~MyGetopt();
 
+    /**
+     * @brief 在通用工具中读取 `GetNextOption` 对应的数据。
+     * @param argument 供该函数读取或更新的 `argument` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetNextOption( std::string* argument );
 
 protected:
+    /**
+     * @brief 在通用工具中初始化 `Init` 对应的数据。
+     * @param myoption 供该函数读取或更新的 `myoption` 参数。
+     * @param argv 命令行参数字符串数组。
+     * @param argc 命令行参数个数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Init( const myoption*, const char *argv[], int argc );
+    /**
+     * @brief 在通用工具中重置 `Reset` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Reset() { ncnt_ = 0; stopped_ = false; };
 
 private:
@@ -57,6 +88,12 @@ private:
 // --- INLINES -------------------------------------------------------------
 // comparison operators for two option names
 //
+/**
+ * @brief 在通用工具中处理 `operator<` 对应的数据。
+ * @param left 供该函数读取或更新的 `left` 参数。
+ * @param right 供该函数读取或更新的 `right` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 bool operator<(const myoption& left, const myoption& right )
 {
@@ -65,6 +102,12 @@ bool operator<(const myoption& left, const myoption& right )
     return strcmp(left.sLongname_, right.sLongname_) < 0;
 }
 
+/**
+ * @brief 在通用工具中处理 `operator==` 对应的数据。
+ * @param left 供该函数读取或更新的 `left` 参数。
+ * @param right 供该函数读取或更新的 `right` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 bool operator==(const myoption& left, const myoption& right )
 {
