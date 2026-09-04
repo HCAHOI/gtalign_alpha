@@ -80,83 +80,375 @@ public:
     };
 
 
+    /**
+     * @brief 构造 `CuMemoryBase`，初始化其负责的CPU 对齐流水线状态。
+     * @param deviceallocsize 控制当前步骤范围或规模的 `deviceallocsize`。
+     * @param nareas 控制当前步骤范围或规模的 `nareas`。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     CuMemoryBase(size_t deviceallocsize, int nareas);
 
+    /**
+     * @brief 销毁 `CuMemoryBase`，释放其管理的CPU 对齐流水线资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     virtual ~CuMemoryBase();
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMaxQueriesPerChunk` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetMaxQueriesPerChunk() {return (size_t)CLOptions::GetDEV_QRS_PER_CHUNK();}
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMaxAlnLength` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetMaxAlnLength();
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMaxNFragSteps` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static size_t GetMaxNFragSteps();
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetAllocSize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetAllocSize() const {return deviceallocsize_;}
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetNAreas` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetNAreas() const {return nareas_;}
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetHeap` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     virtual char* GetHeap() const {return NULL;}
 
+    /**
+     * @brief 在CPU 对齐流水线中计算 `CalcMaxDbDataChunkSize` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t CalcMaxDbDataChunkSize(size_t totqrsposs);
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetCurrentMaxDbPos` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetCurrentMaxDbPos() const { return curmaxdbpos_; }
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetCurrentMaxNDbStrs` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetCurrentMaxNDbStrs() const { return curmaxndbstrs_; }
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetCurrentMaxDbPosPass2` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetCurrentMaxDbPosPass2() const { return curmaxdbposspass2_; }
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetCurrentMaxNDbStrsPass2` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetCurrentMaxNDbStrsPass2() const { return curmaxdbstrspass2_; }
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetHeapSectionOffset` 对应的数据。
+     * @param ano 供该函数读取或更新的 `ano` 参数。
+     * @param s 供该函数读取或更新的 `s` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetHeapSectionOffset(int ano, int s) const;
 
     //minimum value for memory alignment
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMinMemAlignment` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     static constexpr size_t GetMinMemAlignment() {
         size_t cszalnment = 256UL;
         return cszalnment;
     }
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMemAlignment` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     virtual size_t GetMemAlignment() const {
         return GetMinMemAlignment();
     }
 
 protected:
 
+    /**
+     * @brief 在CPU 对齐流水线中分配 `AllocateHeap` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void AllocateHeap() {}
+    /**
+     * @brief 在CPU 对齐流水线中释放 `DeallocateHeap` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void DeallocateHeap() {}
 
+    /**
+     * @brief 在CPU 对齐流水线中初始化 `Initialize` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Initialize();
 
+    /**
+     * @brief 在CPU 对齐流水线中计算 `CalcMaxDbDataChunkSizeHelper` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param residualsize 控制当前步骤范围或规模的 `residualsize`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t CalcMaxDbDataChunkSizeHelper(size_t totqrsposs, size_t residualsize);
 
+    /**
+     * @brief 在CPU 对齐流水线中设置 `SetCurrentMaxDbPos` 对应的数据。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetCurrentMaxDbPos(size_t value) {curmaxdbpos_ = value;}
+    /**
+     * @brief 在CPU 对齐流水线中设置 `SetCurrentMaxNDbStrs` 对应的数据。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetCurrentMaxNDbStrs(size_t value) {curmaxndbstrs_ = value;}
 
+    /**
+     * @brief 在CPU 对齐流水线中设置 `SetCurrentMaxDbPosPass2` 对应的数据。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetCurrentMaxDbPosPass2(size_t value) {curmaxdbposspass2_ = value;}
+    /**
+     * @brief 在CPU 对齐流水线中设置 `SetCurrentMaxNDbStrsPass2` 对应的数据。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetCurrentMaxNDbStrsPass2(size_t value) {curmaxdbstrspass2_ = value;}
 
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfTfmMatrices` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfTfmMatrices(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfPowerSpectrum` 对应的数据。
+     * @param maxposs 供该函数读取或更新的 `maxposs` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfPowerSpectrum(size_t maxposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDPDiagScores` 对应的数据。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDPDiagScores(size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDPBottomScores` 对应的数据。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDPBottomScores(size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDPAlignedPoss` 对应的数据。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDPAlignedPoss(size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDPMaxCoords` 对应的数据。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDPMaxCoords(size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDPBackTckData` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDPBackTckData(size_t totqrsposs, size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfMtxScores` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfMtxScores(size_t totqrsposs, size_t maxdbposs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemory` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemory(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemoryCCD` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemoryCCD(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemoryTMalt` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemoryTMalt(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemoryTM` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemoryTM(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemoryTMibest` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemoryTMibest(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfAuxWrkMemory` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfAuxWrkMemory(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfWrkMemory2` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfWrkMemory2(size_t ndbstrs) const;
 public:
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfTfmMatrices` 对应的数据。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfTfmMatrices(size_t nqystrs, size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDP2AlnData` 对应的数据。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDP2AlnData(size_t nqystrs, size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDP2Alns` 对应的数据。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param ndbposs 控制当前步骤范围或规模的 `ndbposs`。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDP2Alns(
         size_t nqystrs, size_t totqrsposs, size_t ndbposs, size_t ndbstrs, bool sssinuse = true) const;
 protected:
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDP2AlnData` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDP2AlnData(size_t ndbstrs) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfDP2Alns` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param ndbposs 控制当前步骤范围或规模的 `ndbposs`。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfDP2Alns(
         size_t totqrsposs, size_t ndbposs, size_t ndbstrs, bool sssinuse = true) const;
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetSizeOfGlobVariables` 对应的数据。
+     * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetSizeOfGlobVariables(size_t ndbstrs) const;
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetMaxAllowedNumberDbPositions` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     size_t GetMaxAllowedNumberDbPositions(size_t totqrsposs, bool sssinuse = true) const;
 
+    /**
+     * @brief 在CPU 对齐流水线中读取 `GetTotalMemoryReqs` 对应的数据。
+     * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+     * @param maxdbposs 描述参考结构的 `maxdbposs`。
+     * @param maxsizefordbstrs 控制当前步骤范围或规模的 `maxsizefordbstrs`。
+     * @param maxsizeqrsindex 控制当前步骤范围或规模的 `maxsizeqrsindex`。
+     * @param maxsizeqrsposs 控制当前步骤范围或规模的 `maxsizeqrsposs`。
+     * @param maxsizedbsindex 控制当前步骤范围或规模的 `maxsizedbsindex`。
+     * @param maxsizedbposs 控制当前步骤范围或规模的 `maxsizedbposs`。
+     * @param sztfmmtcs 表示或保存刚体变换的 `sztfmmtcs`。
+     * @param szsmatrix 供该函数读取或更新的 `szsmatrix` 参数。
+     * @param szdpdiag 供该函数读取或更新的 `szdpdiag` 参数。
+     * @param szdpbottom 供该函数读取或更新的 `szdpbottom` 参数。
+     * @param szdpalnposs 供该函数读取或更新的 `szdpalnposs` 参数。
+     * @param szdpmaxcoords 供该函数读取或更新的 `szdpmaxcoords` 参数。
+     * @param szdpbtckdat 供该函数读取或更新的 `szdpbtckdat` 参数。
+     * @param maxdbposspass2 描述参考结构的 `maxdbposspass2`。
+     * @param maxdbstrspass2 描述参考结构的 `maxdbstrspass2`。
+     * @param szwrkmem 供当前步骤读取或更新的 `szwrkmem` 缓冲区。
+     * @param szwrkmemccd 供当前步骤读取或更新的 `szwrkmemccd` 缓冲区。
+     * @param szwrkmemtmalt 供当前步骤读取或更新的 `szwrkmemtmalt` 缓冲区。
+     * @param szwrkmemtm 供当前步骤读取或更新的 `szwrkmemtm` 缓冲区。
+     * @param szwrkmemtmibest 供当前步骤读取或更新的 `szwrkmemtmibest` 缓冲区。
+     * @param szauxwrkmem 供当前步骤读取或更新的 `szauxwrkmem` 缓冲区。
+     * @param szwrkmem2 供当前步骤读取或更新的 `szwrkmem2` 缓冲区。
+     * @param szdp2alndata 供该函数读取或更新的 `szdp2alndata` 参数。
+     * @param szdp2alns 供该函数读取或更新的 `szdp2alns` 参数。
+     * @param szglbvars 供该函数读取或更新的 `szglbvars` 参数。
+     * @param szovlpos 供该函数读取或更新的 `szovlpos` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetTotalMemoryReqs(
         size_t totqrsposs, size_t maxdbposs, size_t maxsizefordbstrs,
         //{{query db positions
@@ -184,6 +476,13 @@ protected:
         //}}
     ) const;
 
+    /**
+     * @brief 在CPU 对齐流水线中处理 `MsgAddressTable` 对应的数据。
+     * @param areano 供该函数读取或更新的 `areano` 参数。
+     * @param preamb 供该函数读取或更新的 `preamb` 参数。
+     * @param level 供该函数读取或更新的 `level` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MsgAddressTable(int areano, const std::string preamb, const int level) const;
 
 private:
@@ -204,6 +503,12 @@ protected:
 // -------------------------------------------------------------------------
 // INLINES ...
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetHeapSectionOffset` 对应的数据。
+ * @param ano 供该函数读取或更新的 `ano` 参数。
+ * @param s 供该函数读取或更新的 `s` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetHeapSectionOffset(int ano, int s) const
 {
@@ -218,6 +523,13 @@ size_t CuMemoryBase::GetHeapSectionOffset(int ano, int s) const
 // -------------------------------------------------------------------------
 // MsgAddressTable: print as message the address table of the sections;
 // ano, area number
+/**
+ * @brief 在CPU 对齐流水线中处理 `CuMemoryBase::MsgAddressTable` 对应的数据。
+ * @param ano 供该函数读取或更新的 `ano` 参数。
+ * @param preamb 供该函数读取或更新的 `preamb` 参数。
+ * @param level 供该函数读取或更新的 `level` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void CuMemoryBase::MsgAddressTable(int ano, const std::string preamb, const int level) const
 {
@@ -348,6 +660,12 @@ void CuMemoryBase::MsgAddressTable(int ano, const std::string preamb, const int 
 
 // -------------------------------------------------------------------------
 // GetMaxAlnLength: get the max alignment length
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetMaxAlnLength` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetMaxAlnLength()
 {
@@ -364,6 +682,12 @@ size_t CuMemoryBase::GetMaxAlnLength()
 // GetMaxNFragSteps: get max number of steps to calculate superposition for 
 // an alignment of maximum length given the smallest fragment length and 
 // step size
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetMaxNFragSteps` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetMaxNFragSteps()
 {
@@ -400,6 +724,12 @@ size_t CuMemoryBase::GetMaxNFragSteps()
 // -------------------------------------------------------------------------
 // GetSizeOfTfmMatrices: get the size of transformation matrices over all 
 // query-target structure pairs
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfTfmMatrices` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfTfmMatrices(size_t nqystrs, size_t ndbstrs) const
 {
@@ -416,6 +746,11 @@ size_t CuMemoryBase::GetSizeOfTfmMatrices(size_t nqystrs, size_t ndbstrs) const
 
 // -------------------------------------------------------------------------
 // GetSizeOfTfmMatrices: get the size of transformation matrices
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfTfmMatrices` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfTfmMatrices(size_t ndbstrs) const
 {
@@ -430,6 +765,11 @@ size_t CuMemoryBase::GetSizeOfTfmMatrices(size_t ndbstrs) const
 // maxposs, max number of positions over all queries/reference 
 // structures in the chunk;
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfPowerSpectrum` 对应的数据。
+ * @param maxposs 供该函数读取或更新的 `maxposs` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfPowerSpectrum(size_t maxposs) const
 {
@@ -457,6 +797,11 @@ size_t CuMemoryBase::GetSizeOfPowerSpectrum(size_t maxposs) const
 // GetSizeOfDPDiagScores: get the size of the buffers of diagonal scores 
 // used for dynamic programming
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDPDiagScores` 对应的数据。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDPDiagScores(size_t maxdbposs) const
 {
@@ -496,6 +841,11 @@ size_t CuMemoryBase::GetSizeOfDPDiagScores(size_t maxdbposs) const
 // GetSizeOfDPBottomScores: get the size of the buffer of bottom scores 
 // used for dynamic programming
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDPBottomScores` 对应的数据。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDPBottomScores(size_t maxdbposs) const
 {
@@ -524,6 +874,11 @@ size_t CuMemoryBase::GetSizeOfDPBottomScores(size_t maxdbposs) const
 // GetSizeOfDPAlignedPoss: get the size of the buffer of positions, along 
 // with respective coordinates, aligned using dynamic programming
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDPAlignedPoss` 对应的数据。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDPAlignedPoss(size_t maxdbposs) const
 {
@@ -548,6 +903,11 @@ size_t CuMemoryBase::GetSizeOfDPAlignedPoss(size_t maxdbposs) const
 // GetSizeOfDPMaxCoords: get the size of the buffer of the coordinates of 
 // maximum alignment scores calculated by dynamic programming
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDPMaxCoords` 对应的数据。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDPMaxCoords(size_t maxdbposs) const
 {
@@ -568,6 +928,12 @@ size_t CuMemoryBase::GetSizeOfDPMaxCoords(size_t maxdbposs) const
 // -------------------------------------------------------------------------
 // GetSizeOfDPBackTckData: get the size of the buffer of backtracking 
 // information obtained from dynamic programming
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDPBackTckData` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDPBackTckData(size_t totqrsposs, size_t maxdbposs) const
 {
@@ -584,6 +950,12 @@ size_t CuMemoryBase::GetSizeOfDPBackTckData(size_t totqrsposs, size_t maxdbposs)
 
 // -------------------------------------------------------------------------
 // GetSizeOfMtxScores: get the size of spectrum scores in matrix
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfMtxScores` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfMtxScores(size_t totqrsposs, size_t maxdbposs) const
 {
@@ -601,6 +973,11 @@ size_t CuMemoryBase::GetSizeOfMtxScores(size_t totqrsposs, size_t maxdbposs) con
 
 // -------------------------------------------------------------------------
 // GetSizeOfWrkMemory: get the size of the section of working memory
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemory` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemory(size_t ndbstrs) const
 {
@@ -620,6 +997,11 @@ size_t CuMemoryBase::GetSizeOfWrkMemory(size_t ndbstrs) const
 // -------------------------------------------------------------------------
 // GetSizeOfWrkMemoryCCD: get the size of the section of working memory 
 // assigned to additional cross-covariance data
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemoryCCD` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemoryCCD(size_t ndbstrs) const
 {
@@ -640,6 +1022,11 @@ size_t CuMemoryBase::GetSizeOfWrkMemoryCCD(size_t ndbstrs) const
 // GetSizeOfWrkMemoryTMalt: get the size of the section of working memory 
 // assigned to a small number of alternative transformation matrices to be 
 // processed by refinement initialized with them 
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemoryTMalt` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemoryTMalt(size_t ndbstrs) const
 {
@@ -660,6 +1047,11 @@ size_t CuMemoryBase::GetSizeOfWrkMemoryTMalt(size_t ndbstrs) const
 // -------------------------------------------------------------------------
 // GetSizeOfWrkMemoryTM: get the size of the section of working memory 
 // assigned to additional transformation matrix data
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemoryTM` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemoryTM(size_t ndbstrs) const
 {
@@ -679,6 +1071,11 @@ size_t CuMemoryBase::GetSizeOfWrkMemoryTM(size_t ndbstrs) const
 // -------------------------------------------------------------------------
 // GetSizeOfWrkMemoryTMibest: get the size of the section of working 
 // memory for iteration-best transformation matrix data
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemoryTMibest` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemoryTMibest(size_t ndbstrs) const
 {
@@ -698,6 +1095,11 @@ size_t CuMemoryBase::GetSizeOfWrkMemoryTMibest(size_t ndbstrs) const
 // -------------------------------------------------------------------------
 // GetSizeOfAuxWrkMemory: get the size of the section of auxiliary working 
 // memory
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfAuxWrkMemory` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfAuxWrkMemory(size_t ndbstrs) const
 {
@@ -716,6 +1118,11 @@ size_t CuMemoryBase::GetSizeOfAuxWrkMemory(size_t ndbstrs) const
 
 // -------------------------------------------------------------------------
 // GetSizeOfWrkMemory2: get the size of the second section of working memory
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfWrkMemory2` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfWrkMemory2(size_t ndbstrs) const
 {
@@ -736,6 +1143,12 @@ size_t CuMemoryBase::GetSizeOfWrkMemory2(size_t ndbstrs) const
 // -------------------------------------------------------------------------
 // -------------------------------------------------------------------------
 // GetSizeOfDP2AlnData: get the size of statistics of obtained alignments
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDP2AlnData` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDP2AlnData(size_t nqystrs, size_t ndbstrs) const
 {
@@ -752,6 +1165,11 @@ size_t CuMemoryBase::GetSizeOfDP2AlnData(size_t nqystrs, size_t ndbstrs) const
 
 // -------------------------------------------------------------------------
 // GetSizeOfDP2AlnData: get the size of statistics of obtained alignments
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDP2AlnData` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDP2AlnData(size_t ndbstrs) const
 {
@@ -762,6 +1180,15 @@ size_t CuMemoryBase::GetSizeOfDP2AlnData(size_t ndbstrs) const
 
 // -------------------------------------------------------------------------
 // GetSizeOfDP2Alns: get the size of the buffer for alignments themselves 
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDP2Alns` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param ndbposs 控制当前步骤范围或规模的 `ndbposs`。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDP2Alns(
     size_t nqystrs, size_t totqrsposs, size_t ndbposs, size_t ndbstrs, bool sssinuse) const
@@ -782,6 +1209,14 @@ size_t CuMemoryBase::GetSizeOfDP2Alns(
 
 // -------------------------------------------------------------------------
 // GetSizeOfDP2Alns: get the size of the buffer for alignments themselves 
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfDP2Alns` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param ndbposs 控制当前步骤范围或规模的 `ndbposs`。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfDP2Alns(
     size_t totqrsposs, size_t ndbposs, size_t ndbstrs, bool sssinuse) const
@@ -794,6 +1229,11 @@ size_t CuMemoryBase::GetSizeOfDP2Alns(
 
 // -------------------------------------------------------------------------
 // GetSizeOfGlobVariables: get the size of the global variables section
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetSizeOfGlobVariables` 对应的数据。
+ * @param ndbstrs 控制当前步骤范围或规模的 `ndbstrs`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetSizeOfGlobVariables(size_t ndbstrs) const
 {
@@ -810,6 +1250,12 @@ size_t CuMemoryBase::GetSizeOfGlobVariables(size_t ndbstrs) const
 // =========================================================================
 // GetMaxAllowedNumberDbPositions: get the maximum allowed number of Db 
 // positions given total length of queries to avoid overflow
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetMaxAllowedNumberDbPositions` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param sssinuse 供该函数读取或更新的 `sssinuse` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 size_t CuMemoryBase::GetMaxAllowedNumberDbPositions( 
     size_t totqrsposs, bool sssinuse ) const
@@ -903,6 +1349,37 @@ size_t CuMemoryBase::GetMaxAllowedNumberDbPositions(
 // maxdbposspass2 and maxdbstrspass2 represent quantities of target Db 
 // structures that pass the significance threshold;
 // NOTE: addresses are assumed to be valid and they are not verified
+/**
+ * @brief 在CPU 对齐流水线中读取 `CuMemoryBase::GetTotalMemoryReqs` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param maxdbposs 描述参考结构的 `maxdbposs`。
+ * @param maxsizefordbstrs 控制当前步骤范围或规模的 `maxsizefordbstrs`。
+ * @param maxsizeqrsindex 控制当前步骤范围或规模的 `maxsizeqrsindex`。
+ * @param maxsizeqrsposs 控制当前步骤范围或规模的 `maxsizeqrsposs`。
+ * @param maxsizedbsindex 控制当前步骤范围或规模的 `maxsizedbsindex`。
+ * @param maxsizedbposs 控制当前步骤范围或规模的 `maxsizedbposs`。
+ * @param sztfmmtcs 表示或保存刚体变换的 `sztfmmtcs`。
+ * @param szsmatrix 供该函数读取或更新的 `szsmatrix` 参数。
+ * @param szdpdiag 供该函数读取或更新的 `szdpdiag` 参数。
+ * @param szdpbottom 供该函数读取或更新的 `szdpbottom` 参数。
+ * @param szdpalnposs 供该函数读取或更新的 `szdpalnposs` 参数。
+ * @param szdpmaxcoords 供该函数读取或更新的 `szdpmaxcoords` 参数。
+ * @param szdpbtckdat 供该函数读取或更新的 `szdpbtckdat` 参数。
+ * @param maxdbposspass2 描述参考结构的 `maxdbposspass2`。
+ * @param maxdbstrspass2 描述参考结构的 `maxdbstrspass2`。
+ * @param szwrkmem 供当前步骤读取或更新的 `szwrkmem` 缓冲区。
+ * @param szwrkmemccd 供当前步骤读取或更新的 `szwrkmemccd` 缓冲区。
+ * @param szwrkmemtmalt 供当前步骤读取或更新的 `szwrkmemtmalt` 缓冲区。
+ * @param szwrkmemtm 供当前步骤读取或更新的 `szwrkmemtm` 缓冲区。
+ * @param szwrkmemtmibest 供当前步骤读取或更新的 `szwrkmemtmibest` 缓冲区。
+ * @param szauxwrkmem 供当前步骤读取或更新的 `szauxwrkmem` 缓冲区。
+ * @param szwrkmem2 供当前步骤读取或更新的 `szwrkmem2` 缓冲区。
+ * @param szdp2alndata 供该函数读取或更新的 `szdp2alndata` 参数。
+ * @param szdp2alns 供该函数读取或更新的 `szdp2alns` 参数。
+ * @param szglbvars 供该函数读取或更新的 `szglbvars` 参数。
+ * @param szovlpos 供该函数读取或更新的 `szovlpos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void CuMemoryBase::GetTotalMemoryReqs( 
     size_t totqrsposs, size_t maxdbposs, size_t /*maxsizefordbstrs*/,

@@ -70,6 +70,19 @@
 // btckdata, backtracking information data;
 // 
 template<bool ANCHOR, bool BANDED, bool GAP0, int D02IND, bool ALTSCTMS>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ExecDPwBtck128xKernel` 对应的数据。
+ * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+ * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ExecDPwBtck128xKernel(
     const float gapopencost,
     const int stepnumber,
@@ -386,6 +399,17 @@ INSTANTIATE_MpDPHub_ExecDPwBtck128xKernel(false,false,true,D02IND_DPSCAN,false);
 // tmpdpbotbuffer, temporary buffers for last calculated bottom scores;
 // 
 template<bool GAP0>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ExecDPScore128xKernel` 对应的数据。
+ * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ExecDPScore128xKernel(
     const float gapopencost,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -684,6 +708,20 @@ INSTANTIATE_MpDPHub_ExecDPScore128xKernel(true);
 // btckdata, backtracking information data;
 // 
 template<bool GLOBTFM, bool GAP0, bool USESS, int D02IND>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ExecDPTFMSSwBtck128xKernel` 对应的数据。
+ * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+ * @param ssweight 供该函数读取或更新的 `ssweight` 参数。
+ * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ExecDPTFMSSwBtck128xKernel(
     const float gapopencost,
     const float ssweight,
@@ -982,6 +1020,19 @@ INSTANTIATE_MpDPHub_ExecDPTFMSSwBtck128xKernel(true,true,false,D02IND_SEARCH);
 // btckdata, backtracking information data;
 // 
 template<bool USESEQSCORING>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ExecDPSSwBtck128xKernel` 对应的数据。
+ * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+ * @param weight4ss 供该函数读取或更新的 `weight4ss` 参数。
+ * @param weight4rr 供该函数读取或更新的 `weight4rr` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ExecDPSSwBtck128xKernel(
     const float gapopencost,
     const float weight4ss,
@@ -1253,6 +1304,17 @@ INSTANTIATE_MpDPHub_ExecDPSSwBtck128xKernel(true);
 // dpscoremtx, rounded dp score matrix;
 //
 template<int NASEQ>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ExecDPSSLocal128xKernel` 对应的数据。
+ * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ExecDPSSLocal128xKernel(
     const float gapcost,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1513,6 +1575,16 @@ INSTANTIATE_ExecDPSSLocal128xKernel(0);
 // tmpdpalnpossbuffer, destination of copied coordinates;
 //
 template<bool ANCHORRGN, bool BANDED>
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::BtckToMatched128xKernel` 对应的数据。
+ * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::BtckToMatched128xKernel(
     const uint stepnumber,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1696,6 +1768,16 @@ INSTANTIATE_MpDPHub_BtckToMatched128xKernel(false,false);
 // wrkmemaux, auxiliary working memory;
 // tmpdpalnpossbuffer, destination of the coordinates of matched positions;
 //
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ConstrainedBtckToMatched128xKernel` 对应的数据。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ConstrainedBtckToMatched128xKernel(
     const char* const * const __RESTRICT__ querypmbeg,
     const char* const * const __RESTRICT__ bdbCpmbeg,
@@ -1916,6 +1998,18 @@ if((MPDP_CONSTRAINED_MTCH_TESTPRINT>=0)? ri==MPDP_CONSTRAINED_MTCH_TESTPRINT: 1)
 // alndatamem, memory for full alignment information;
 // alnsmem, memory for output full alignments;
 // 
+/**
+ * @brief 在CPU 动态规划中并行计算 `MpDPHub::ProductionMatchToAlignment128xKernel` 对应的数据。
+ * @param nodeletions 控制当前步骤范围或规模的 `nodeletions`。
+ * @param d2equiv 供该函数读取或更新的 `d2equiv` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpDPHub::ProductionMatchToAlignment128xKernel(
     const bool nodeletions,
     const float d2equiv,

@@ -21,6 +21,12 @@
 // -------------------------------------------------------------------------
 // constructor
 //
+/**
+ * @brief 构造 `CuMemoryBase`，初始化其负责的CPU 对齐流水线状态。
+ * @param deviceallocsize 控制当前步骤范围或规模的 `deviceallocsize`。
+ * @param nareas 控制当前步骤范围或规模的 `nareas`。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 CuMemoryBase::CuMemoryBase(
     size_t deviceallocsize,
     int nareas)
@@ -55,6 +61,12 @@ CuMemoryBase::CuMemoryBase(
 // -------------------------------------------------------------------------
 // obligate initialization
 //
+/**
+ * @brief 在CPU 对齐流水线中初始化 `CuMemoryBase::Initialize` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuMemoryBase::Initialize()
 {
     if(deviceallocsize_)
@@ -75,6 +87,12 @@ void CuMemoryBase::Initialize()
 // -------------------------------------------------------------------------
 // destructor
 //
+/**
+ * @brief 销毁 `CuMemoryBase`，释放其管理的CPU 对齐流水线资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 CuMemoryBase::~CuMemoryBase()
 {
     MYMSG("CuMemoryBase::~CuMemoryBase", 4);
@@ -96,6 +114,11 @@ CuMemoryBase::~CuMemoryBase()
 // maximum length of queries; the boundaries of device memory sections are 
 // calculated for each memory area
 //
+/**
+ * @brief 在CPU 对齐流水线中计算 `CuMemoryBase::CalcMaxDbDataChunkSize` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 size_t CuMemoryBase::CalcMaxDbDataChunkSize(size_t totqrsposs)
 {
     MYMSG("CuMemoryBase::CalcMaxDbDataChunkSize", 4);
@@ -167,6 +190,12 @@ size_t CuMemoryBase::CalcMaxDbDataChunkSize(size_t totqrsposs)
 // (representing the maximum allowed limit);
 // NOTE: results are saved for the first memory area;
 // 
+/**
+ * @brief 在CPU 对齐流水线中计算 `CuMemoryBase::CalcMaxDbDataChunkSizeHelper` 对应的数据。
+ * @param totqrsposs 供该函数读取或更新的 `totqrsposs` 参数。
+ * @param residualsize 控制当前步骤范围或规模的 `residualsize`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 size_t CuMemoryBase::CalcMaxDbDataChunkSizeHelper(
     size_t totqrsposs, size_t residualsize)
 {

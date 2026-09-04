@@ -32,6 +32,19 @@
 // find most favorable initial superposition based on fragment matching of
 // multiple queries and references;
 //
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFrg3::ScoreBasedOnFragmatching3Kernel` 对应的数据。
+ * @param thrsimilarityperc 供该函数读取或更新的 `thrsimilarityperc` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFrg3::ScoreBasedOnFragmatching3Kernel(
     const float thrsimilarityperc,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -356,6 +369,15 @@ void MpStageFrg3::ScoreBasedOnFragmatching3Kernel(
 // transformation matrices by considering all partial DP swift scores 
 // calculated for all query-reference pairs in rhe chunk;
 //
+/**
+ * @brief 在CPU 候选搜索与精修中排序 `MpStageFrg3::SortAmongDPswiftsKernel` 对应的数据。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmtarget 供当前步骤读取或更新的 `wrkmemtmtarget` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFrg3::SortAmongDPswiftsKernel(
     const char* const * const __RESTRICT__ bdbCpmbeg,
     const float* const __RESTRICT__ tmpdpdiagbuffers,
@@ -417,6 +439,12 @@ void MpStageFrg3::SortAmongDPswiftsKernel(
 // superpositions obtained through the extensive application of spatial 
 // index;
 //
+/**
+ * @brief 在CPU 候选搜索与精修中精修 `MpStageFrg3::Refine_tfmaltconfig` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFrg3::Refine_tfmaltconfig()
 {
     MYMSG("MpStageFrg3::Refine_tfmaltconfig", 4);

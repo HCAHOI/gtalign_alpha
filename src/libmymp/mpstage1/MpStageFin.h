@@ -23,6 +23,42 @@
 //
 class MpStageFin: public MpStageBase {
 public:
+    /**
+     * @brief 构造 `MpStageFin`，初始化其负责的CPU 候选搜索与精修状态。
+     * @param d2equiv 供该函数读取或更新的 `d2equiv` 参数。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param minfraglen 参与初始叠合的最短片段长度。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param qystr1len 批次中最长查询结构的长度。
+     * @param dbstr1len 批次中最长参考结构的长度。
+     * @param qystrnlen 批次中最短查询结构的长度。
+     * @param dbstrnlen 批次中最短参考结构的长度。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param scores 保存或读取对齐分数的缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmem 当前计算阶段的主工作缓冲区。
+     * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpStageFin(
         const float d2equiv,
         const uint maxnsteps,
@@ -66,6 +102,12 @@ public:
     {}
 
 
+    /**
+     * @brief 生成最终对应关系，做最细尺度刚体精修，并计算 TM-score、RMSD 与输出注释。
+     * @par 参数
+     * 无。
+     * @return 无返回值；最终变换、配对、质量指标和格式化所需数据写入输出缓冲区。
+     */
     virtual void Run() {
         MYMSG("MpStageFin::Run", 4);
         static const bool nodeletions = CLOptions::GetO_NO_DELETIONS();
@@ -95,13 +137,42 @@ public:
 
 
 protected:
+    /**
+     * @brief 在CPU 候选搜索与精修中对齐 `Align` 对应的数据。
+     * @param constrainedbtck 描述参考结构的 `constrainedbtck`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Align(const bool constrainedbtck);
+    /**
+     * @brief 在CPU 候选搜索与精修中精修 `Refine` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Refine();
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProduceOutputScores` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProduceOutputScores();
 
 
 protected:
     template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `FinalFragmentBasedDPAlignmentRefinementPhase1Kernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void FinalFragmentBasedDPAlignmentRefinementPhase1Kernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -113,6 +184,18 @@ protected:
         float* const __RESTRICT__ tfmmem);
 
     template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `FinalFragmentBasedDPAlignmentRefinementPhase2Kernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void FinalFragmentBasedDPAlignmentRefinementPhase2Kernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -124,6 +207,18 @@ protected:
         float* const __RESTRICT__ tfmmem);
 
     template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -137,6 +232,19 @@ protected:
 
 protected:
     template<bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `ProductionFragmentBasedDPAlignmentRefinementPhase1Kernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionFragmentBasedDPAlignmentRefinementPhase1Kernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -149,6 +257,19 @@ protected:
         float* const __RESTRICT__ tfmmem);
 
     template<bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `ProductionFragmentBasedDPAlignmentRefinementPhase2Kernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionFragmentBasedDPAlignmentRefinementPhase2Kernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -161,6 +282,19 @@ protected:
         float* const __RESTRICT__ tfmmem);
 
     template<bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -173,6 +307,19 @@ protected:
         float* const __RESTRICT__ tfmmem);
 
     template<bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearchKernel` 对应的数据。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearchKernel(
         const int nmaxconvit,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -186,6 +333,16 @@ protected:
 
 
 protected:
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `Production2TMscoresKernel` 对应的数据。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Production2TMscoresKernel(
         const char* const * const __RESTRICT__ querypmbeg,
         const char* const * const __RESTRICT__ bdbCpmbeg,
@@ -194,15 +351,43 @@ protected:
         const float* const __RESTRICT__ tfmmem,
         float* const __RESTRICT__ alndatamem);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `RevertTfmMatricesKernel` 对应的数据。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void RevertTfmMatricesKernel(
         float* const __RESTRICT__ tfmmem);
 
 
 protected:
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcRMSD_Complete` 对应的数据。
+     * @param ccm 供该函数读取或更新的 `ccm` 参数。
+     * @param rr 供该函数读取或更新的 `rr` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     float CalcRMSD_Complete(
         float* __RESTRICT__ ccm, float* __RESTRICT__ rr);
 
     template<int SMIDIM, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcExtCCMatrices_DPRefined_Complete` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcExtCCMatrices_DPRefined_Complete(
         const int qryndx,
         const int ndbCposs,
@@ -217,6 +402,22 @@ protected:
         float (* __RESTRICT__ ccm)[XDIM]);
 
     template<bool WRITEFRAGINFO, bool CONDITIONAL>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveBestQRScoresAndTM_Complete` 对应的数据。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param gbest 供该函数读取或更新的 `gbest` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param dbstrndx 描述参考结构的 `dbstrndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+     * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveBestQRScoresAndTM_Complete(
         const float best,
         const float gbest,
@@ -231,6 +432,20 @@ protected:
         float* __RESTRICT__ wrkmemtmibest,
         float* __RESTRICT__ wrkmemaux);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveBestQRScoresAndTM_Phase2_logsearch_Complete` 对应的数据。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param gbest 供该函数读取或更新的 `gbest` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param dbstrndx 描述参考结构的 `dbstrndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+     * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveBestQRScoresAndTM_Phase2_logsearch_Complete(
         float best,
         float gbest,
@@ -244,6 +459,18 @@ protected:
         float* const __RESTRICT__ alndatamem);
 
 
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveBestQR2TMscores_Complete` 对应的数据。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param gbest 供该函数读取或更新的 `gbest` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param dbstrndx 描述参考结构的 `dbstrndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+     * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveBestQR2TMscores_Complete(
         float best,
         float gbest,
@@ -256,6 +483,22 @@ protected:
 
 
     template<int XDIM, int DATALN, bool WRITEFRAGINFO, bool CONDITIONAL>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProductionSaveBestScoresAndTMAmongBests` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionSaveBestScoresAndTMAmongBests(
         const int qryndx,
         const int rfnblkndx,
@@ -273,6 +516,15 @@ protected:
 
 protected:
     template<int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateExtCCMOneAlnPos_DPRefined` 对应的数据。
+     * @param pos 供该函数读取或更新的 `pos` 参数。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateExtCCMOneAlnPos_DPRefined(
         int pos, const int dblen,
         const float* const __RESTRICT__ tmpdpalnpossbuffer,
@@ -281,6 +533,35 @@ protected:
 
 private:
     template<int nEFFDS, int XDIM, int DATALN, bool TFM_DINV>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProductionRefinementPhase2InnerLoop` 对应的数据。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+     * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param d0 供该函数读取或更新的 `d0` 参数。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param d82 供该函数读取或更新的 `d82` 参数。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param ccmLast 供该函数读取或更新的 `ccmLast` 参数。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param tfmBest 表示或保存刚体变换的 `tfmBest`。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionRefinementPhase2InnerLoop(
         const int sfragfctxndx, const int qryndx, const int nmaxconvit,
         const int ndbCposs, const int dbxpad, const int maxnsteps,
@@ -309,6 +590,11 @@ protected:
 // Align: find alignment based on the best superposition obtained;
 // constrainedbtck, flag of using constrained backtracking;
 //
+/**
+ * @brief 在CPU 候选搜索与精修中对齐 `MpStageFin::Align` 对应的数据。
+ * @param constrainedbtck 描述参考结构的 `constrainedbtck`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::Align(const bool constrainedbtck)
 {
@@ -333,6 +619,12 @@ void MpStageFin::Align(const bool constrainedbtck)
 // -------------------------------------------------------------------------
 // Refine: refine for final superposition-best alignment; 
 //
+/**
+ * @brief 在CPU 候选搜索与精修中精修 `MpStageFin::Refine` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::Refine()
 {
@@ -394,6 +686,12 @@ void MpStageFin::Refine()
 // ProduceOutputScores: refine using production thresholds and 
 // calculate final scores for output; complete version;
 //
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFin::ProduceOutputScores` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::ProduceOutputScores()
 {
@@ -473,6 +771,12 @@ void MpStageFin::ProduceOutputScores()
 // rr, temporary array [6] for a triangle of the R matrix;
 // Based on the original Kabsch algorithm (see CalcTfmMatrices_Complete);
 //
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageFin::CalcRMSD_Complete` 对应的数据。
+ * @param ccm 供该函数读取或更新的 `ccm` 参数。
+ * @param rr 供该函数读取或更新的 `rr` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 float MpStageFin::CalcRMSD_Complete(
     float* __RESTRICT__ ccm, float* __RESTRICT__ rr)
@@ -576,6 +880,23 @@ float MpStageFin::CalcRMSD_Complete(
 // ccm, cache for the cross-covarinace matrix and related data;
 // 
 template<int SMIDIM, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageFin::CalcExtCCMatrices_DPRefined_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::CalcExtCCMatrices_DPRefined_Complete(
     const int qryndx,
@@ -654,6 +975,15 @@ void MpStageFin::CalcExtCCMatrices_DPRefined_Complete(
   notinbranch
 #endif
 template<int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageFin::UpdateExtCCMOneAlnPos_DPRefined` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::UpdateExtCCMOneAlnPos_DPRefined(
     int pos, const int dblen,
@@ -703,6 +1033,22 @@ void MpStageFin::UpdateExtCCMOneAlnPos_DPRefined(
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool WRITEFRAGINFO, bool CONDITIONAL>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFin::SaveBestQRScoresAndTM_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::SaveBestQRScoresAndTM_Complete(
     const float best,
@@ -774,6 +1120,20 @@ void MpStageFin::SaveBestQRScoresAndTM_Complete(
 // tfmmem, output memory for best transformation matrices;
 // alndatamem, memory for full alignment information, including scores;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFin::SaveBestQRScoresAndTM_Phase2_logsearch_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+ * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::SaveBestQRScoresAndTM_Phase2_logsearch_Complete(
     float best,
@@ -814,6 +1174,18 @@ void MpStageFin::SaveBestQRScoresAndTM_Phase2_logsearch_Complete(
 // NOTE: memory pointers should be aligned!
 // alndatamem, memory for full alignment information, including scores;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFin::SaveBestQR2TMscores_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+ * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::SaveBestQR2TMscores_Complete(
     float best,
@@ -860,6 +1232,22 @@ void MpStageFin::SaveBestQR2TMscores_Complete(
 // tfmmem, memory for transformation matrices;
 // 
 template<int XDIM, int DATALN, bool WRITEFRAGINFO, bool CONDITIONAL>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFin::ProductionSaveBestScoresAndTMAmongBests` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::ProductionSaveBestScoresAndTMAmongBests(
     const int qryndx,

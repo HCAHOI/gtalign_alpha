@@ -21,6 +21,12 @@ enum{
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在CPU 二级结构计算中处理 `SSKNAGetPairingCondition` 对应的数据。
+ * @param rsdy 供该函数读取或更新的 `rsdy` 参数。
+ * @param rsdx 供该函数读取或更新的 `rsdx` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 bool SSKNAGetPairingCondition(const char rsdy, const char rsdx)
@@ -41,6 +47,12 @@ bool SSKNAGetPairingCondition(const char rsdy, const char rsdx)
 #if defined(__CUDA_ARCH__)
 __host__ __device__ __forceinline__
 #else
+/**
+ * @brief 在CPU 二级结构计算中处理 `SSKNAGetDstDeviation` 对应的数据。
+ * @param atype 供该函数读取或更新的 `atype` 参数。
+ * @param dst 接收目标数据的 `dst`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 #endif
 float SSKNAGetDstDeviation(const int atype, float dst)

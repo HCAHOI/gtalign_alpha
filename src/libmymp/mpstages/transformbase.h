@@ -19,6 +19,13 @@
 // -------------------------------------------------------------------------
 // norm2: norm squared of the vector given by coordinates x, y, z;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `norm2` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param z 供该函数读取或更新的 `z` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float norm2(float x, float y, float z)
 {
@@ -28,6 +35,13 @@ float norm2(float x, float y, float z)
 // -------------------------------------------------------------------------
 // norm: calculate the norm of the vector given by coordinates x, y, z;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `norm` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param z 供该函数读取或更新的 `z` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float norm(float x, float y, float z)
 {
@@ -37,6 +51,16 @@ float norm(float x, float y, float z)
 // -------------------------------------------------------------------------
 // distance2: calculate squared distance between two points;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `distance2` 对应的数据。
+ * @param x0 供该函数读取或更新的 `x0` 参数。
+ * @param x1 供该函数读取或更新的 `x1` 参数。
+ * @param x2 供该函数读取或更新的 `x2` 参数。
+ * @param y0 供该函数读取或更新的 `y0` 参数。
+ * @param y1 供该函数读取或更新的 `y1` 参数。
+ * @param y2 供该函数读取或更新的 `y2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float distance2(
     float x0, float x1, float x2,
@@ -50,6 +74,14 @@ float distance2(
 // tfm, transformation matrix;
 // x0, x1, x2: x, y, z, coordinates of the point;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `translate_point` 对应的数据。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param x0 供该函数读取或更新的 `x0` 参数。
+ * @param x1 供该函数读取或更新的 `x1` 参数。
+ * @param x2 供该函数读取或更新的 `x2` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void translate_point(
     const float *__RESTRICT__ tfm,
@@ -64,6 +96,14 @@ void translate_point(
 // tfm, transformation matrix;
 // x0, x1, x2: x, y, z, coordinates of the point;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `rotate_point` 对应的数据。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param x0 供该函数读取或更新的 `x0` 参数。
+ * @param x1 供该函数读取或更新的 `x1` 参数。
+ * @param x2 供该函数读取或更新的 `x2` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void rotate_point(
     const float *__RESTRICT__ tfm,
@@ -80,6 +120,14 @@ void rotate_point(
 // tfm, transformation matrix;
 // x0, x1, x2: x, y, z, coordinates of the point;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中变换 `transform_point` 对应的数据。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param x0 供该函数读取或更新的 `x0` 参数。
+ * @param x1 供该函数读取或更新的 `x1` 参数。
+ * @param x2 供该函数读取或更新的 `x2` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void transform_point(
     const float *__RESTRICT__ tfm,
@@ -98,6 +146,17 @@ void transform_point(
 // x0, x1, x2: x, y, z, coordinates of the point to transform;
 // y0, y1, y2: x, y, z, coordinates of the other point;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中变换 `transform_and_distance2` 对应的数据。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param x0 供该函数读取或更新的 `x0` 参数。
+ * @param x1 供该函数读取或更新的 `x1` 参数。
+ * @param x2 供该函数读取或更新的 `x2` 参数。
+ * @param y0 供该函数读取或更新的 `y0` 参数。
+ * @param y1 供该函数读取或更新的 `y1` 参数。
+ * @param y2 供该函数读取或更新的 `y2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float transform_and_distance2(
     const float *__RESTRICT__ tfm,
@@ -114,6 +173,11 @@ float transform_and_distance2(
 // -------------------------------------------------------------------------
 // TransposeRotMtx: matrix transpose;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `TransposeRotMtx` 对应的数据。
+ * @param u 供该函数读取或更新的 `u` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void TransposeRotMtx(float *__RESTRICT__ u)
 {
@@ -123,6 +187,11 @@ void TransposeRotMtx(float *__RESTRICT__ u)
 }
 
 // InvertRotMtx: invert rotation matrix u in the cache; result is transpose;
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `InvertRotMtx` 对应的数据。
+ * @param u 供该函数读取或更新的 `u` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void InvertRotMtx(float *__RESTRICT__ u)
 {
@@ -133,6 +202,11 @@ void InvertRotMtx(float *__RESTRICT__ u)
 // InvertTrlVec: calculate reverted translation vector t (which is in ut);
 // the resulting t overwrites the query center vector in the cache;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `InvertTrlVec` 对应的数据。
+ * @param ut 供该函数读取或更新的 `ut` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void InvertTrlVec(float *__RESTRICT__ ut)
 {
@@ -149,6 +223,11 @@ void InvertTrlVec(float *__RESTRICT__ ut)
 // RotMtxToIdentity: assign rotation matrix u in the cache to the identity 
 // matrix;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `RotMtxToIdentity` 对应的数据。
+ * @param u 供该函数读取或更新的 `u` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void RotMtxToIdentity(float *__RESTRICT__ u)
 {
@@ -163,6 +242,11 @@ void RotMtxToIdentity(float *__RESTRICT__ u)
 // CalcHmatrix: calculate the H matrix inline (multiplied by n; 
 // cross-covariance transpose - n x mean product; Kabsch correlation matrix r)
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcRmatrix` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void CalcRmatrix(float* __RESTRICT__ ccmCache)
 {
@@ -187,6 +271,11 @@ void CalcRmatrix(float* __RESTRICT__ ccmCache)
 // -------------------------------------------------------------------------
 // GetRScale: calculate the scale for correlation matrix r
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中读取 `GetRScale` 对应的数据。
+ * @param r 供该函数读取或更新的 `r` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float GetRScale(const float *__RESTRICT__ r)
 {
@@ -200,6 +289,11 @@ float GetRScale(const float *__RESTRICT__ r)
 // -------------------------------------------------------------------------
 // ScaleRmatrix: scale correlation matrix r
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `ScaleRmatrix` 对应的数据。
+ * @param r 供该函数读取或更新的 `r` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void ScaleRmatrix(float *__RESTRICT__ r)
 {
@@ -221,6 +315,11 @@ void ScaleRmatrix(float *__RESTRICT__ r)
 // -------------------------------------------------------------------------
 // CalcDet: calculate the determinant of R
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcDet` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float CalcDet(const float* __RESTRICT__ ccmCache)
 {
@@ -243,6 +342,12 @@ float CalcDet(const float* __RESTRICT__ ccmCache)
 // CalcRTR: calculate the product of R transposed and R, and write the 
 // result of the upper triangle rr
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcRTR` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param rr 供该函数读取或更新的 `rr` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void CalcRTR(
     const float* __RESTRICT__ ccmCache,
@@ -278,6 +383,16 @@ void CalcRTR(
 // order;
 // Kabsch: handle special case of 3 identical roots
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中处理 `SolveCubic` 对应的数据。
+ * @param det 供该函数读取或更新的 `det` 参数。
+ * @param spur 供该函数读取或更新的 `spur` 参数。
+ * @param cof 供该函数读取或更新的 `cof` 参数。
+ * @param e0 供该函数读取或更新的 `e0` 参数。
+ * @param e1 供该函数读取或更新的 `e1` 参数。
+ * @param e2 供该函数读取或更新的 `e2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 bool SolveCubic(
     float det, float spur, float cof,
@@ -312,6 +427,13 @@ bool SolveCubic(
 // eigenvectors; using registers for local variables;
 //
 template<int col_l>
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcPartialA_Reg` 对应的数据。
+ * @param d 供该函数读取或更新的 `d` 参数。
+ * @param rr 供该函数读取或更新的 `rr` 参数。
+ * @param a 供该函数读取或更新的 `a` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void CalcPartialA_Reg(
     float d,
@@ -359,6 +481,14 @@ void CalcPartialA_Reg(
 // eigenvectors;
 // return a flag whether the a calculation succeeded;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcCompleteA` 对应的数据。
+ * @param e0 供该函数读取或更新的 `e0` 参数。
+ * @param e1 供该函数读取或更新的 `e1` 参数。
+ * @param e2 供该函数读取或更新的 `e2` 参数。
+ * @param a 供该函数读取或更新的 `a` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 bool CalcCompleteA(
     float e0, float e1, float e2,
@@ -419,6 +549,12 @@ bool CalcCompleteA(
 // same cache used to keep correlation matrix r;
 // return a flag whether the u (rot. matrix) calculation succeeded;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcRotMtx` 对应的数据。
+ * @param a 供该函数读取或更新的 `a` 参数。
+ * @param bu 供该函数读取或更新的 `bu` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 bool CalcRotMtx(
     const float* __RESTRICT__ a,
@@ -559,6 +695,11 @@ bool CalcRotMtx(
 // center vectors have not been overwritten and are used to calculate t;
 // the resulting t overwrites the query center vector in the cache;
 //
+/**
+ * @brief 在CPU 刚体拟合与评分中计算 `CalcTrlVec` 对应的数据。
+ * @param ut 供该函数读取或更新的 `ut` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __DINLINE__
 void CalcTrlVec(float *__RESTRICT__ ut/*, float scale*/)
 {

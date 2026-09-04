@@ -26,6 +26,17 @@
 // -------------------------------------------------------------------------
 // Preinitialize1Kernel: initialize memory before major computations
 //
+/**
+ * @brief 在CPU 候选搜索与精修中预初始化 `MpStage1::Preinitialize1Kernel` 对应的数据。
+ * @param condition4filter1 供该函数读取或更新的 `condition4filter1` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::Preinitialize1Kernel(
     const bool condition4filter1,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -172,6 +183,14 @@ void MpStage1::Preinitialize1Kernel(
 // wrkmemaux, auxiliary working memory;
 // NOTE: process ungapped fragments of aligned query-reference structures;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中校验 `MpStage1::VerifyAlignmentScoreKernel` 对应的数据。
+ * @param seqsimthrscore 当前步骤使用或写回的 `seqsimthrscore` 分数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::VerifyAlignmentScoreKernel(
     const float seqsimthrscore,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -264,6 +283,14 @@ void MpStage1::VerifyAlignmentScoreKernel(
 // TFM_DINV, use doubly inverted transformation matrices under suitable conditions;
 //
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中搜索 `MpStage1::FindFragKernel` 对应的数据。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::FindFragKernel(
     const char* const * const __RESTRICT__ querypmbeg,
     const char* const * const __RESTRICT__ bdbCpmbeg,
@@ -463,6 +490,12 @@ INSTANTIATE_MpStage1_FindFragKernel(true);
 // prescorethr, provisional TM-score threshold for prescreening;
 //
 template<bool GAP0, bool PRESCREEN, bool WRKMEMTM1>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStage1::DPRefine` 对应的数据。
+ * @param maxndpiters 动态规划精修允许的最大迭代次数。
+ * @param prescorethr 进入后续精修前要求的预筛选分数阈值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::DPRefine(
     const int maxndpiters,
     const float prescorethr)
@@ -534,6 +567,18 @@ INSTANTIATE_MpStage1_DPRefine(false,false,true);
 // nmaxconvit, maximum number of superposition iterations;
 //
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中精修 `MpStage1::RefineFragInitKernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::RefineFragInitKernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -756,6 +801,20 @@ INSTANTIATE_MpStage1_RefineFragInitKernel(true);
 // nmaxconvit, maximum number of superposition iterations;
 //
 template<bool TFM_DINV, int SECONDARYUPDATE>
+/**
+ * @brief 在CPU 候选搜索与精修中精修 `MpStage1::RefineFragDPKernel` 对应的数据。
+ * @param readlocalconv 供该函数读取或更新的 `readlocalconv` 参数。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::RefineFragDPKernel(
     const bool readlocalconv,
     const int nmaxconvit,
@@ -984,6 +1043,11 @@ INSTANTIATE_MpStage1_RefineFragDPKernel(true,SECONDARYUPDATE_CONDITIONAL);
 // wrkmemaux, auxiliary working memory;
 // 
 template<int INITOPT>
+/**
+ * @brief 在CPU 候选搜索与精修中初始化 `MpStage1::InitScoresKernel` 对应的数据。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::InitScoresKernel(
     float* const __RESTRICT__ wrkmemaux)
 {
@@ -1097,6 +1161,11 @@ INSTANTIATE_MpStage1_InitScoresKernel(INITOPT_BEST|INITOPT_CONVFLAG_ALL);
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中检查 `MpStage1::CheckScoreConvergenceKernel` 对应的数据。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::CheckScoreConvergenceKernel(
     float* const __RESTRICT__ wrkmemaux)
 {
@@ -1152,6 +1221,11 @@ void MpStage1::CheckScoreConvergenceKernel(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStage1::SaveLastScore0Kernel` 对应的数据。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::SaveLastScore0Kernel(
     float* const __RESTRICT__ wrkmemaux)
 {
@@ -1202,6 +1276,14 @@ void MpStage1::SaveLastScore0Kernel(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中设置 `MpStage1::SetLowScoreConvergenceFlagKernel` 对应的数据。
+ * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStage1::SetLowScoreConvergenceFlagKernel(
     const float scorethld,
     const char* const * const __RESTRICT__ querypmbeg,

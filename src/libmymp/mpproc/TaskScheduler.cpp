@@ -31,6 +31,15 @@
 //
 // Constructor
 //
+/**
+ * @brief 构造 `TaskScheduler`，初始化其负责的CPU 对齐流水线状态。
+ * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+ * @param dnamelist 供该函数读取或更新的 `dnamelist` 参数。
+ * @param sfxlst 供该函数读取或更新的 `sfxlst` 参数。
+ * @param output 接收当前步骤输出的 `output`。
+ * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TaskScheduler::TaskScheduler(
     const std::vector<std::string>& inputlist,
     const std::vector<std::string>& dnamelist,
@@ -57,6 +66,12 @@ TaskScheduler::TaskScheduler(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TaskScheduler`，释放其管理的CPU 对齐流水线资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TaskScheduler::~TaskScheduler()
 {
     for(int d = 0; d < (int)memcfgs_.size(); d++) {
@@ -90,6 +105,14 @@ TaskScheduler::~TaskScheduler()
 // =========================================================================
 // CreateReader: create threads for reading reference data from files
 //
+/**
+ * @brief 在CPU 对齐流水线中处理 `TaskScheduler::CreateReader` 对应的数据。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param mapped 供该函数读取或更新的 `mapped` 参数。
+ * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::CreateReader( 
     int maxstrlen,
     bool mapped,
@@ -127,6 +150,14 @@ void TaskScheduler::CreateReader(
 // -------------------------------------------------------------------------
 // CreateQrsReader: create a thread for reading query data from files
 //
+/**
+ * @brief 在CPU 对齐流水线中处理 `TaskScheduler::CreateQrsReader` 对应的数据。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param mapped 供该函数读取或更新的 `mapped` 参数。
+ * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::CreateQrsReader( 
     int maxstrlen,
     bool mapped,
@@ -158,6 +189,16 @@ void TaskScheduler::CreateQrsReader(
 // GetDataFromReader: request data from a reader and wait for data to be ready;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `TaskScheduler::GetDataFromReader` 对应的数据。
+ * @param reader 供该函数读取或更新的 `reader` 参数。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TaskScheduler::GetDataFromReader(
     TdDataReader* reader,
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
@@ -195,6 +236,18 @@ bool TaskScheduler::GetDataFromReader(
 // version to get index too;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `TaskScheduler::GetDataFromReader` 对应的数据。
+ * @param reader 供该函数读取或更新的 `reader` 参数。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCNdxpmbeg 描述参考结构的 `bdbCNdxpmbeg`。
+ * @param bdbCNdxpmend 描述参考结构的 `bdbCNdxpmend`。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TaskScheduler::GetDataFromReader(
     TdDataReader* reader,
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
@@ -236,6 +289,22 @@ bool TaskScheduler::GetDataFromReader(
 // be ready; version to get index too;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CPU 对齐流水线中读取 `TaskScheduler::GetReferenceData` 对应的数据。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCNdxpmbeg 描述参考结构的 `bdbCNdxpmbeg`。
+ * @param bdbCNdxpmend 描述参考结构的 `bdbCNdxpmend`。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @param rewind 供该函数读取或更新的 `rewind` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool TaskScheduler::GetReferenceData(
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
     char**& bdbCNdxpmbeg, char**& bdbCNdxpmend,
@@ -309,6 +378,12 @@ bool TaskScheduler::GetReferenceData(
 // =========================================================================
 // CreateAlnWriter: create a thread for writing results to files
 //
+/**
+ * @brief 在CPU 对齐流水线中处理 `TaskScheduler::CreateAlnWriter` 对应的数据。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param dnamelist 供该函数读取或更新的 `dnamelist` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::CreateAlnWriter( 
     const char* outdirname,
     const std::vector<std::string>& dnamelist)
@@ -323,6 +398,12 @@ void TaskScheduler::CreateAlnWriter(
 // -------------------------------------------------------------------------
 // NotifyAlnWriter: notify the writer of the complete results for a query
 //
+/**
+ * @brief 在CPU 对齐流水线中通知 `TaskScheduler::NotifyAlnWriter` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::NotifyAlnWriter()
 {
     MYMSG("TaskScheduler::NotifyAlnWriter", 3);
@@ -340,6 +421,11 @@ void TaskScheduler::NotifyAlnWriter()
 // WaitForAlnWriterToFinish: notify the writer about the process end and 
 // wait for it to finish writings
 //
+/**
+ * @brief 在CPU 对齐流水线中等待 `TaskScheduler::WaitForAlnWriterToFinish` 对应的数据。
+ * @param error 供该函数读取或更新的 `error` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::WaitForAlnWriterToFinish(bool error)
 {
     char msgbuf[BUF_MAX];
@@ -386,6 +472,11 @@ void TaskScheduler::WaitForAlnWriterToFinish(bool error)
 // =========================================================================
 // CreateMemoryConfigs: create global memory configurations
 //
+/**
+ * @brief 在CPU 对齐流水线中处理 `TaskScheduler::CreateMemoryConfigs` 对应的数据。
+ * @param nareasperdevice 控制当前步骤范围或规模的 `nareasperdevice`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::CreateMemoryConfigs(size_t nareasperdevice)
 {
     MYMSG("TaskScheduler::CreateMemoryConfigs", 3);
@@ -413,6 +504,12 @@ void TaskScheduler::CreateMemoryConfigs(size_t nareasperdevice)
 // =========================================================================
 // Run: starting point for structure search and alignment
 //
+/**
+ * @brief 在CPU 对齐流水线中运行 `TaskScheduler::Run` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TaskScheduler::Run()
 {
     MYMSG("TaskScheduler::Run", 3);

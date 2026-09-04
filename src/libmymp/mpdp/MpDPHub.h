@@ -25,6 +25,36 @@
 //
 class MpDPHub {
 public:
+    /**
+     * @brief 构造 `MpDPHub`，初始化其负责的CPU 动态规划状态。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param qystr1len 批次中最长查询结构的长度。
+     * @param dbstr1len 批次中最长参考结构的长度。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmem 当前计算阶段的主工作缓冲区。
+     * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpDPHub(
         const uint maxnsteps,
         const char* const * const querypmbeg,
@@ -58,6 +88,19 @@ public:
 
 public:
     template<bool ANCHOR, bool BANDED, bool GAP0, int D02IND, bool ALTSCTMS = false>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ExecDPwBtck128xKernel` 对应的数据。
+     * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+     * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ExecDPwBtck128xKernel(
         const float gapopencost,
         const int stepnumber,
@@ -72,6 +115,17 @@ public:
     );
 
     template<bool GAP0>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ExecDPScore128xKernel` 对应的数据。
+     * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ExecDPScore128xKernel(
         const float gapopencost,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -82,6 +136,20 @@ public:
         float* const __RESTRICT__ tmpdpbotbuffer);
 
     template<bool GLOBTFM, bool GAP0, bool USESS, int D02IND>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ExecDPTFMSSwBtck128xKernel` 对应的数据。
+     * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+     * @param ssweight 供该函数读取或更新的 `ssweight` 参数。
+     * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ExecDPTFMSSwBtck128xKernel(
         const float gapopencost,
         const float ssweight,
@@ -97,6 +165,19 @@ public:
     );
 
     template<bool USESEQSCORING>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ExecDPSSwBtck128xKernel` 对应的数据。
+     * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+     * @param weight4ss 供该函数读取或更新的 `weight4ss` 参数。
+     * @param weight4rr 供该函数读取或更新的 `weight4rr` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ExecDPSSwBtck128xKernel(
         const float gapopencost,
         const float weight4ss,
@@ -109,6 +190,17 @@ public:
         char* const __RESTRICT__ btckdata);
 
     template<int NASEQ = 0>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ExecDPSSLocal128xKernel` 对应的数据。
+     * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ExecDPSSLocal128xKernel(
         const float gapcost,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -120,6 +212,16 @@ public:
 
 
     template<bool ANCHORRGN, bool BANDED>
+    /**
+     * @brief 在CPU 动态规划中并行计算 `BtckToMatched128xKernel` 对应的数据。
+     * @param stepnumber 供该函数读取或更新的 `stepnumber` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void BtckToMatched128xKernel(
         const uint stepnumber,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -128,6 +230,16 @@ public:
         float* const __RESTRICT__ wrkmemaux,
         float* const __RESTRICT__ tmpdpalnpossbuffer);
 
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ConstrainedBtckToMatched128xKernel` 对应的数据。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ConstrainedBtckToMatched128xKernel(
         const char* const * const __RESTRICT__ querypmbeg,
         const char* const * const __RESTRICT__ bdbCpmbeg,
@@ -137,6 +249,18 @@ public:
         float* const __RESTRICT__ tmpdpalnpossbuffer);
 
 
+    /**
+     * @brief 在CPU 动态规划中并行计算 `ProductionMatchToAlignment128xKernel` 对应的数据。
+     * @param nodeletions 控制当前步骤范围或规模的 `nodeletions`。
+     * @param d2equiv 供该函数读取或更新的 `d2equiv` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProductionMatchToAlignment128xKernel(
         const bool nodeletions, const float d2equiv,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -149,6 +273,16 @@ public:
 protected:
     // {{---------------------------------------------
     template<int DIMD, int DATALN, int DEFV = 0>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadQryRE` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param qryRE 描述查询结构的 `qryRE`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadQryRE(
         const int /*x*/, const int y,
         const int qrydst, const int qrylen,
@@ -156,6 +290,16 @@ protected:
         char* const __RESTRICT__ qryRE);
 
     template<int DIMD, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadQrySS` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param qrySS 描述查询结构的 `qrySS`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadQrySS(
         const int /*x*/, const int y,
         const int qrydst, const int qrylen,
@@ -163,6 +307,16 @@ protected:
         char* const __RESTRICT__ qrySS);
 
     template<int DIMDpX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadRfnSS` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param rfnSS 描述参考结构的 `rfnSS`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadRfnSS(
         const int x, const int /*y*/,
         const int dbstrdst, const int dbstrlen,
@@ -170,6 +324,16 @@ protected:
         char* const __RESTRICT__ rfnSS);
 
     template<int DIMDpX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadRfnRE` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param rfnRE 描述参考结构的 `rfnRE`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadRfnRE(
         const int x, const int /*y*/,
         const int dbstrdst, const int dbstrlen,
@@ -180,6 +344,17 @@ protected:
 
     // {{---------------------------------------------
     template<int DIMD, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadAndTransformQryCoords` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param qryCoords 描述查询结构的 `qryCoords`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadAndTransformQryCoords(
         const int x, const int y,
         const int qrydst, const int qrylen,
@@ -188,6 +363,16 @@ protected:
         float* const __RESTRICT__ qryCoords);
 
     template<int DIMDpX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadRfnCoords` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param rfnCoords 描述参考结构的 `rfnCoords`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadRfnCoords(
         const int x, const int /*y*/,
         const int dbstrdst, const int dbstrlen,
@@ -198,6 +383,20 @@ protected:
 
     // {{---------------------------------------------
     template<int DIMD, int DIMD1, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadTwoDiagonals` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param yofff 供该函数读取或更新的 `yofff` 参数。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param diag1 供该函数读取或更新的 `diag1` 参数。
+     * @param diag2 供该函数读取或更新的 `diag2` 参数。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadTwoDiagonals(
         const int x, const int /*y*/,
         const int dbstrdst, const int dbstrlen,
@@ -208,6 +407,20 @@ protected:
         const float value = 0.0f);
 
     template<int DIMD, int DIMD1, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中写出 `WriteTwoDiagonals` 对应的数据。
+     * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param yofff 供该函数读取或更新的 `yofff` 参数。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param diag1 供该函数读取或更新的 `diag1` 参数。
+     * @param diag2 供该函数读取或更新的 `diag2` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteTwoDiagonals(
         const int DIMX,
         const int x, const int /*y*/,
@@ -218,6 +431,19 @@ protected:
         const float* const __RESTRICT__ diag2);
 
     template<int DIMD, int DIMX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中读取 `ReadBottomEdge` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param yofff 供该函数读取或更新的 `yofff` 参数。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param bottm 供该函数读取或更新的 `bottm` 参数。
+     * @param value 需要读取、写入或转换的值。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadBottomEdge(
         const int x, const int y,
         const int dbstrdst, const int dbstrlen,
@@ -227,6 +453,18 @@ protected:
         const float value = 0.0f);
 
     template<int DIMX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中写出 `WriteBottomEdge` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param yofff 供该函数读取或更新的 `yofff` 参数。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param bottm 供该函数读取或更新的 `bottm` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteBottomEdge(
         const int x, const int /*y*/,
         const int dbstrdst, const int dbstrlen,
@@ -235,6 +473,19 @@ protected:
         const float* const __RESTRICT__ bottm);
 
     template<int DIMD, int DIMX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中写出 `WriteBtckInfo` 对应的数据。
+     * @param x 供该函数读取或更新的 `x` 参数。
+     * @param y 供该函数读取或更新的 `y` 参数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void WriteBtckInfo(
         const int x, const int y,
         const int qrydst, const int qrylen,
@@ -245,12 +496,41 @@ protected:
     // }}---------------------------------------------
 
 protected:
+    /**
+     * @brief 在CPU 动态规划中处理 `lfNdx` 对应的数据。
+     * @param i 供该函数读取或更新的 `i` 参数。
+     * @param j 供该函数读取或更新的 `j` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int lfNdx(int i,int j) {return pmv2DNoElems * j + i;}
+    /**
+     * @brief 在CPU 动态规划中处理 `lfDgNdx` 对应的数据。
+     * @param i 供该函数读取或更新的 `i` 参数。
+     * @param j 供该函数读取或更新的 `j` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     template<int DIM> int lfDgNdx(int i,int j) {return DIM * i + j;}
 
 protected:
     // {{---------------------------------------------
     template<int DIMX, int DATALN>
+    /**
+     * @brief 在CPU 动态规划中写出 `WriteAlignmentFragment` 对应的数据。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param alnofff 供该函数读取或更新的 `alnofff` 参数。
+     * @param dbalnlen 控制当前步骤范围或规模的 `dbalnlen`。
+     * @param dbalnbeg 描述参考结构的 `dbalnbeg`。
+     * @param written 供该函数读取或更新的 `written` 参数。
+     * @param lentowrite 控制当前步骤范围或规模的 `lentowrite`。
+     * @param lentocheck 控制当前步骤范围或规模的 `lentocheck`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmp 供该函数读取或更新的 `tmp` 参数。
+     * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+     * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int WriteAlignmentFragment(
         const int qrydst, const int dbstrdst,
         const int alnofff, const int dbalnlen, const int dbalnbeg,
@@ -292,6 +572,16 @@ protected:
 // qryRE, query residues read;
 //
 template<int DIMD, int DATALN, int DEFV>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadQryRE` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param qryRE 描述查询结构的 `qryRE`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadQryRE(
     const int /*x*/, const int y,
@@ -321,6 +611,16 @@ void MpDPHub::ReadQryRE(
 // qrySS, read query secondary structure;
 //
 template<int DIMD, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadQrySS` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param qrySS 描述查询结构的 `qrySS`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadQrySS(
     const int /*x*/, const int y,
@@ -350,6 +650,16 @@ void MpDPHub::ReadQrySS(
 // rfnSS, reference secondary structure read;
 //
 template<int DIMDpX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadRfnSS` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param rfnSS 描述参考结构的 `rfnSS`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadRfnSS(
     const int x, const int /*y*/,
@@ -384,6 +694,16 @@ void MpDPHub::ReadRfnSS(
 // rfnRE, reference residues read;
 //
 template<int DIMDpX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadRfnRE` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param rfnRE 描述参考结构的 `rfnRE`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadRfnRE(
     const int x, const int /*y*/,
@@ -422,6 +742,17 @@ void MpDPHub::ReadRfnRE(
 // qryCoords, (transformed and) read query coordinates;
 //
 template<int DIMD, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadAndTransformQryCoords` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param qryCoords 描述查询结构的 `qryCoords`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadAndTransformQryCoords(
     const int /*x*/, const int y,
@@ -469,6 +800,16 @@ void MpDPHub::ReadAndTransformQryCoords(
 // rfnCoords, read reference coordinates;
 //
 template<int DIMDpX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadRfnCoords` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param rfnCoords 描述参考结构的 `rfnCoords`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadRfnCoords(
     const int x, const int /*y*/,
@@ -515,6 +856,20 @@ void MpDPHub::ReadRfnCoords(
 // diag1, diag2, two diagonals of scores;
 //
 template<int DIMD, int DIMD1, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadTwoDiagonals` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param yofff 供该函数读取或更新的 `yofff` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param diag1 供该函数读取或更新的 `diag1` 参数。
+ * @param diag2 供该函数读取或更新的 `diag2` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::ReadTwoDiagonals(
     const int x, const int /*y*/,
@@ -558,6 +913,20 @@ void MpDPHub::ReadTwoDiagonals(
 // diag1, diag2, two diagonals of scores;
 //
 template<int DIMD, int DIMD1, int DATALN>
+/**
+ * @brief 在CPU 动态规划中写出 `MpDPHub::WriteTwoDiagonals` 对应的数据。
+ * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param yofff 供该函数读取或更新的 `yofff` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param diag1 供该函数读取或更新的 `diag1` 参数。
+ * @param diag2 供该函数读取或更新的 `diag2` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::WriteTwoDiagonals(
     const int DIMX,
@@ -595,6 +964,19 @@ void MpDPHub::WriteTwoDiagonals(
 // bottm, bottom edge of scores;
 //
 template<int DIMD, int DIMX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中读取 `MpDPHub::ReadBottomEdge` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param yofff 供该函数读取或更新的 `yofff` 参数。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param bottm 供该函数读取或更新的 `bottm` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
     void MpDPHub::ReadBottomEdge(
     const int x, const int y,
@@ -635,6 +1017,18 @@ inline
 // bottm, bottom edge of scores;
 //
 template<int DIMX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中写出 `MpDPHub::WriteBottomEdge` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param yofff 供该函数读取或更新的 `yofff` 参数。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param bottm 供该函数读取或更新的 `bottm` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::WriteBottomEdge(
     const int x, const int /*y*/,
@@ -668,6 +1062,19 @@ void MpDPHub::WriteBottomEdge(
 // btck, backtracking information stored in cache;
 //
 template<int DIMD, int DIMX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中写出 `MpDPHub::WriteBtckInfo` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpDPHub::WriteBtckInfo(
     const int x, const int y,
@@ -708,6 +1115,23 @@ void MpDPHub::WriteBtckInfo(
 // alnsmem, global memory of alignments;
 // 
 template<int DIMX, int DATALN>
+/**
+ * @brief 在CPU 动态规划中写出 `MpDPHub::WriteAlignmentFragment` 对应的数据。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param alnofff 供该函数读取或更新的 `alnofff` 参数。
+ * @param dbalnlen 控制当前步骤范围或规模的 `dbalnlen`。
+ * @param dbalnbeg 描述参考结构的 `dbalnbeg`。
+ * @param written 供该函数读取或更新的 `written` 参数。
+ * @param lentowrite 控制当前步骤范围或规模的 `lentowrite`。
+ * @param lentocheck 控制当前步骤范围或规模的 `lentocheck`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmp 供该函数读取或更新的 `tmp` 参数。
+ * @param DIMX 供该函数读取或更新的 `DIMX` 参数。
+ * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int MpDPHub::WriteAlignmentFragment(
     const int qrydst, const int dbstrdst,

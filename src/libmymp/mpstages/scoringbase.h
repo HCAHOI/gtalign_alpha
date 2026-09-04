@@ -58,6 +58,12 @@
 // -------------------------------------------------------------------------
 // GetPairScore: given squared normalizing distance d02, calculate score 
 // for a pair of atoms the squared distance between which is dst
+/**
+ * @brief 在CPU 刚体拟合与评分中读取 `GetPairScore` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param dst 接收目标数据的 `dst`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 float GetPairScore(float d02, float dst)
 {

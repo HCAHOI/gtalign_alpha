@@ -25,6 +25,18 @@
 // database chunk to include candidates proceeding to stages of more
 // detailed superposition search and refinement;
 //
+/**
+ * @brief 在CPU 对齐流水线中并行计算 `MpReform::SelectAndReformatKernel` 对应的数据。
+ * @param ndbCstrs2 控制当前步骤范围或规模的 `ndbCstrs2`。
+ * @param maxndbCposs 描述参考结构的 `maxndbCposs`。
+ * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpReform::SelectAndReformatKernel(
     const int ndbCstrs2,
     const int maxndbCposs,

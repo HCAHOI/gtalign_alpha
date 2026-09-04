@@ -39,6 +39,15 @@
 // TODO: constrain ilim even more with respect to areas of non-exploration:
 // lower and upper areas implied the anchor region and alignment bandwidth;
 // 
+/**
+ * @brief 在CPU 动态规划中读取 `GetMaqxNoIterations` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param blklen 控制当前步骤范围或规模的 `blklen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 __DINLINE__
 int GetMaqxNoIterations(
     int x, int y,

@@ -25,6 +25,43 @@
 //
 class MpStageSSRR: public MpStage1 {
 public:
+    /**
+     * @brief 构造 `MpStageSSRR`，初始化其负责的CPU 候选搜索与精修状态。
+     * @param maxndpiters 动态规划精修允许的最大迭代次数。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param minfraglen 参与初始叠合的最短片段长度。
+     * @param prescore 进入后续精修前要求的预筛选分数阈值。
+     * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param qystr1len 批次中最长查询结构的长度。
+     * @param dbstr1len 批次中最长参考结构的长度。
+     * @param qystrnlen 批次中最短查询结构的长度。
+     * @param dbstrnlen 批次中最短参考结构的长度。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param scores 保存或读取对齐分数的缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmem 当前计算阶段的主工作缓冲区。
+     * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpStageSSRR(
         const int maxndpiters,
         const uint maxnsteps,
@@ -59,9 +96,20 @@ public:
         )
     {}
 
+    /**
+     * @brief 在CPU 候选搜索与精修中运行 `Run` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void Run() {}
 
     template<bool USESEQSCORING>
+    /**
+     * @brief 按模板开关选择是否加入序列分数，运行二级结构引导的候选搜索与 DP 精修。
+     * @param maxndpiters 动态规划精修允许的最大迭代次数。
+     * @return 无返回值；二级结构/序列候选及其精修变换写入工作缓冲区。
+     */
     void RunSpecialized(const int maxndpiters)
     {
         //draw alignment based on ss and sequence similarity:
@@ -77,6 +125,12 @@ public:
 
 protected:
     template<bool USESEQSCORING>
+    /**
+     * @brief 用二级结构相容性以及可选的序列相似性建立一条 DP 对齐路径。
+     * @par 参数
+     * 无。
+     * @return 无返回值；回溯方向与匹配位置写入 DP 缓冲区。
+     */
     void Align();
 };
 
@@ -91,6 +145,12 @@ protected:
 // USESEQSCORING, flag of using sequence similarity scoring;
 //
 template<bool USESEQSCORING>
+/**
+ * @brief 在CPU 候选搜索与精修中对齐 `MpStageSSRR::Align` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageSSRR::Align()
 {

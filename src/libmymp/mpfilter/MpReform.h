@@ -24,6 +24,28 @@
 //
 class MpReform {
 public:
+    /**
+     * @brief 构造 `MpReform`，初始化其负责的CPU 对齐流水线状态。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpReform(
         const uint maxnsteps,
         char** querypmbeg, char** querypmend,
@@ -47,6 +69,12 @@ public:
         filterdata_(filterdata)
     {}
 
+    /**
+     * @brief 在CPU 对齐流水线中构造 `MakeDbCandidateList` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MakeDbCandidateList() {
         constexpr int memalignment = 
             mycemin((size_t)PMBSdatalignment, CuMemoryBase::GetMinMemAlignment());
@@ -55,6 +83,12 @@ public:
             querypmbeg_, bdbCpmbeg_, wrkmemaux_, filterdata_);
     }
 
+    /**
+     * @brief 在CPU 对齐流水线中处理 `SelectAndReformat` 对应的数据。
+     * @param ndbCstrs2 控制当前步骤范围或规模的 `ndbCstrs2`。
+     * @param maxndbCposs 描述参考结构的 `maxndbCposs`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SelectAndReformat(const int ndbCstrs2, const int maxndbCposs) {
         SelectAndReformatKernel(
             ndbCstrs2, maxndbCposs,  filterdata_,
@@ -64,6 +98,17 @@ public:
 
 protected:
     template<int DATALN>
+    /**
+     * @brief 在CPU 对齐流水线中构造 `MakeDbCandidateListHelper` 对应的数据。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void MakeDbCandidateListHelper(
         const int nqystrs, const int ndbCstrs, const int maxnsteps,
         const char* const * const __RESTRICT__ /* querypmbeg */,
@@ -71,6 +116,18 @@ protected:
         const float* const __RESTRICT__ wrkmemaux,
         uint* const __RESTRICT__ filterdata);
 
+    /**
+     * @brief 在CPU 对齐流水线中并行计算 `SelectAndReformatKernel` 对应的数据。
+     * @param ndbCstrs2 控制当前步骤范围或规模的 `ndbCstrs2`。
+     * @param maxndbCposs 描述参考结构的 `maxndbCposs`。
+     * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SelectAndReformatKernel(
         const int ndbCstrs2,
         const int maxndbCposs,
@@ -113,6 +170,17 @@ protected:
 // NOTE: processes the reference structures over all queries for flags;
 //
 template<int DATALN>
+/**
+ * @brief 在CPU 对齐流水线中构造 `MpReform::MakeDbCandidateListHelper` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param filterdata 供该函数读取或更新的 `filterdata` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpReform::MakeDbCandidateListHelper(
     const int nqystrs, const int ndbCstrs, const int maxnsteps,

@@ -26,6 +26,40 @@
 //
 class MpStageBase {
 public:
+    /**
+     * @brief 构造 `MpStageBase`，初始化其负责的CPU 候选搜索与精修状态。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param minfraglen 参与初始叠合的最短片段长度。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param qystr1len 批次中最长查询结构的长度。
+     * @param dbstr1len 批次中最长参考结构的长度。
+     * @param qystrnlen 批次中最短查询结构的长度。
+     * @param dbstrnlen 批次中最短参考结构的长度。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param scores 保存或读取对齐分数的缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmem 当前计算阶段的主工作缓冲区。
+     * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpStageBase(
         const uint maxnsteps,
         const uint minfraglen,
@@ -60,10 +94,33 @@ public:
         globvarsbuf_(globvarsbuf)
     {}
 
+    /**
+     * @brief 在CPU 候选搜索与精修中运行 `Run` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     virtual void Run() = 0;
 
 protected:
     template<int nEFFDS, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcCCMatrices_DPRefined_Complete` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcCCMatrices_DPRefined_Complete(
         const int qryndx,
         const int ndbCposs,
@@ -79,6 +136,26 @@ protected:
 
 
     template<int nEFFDS, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcCCMatrices_DPRefinedExtended_Complete` 对应的数据。
+     * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param d0 供该函数读取或更新的 `d0` 参数。
+     * @param dst32 接收目标数据的 `dst32`。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcCCMatrices_DPRefinedExtended_Complete(
         const int READCNST,
         const int qryndx,
@@ -96,6 +173,29 @@ protected:
 
 
     template<int XDIM, int DATALN, int CHCKDST>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcScoresUnrl_DPRefined_Complete` 对应的数据。
+     * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param d0 供该函数读取或更新的 `d0` 参数。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param d82 供该函数读取或更新的 `d82` 参数。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param scv 供该函数读取或更新的 `scv` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcScoresUnrl_DPRefined_Complete(
         const int READCNST,
         const int qryndx,
@@ -115,6 +215,26 @@ protected:
 
 
     template<int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `Calc2TMscoresUnrl_Complete` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param scv 供该函数读取或更新的 `scv` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Calc2TMscoresUnrl_Complete(
         const int qryndx,
         const int ndbCposs,
@@ -131,6 +251,21 @@ protected:
 
 
     template<bool WRITEFRAGINFO, bool CONDITIONAL>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveBestScoreAndTM_Complete` 对应的数据。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param dbstrndx 描述参考结构的 `dbstrndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+     * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+     * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveBestScoreAndTM_Complete(
         const float best,
         const int qryndx,
@@ -151,6 +286,20 @@ protected:
         bool GRANDUPDATE,
         bool FORCEWRITEFRAGINFO,
         int SECONDARYUPDATE>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveBestScoreAndTMAmongBests` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmemtmibest2nd 供当前步骤读取或更新的 `wrkmemtmibest2nd` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveBestScoreAndTMAmongBests(
         const int qryndx,
         const int rfnblkndx,
@@ -165,18 +314,45 @@ protected:
 
 protected:
     template<int nEFFDS, int XDIM>
+    /**
+     * @brief 在CPU 候选搜索与精修中检查 `CheckConvergenceRefined_Complete` 对应的数据。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param ccmLast 供该函数读取或更新的 `ccmLast` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CheckConvergenceRefined_Complete(
         const float (* __RESTRICT__ ccm)[XDIM],
         float* __RESTRICT__ ccmLast);
 
 
     template<int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateCCMOneAlnPos_DPRefined` 对应的数据。
+     * @param pos 供该函数读取或更新的 `pos` 参数。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateCCMOneAlnPos_DPRefined(
         int pos, const int dblen,
         const float* const __RESTRICT__ tmpdpalnpossbuffer,
         float (* __RESTRICT__ ccm)[XDIM], int pi);
 
     template<int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateCCMOneAlnPos_DPExtended` 对应的数据。
+     * @param d02s 供该函数读取或更新的 `d02s` 参数。
+     * @param pos 供该函数读取或更新的 `pos` 参数。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateCCMOneAlnPos_DPExtended(
         float d02s,
         int pos, const int dblen, int scrpos,
@@ -185,6 +361,18 @@ protected:
         float (* __RESTRICT__ ccm)[XDIM], int pi);
 
     template<int XDIM, int UPDATENPOS = 0>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateCCMCacheHelper` 对应的数据。
+     * @param qx 供该函数读取或更新的 `qx` 参数。
+     * @param qy 供该函数读取或更新的 `qy` 参数。
+     * @param qz 供该函数读取或更新的 `qz` 参数。
+     * @param rx 供该函数读取或更新的 `rx` 参数。
+     * @param ry 供该函数读取或更新的 `ry` 参数。
+     * @param rz 供该函数读取或更新的 `rz` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateCCMCacheHelper(
         const float qx, const float qy, const float qz,
         const float rx, const float ry, const float rz,
@@ -192,6 +380,20 @@ protected:
 
 
     template<int SAVEPOS, int CHCKDST, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateOneAlnPosScore_DPRefined` 对应的数据。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param d82 供该函数读取或更新的 `d82` 参数。
+     * @param pos 供该函数读取或更新的 `pos` 参数。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param scv 供该函数读取或更新的 `scv` 参数。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     float UpdateOneAlnPosScore_DPRefined(
         float d02, float d82,
         int pos, int dblen, int scrpos,
@@ -201,11 +403,34 @@ protected:
         float* const __RESTRICT__ tmpdpdiagbuffers, int pi);
 
     template<int XDIM>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `StoreMinDst` 对应的数据。
+     * @param dst 接收目标数据的 `dst`。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void StoreMinDst(
         float dst, float (* __RESTRICT__ dstv)[XDIM], int pi);
 
 
     template<int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中更新 `UpdateOneAlnPosScore_2TMscore` 对应的数据。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param pos 供该函数读取或更新的 `pos` 参数。
+     * @param po1 供该函数读取或更新的 `po1` 参数。
+     * @param dblen 控制当前步骤范围或规模的 `dblen`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param scv 供该函数读取或更新的 `scv` 参数。
+     * @param pi 供该函数读取或更新的 `pi` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void UpdateOneAlnPosScore_2TMscore(
         const int qrydst, const int dbstrdst,
         float d02, int pos, int po1, int dblen,
@@ -217,12 +442,32 @@ protected:
 
 
     template<bool DOUBLY_INVERTED = false>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcTfmMatrices_Complete` 对应的数据。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param ccm 供该函数读取或更新的 `ccm` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcTfmMatrices_Complete(
         int qrylen, int dbstrlen, float* ccm);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcTfmMatrices_DynamicOrientation_Complete` 对应的数据。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param ccm 供该函数读取或更新的 `ccm` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcTfmMatrices_DynamicOrientation_Complete(
         int qrylen, int dbstrlen, float* ccm);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcTfmMatricesHelper_Complete` 对应的数据。
+     * @param ccm 供该函数读取或更新的 `ccm` 参数。
+     * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcTfmMatricesHelper_Complete(float* ccm, float nalnposs);
 
 protected:
@@ -254,6 +499,12 @@ protected:
 // cross-covariance matrix data between the query and reference structures;
 //
 template<int nEFFDS, int XDIM>
+/**
+ * @brief 在CPU 候选搜索与精修中检查 `MpStageBase::CheckConvergenceRefined_Complete` 对应的数据。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param ccmLast 供该函数读取或更新的 `ccmLast` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CheckConvergenceRefined_Complete(
     const float (* __RESTRICT__ ccm)[XDIM],
@@ -299,6 +550,23 @@ void MpStageBase::CheckConvergenceRefined_Complete(
 // ccm, cache for the cross-covarinace matrix and related data;
 // 
 template<int nEFFDS, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcCCMatrices_DPRefined_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcCCMatrices_DPRefined_Complete(
     const int qryndx,
@@ -380,6 +648,26 @@ void MpStageBase::CalcCCMatrices_DPRefined_Complete(
 // ccm, cache for the cross-covariance matrix and related data;
 // 
 template<int nEFFDS, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcCCMatrices_DPRefinedExtended_Complete` 对应的数据。
+ * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param dst32 接收目标数据的 `dst32`。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcCCMatrices_DPRefinedExtended_Complete(
     const int READCNST,
@@ -463,6 +751,15 @@ void MpStageBase::CalcCCMatrices_DPRefinedExtended_Complete(
   notinbranch
 #endif
 template<int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageBase::UpdateCCMOneAlnPos_DPRefined` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::UpdateCCMOneAlnPos_DPRefined(
     int pos, const int dblen,
@@ -501,6 +798,18 @@ void MpStageBase::UpdateCCMOneAlnPos_DPRefined(
   notinbranch
 #endif
 template<int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageBase::UpdateCCMOneAlnPos_DPExtended` 对应的数据。
+ * @param d02s 供该函数读取或更新的 `d02s` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::UpdateCCMOneAlnPos_DPExtended(
     float d02s,
@@ -539,6 +848,18 @@ void MpStageBase::UpdateCCMOneAlnPos_DPExtended(
 #pragma omp declare simd linear(pi:1) uniform(ccm) notinbranch
 #endif
 template<int XDIM, int UPDATENPOS>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageBase::UpdateCCMCacheHelper` 对应的数据。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::UpdateCCMCacheHelper(
     const float qx, const float qy, const float qz,
@@ -595,6 +916,29 @@ void MpStageBase::UpdateCCMCacheHelper(
 // scv, cache for scores;
 //
 template<int XDIM, int DATALN, int CHCKDST>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcScoresUnrl_DPRefined_Complete` 对应的数据。
+ * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcScoresUnrl_DPRefined_Complete(
     const int READCNST,
@@ -737,6 +1081,20 @@ void MpStageBase::CalcScoresUnrl_DPRefined_Complete(
   notinbranch
 #endif
 template<int SAVEPOS, int CHCKDST, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageBase::UpdateOneAlnPosScore_DPRefined` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 float MpStageBase::UpdateOneAlnPosScore_DPRefined(
     float d02, float d82,
@@ -780,6 +1138,13 @@ float MpStageBase::UpdateOneAlnPosScore_DPRefined(
     notinbranch
 #endif
 template<int XDIM>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageBase::StoreMinDst` 对应的数据。
+ * @param dst 接收目标数据的 `dst`。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::StoreMinDst(
     float dst, float (* __RESTRICT__ dstv)[XDIM], int pi)
@@ -821,6 +1186,22 @@ void MpStageBase::StoreMinDst(
   notinbranch
 #endif
 template<int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中更新 `MpStageBase::UpdateOneAlnPosScore_2TMscore` 对应的数据。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param po1 供该函数读取或更新的 `po1` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @param pi 供该函数读取或更新的 `pi` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::UpdateOneAlnPosScore_2TMscore(
     const int qrydst, const int dbstrdst,
@@ -873,6 +1254,26 @@ void MpStageBase::UpdateOneAlnPosScore_2TMscore(
 // scv, cache for scores;
 //
 template<int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::Calc2TMscoresUnrl_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::Calc2TMscoresUnrl_Complete(
     const int qryndx,
@@ -969,6 +1370,12 @@ c      OR ALL WEIGHTS EQUAL TO ZERO.
 c
 c-----------------------------------------------------------------------
 */
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcTfmMatricesHelper_Complete` 对应的数据。
+ * @param ccm 供该函数读取或更新的 `ccm` 参数。
+ * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcTfmMatricesHelper_Complete(float* ccm, float nalnposs)
 {
@@ -1056,6 +1463,13 @@ void MpStageBase::CalcTfmMatricesHelper_Complete(float* ccm, float nalnposs)
 // again; NOTE: for numerical stability (index) and symmetric results;
 //
 template<bool DOUBLY_INVERTED>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcTfmMatrices_Complete` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param ccm 供该函数读取或更新的 `ccm` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcTfmMatrices_Complete(
     int qrylen, int dbstrlen, float* ccm)
@@ -1082,6 +1496,13 @@ void MpStageBase::CalcTfmMatrices_Complete(
 
 // CalcTfmMatrices_DynamicOrientation_Complete: calculate tranformation 
 // matrices wrt query or reference structure, whichever is longer;
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageBase::CalcTfmMatrices_DynamicOrientation_Complete` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param ccm 供该函数读取或更新的 `ccm` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::CalcTfmMatrices_DynamicOrientation_Complete(
     int qrylen, int dbstrlen, float* ccm)
@@ -1124,6 +1545,21 @@ void MpStageBase::CalcTfmMatrices_DynamicOrientation_Complete(
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool WRITEFRAGINFO, bool CONDITIONAL>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageBase::SaveBestScoreAndTM_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::SaveBestScoreAndTM_Complete(
     const float best,
@@ -1208,6 +1644,20 @@ template<
     bool GRANDUPDATE,
     bool FORCEWRITEFRAGINFO,
     int SECONDARYUPDATE>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageBase::SaveBestScoreAndTMAmongBests` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmemtmibest2nd 供当前步骤读取或更新的 `wrkmemtmibest2nd` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageBase::SaveBestScoreAndTMAmongBests(
     const int qryndx,

@@ -62,6 +62,13 @@
 // data, data of size DIM;
 // tmp, temporary array of dimension DIM;
 template <int LEVEL, typename T>
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixsum` 对应的数据。
+ * @param DIM 供该函数读取或更新的 `DIM` 参数。
+ * @param data 供该函数读取或更新的 `data` 参数。
+ * @param tmp 供该函数读取或更新的 `tmp` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void mysimdincprefixsum(const int DIM, T* const data, T* const tmp)
 {
@@ -75,7 +82,21 @@ void mysimdincprefixsum(const int DIM, T* const data, T* const tmp)
         data[pi] += tmp[pi];
 }
 
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixsum<0>` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @param param2 供该函数读取或更新的 `param2` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 template <> inline void mysimdincprefixsum<0>(const int, float* const, float* const) {}
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixsum<0>` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @param param2 供该函数读取或更新的 `param2` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 template <> inline void mysimdincprefixsum<0>(const int, int* const, int* const) {}
 
 // -------------------------------------------------------------------------
@@ -89,6 +110,13 @@ template <> inline void mysimdincprefixsum<0>(const int, int* const, int* const)
 // data, prefix min/max data of size DIM;
 // tmp, temporary array of dimension DIM;
 template <int LEVEL, int MINMAX, typename T>
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixminmax` 对应的数据。
+ * @param DIM 供该函数读取或更新的 `DIM` 参数。
+ * @param data 供该函数读取或更新的 `data` 参数。
+ * @param tmp 供该函数读取或更新的 `tmp` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void mysimdincprefixminmax(const int DIM, T* const data, T* const tmp)
 {
@@ -104,7 +132,21 @@ void mysimdincprefixminmax(const int DIM, T* const data, T* const tmp)
     }
 }
 
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixminmax<0, 0>` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @param param2 供该函数读取或更新的 `param2` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 template <> inline void mysimdincprefixminmax<0,PFX_MIN>(const int, float* const, float* const) {}
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixminmax<0, 1>` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @param param2 供该函数读取或更新的 `param2` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 template <> inline void mysimdincprefixminmax<0,PFX_MAX>(const int, float* const, float* const) {}
 
 // -------------------------------------------------------------------------
@@ -118,6 +160,15 @@ template <> inline void mysimdincprefixminmax<0,PFX_MAX>(const int, float* const
 // tmpndx, temporary index array of dimension DIM;
 // NOTE: index should be pre-intiliazed with sequential values;
 template <int LEVEL, typename T>
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixmaxndx` 对应的数据。
+ * @param DIM 供该函数读取或更新的 `DIM` 参数。
+ * @param data 供该函数读取或更新的 `data` 参数。
+ * @param index 供该函数读取或更新的 `index` 参数。
+ * @param tmp 供该函数读取或更新的 `tmp` 参数。
+ * @param tmpndx 供该函数读取或更新的 `tmpndx` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void mysimdincprefixmaxndx(const int DIM, T* const data, int* const index, T* const tmp, int* const tmpndx)
 {
@@ -135,6 +186,15 @@ void mysimdincprefixmaxndx(const int DIM, T* const data, int* const index, T* co
         // mymaxassgn(data[pi], tmp[pi], index[pi], tmpndx[pi]);
 }
 
+/**
+ * @brief 在CPU 对齐流水线中处理 `mysimdincprefixmaxndx<0>` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @param param2 供该函数读取或更新的 `param2` 参数。
+ * @param param3 供该函数读取或更新的 `param3` 参数。
+ * @param param4 供该函数读取或更新的 `param4` 参数。
+ * @param param5 供该函数读取或更新的 `param5` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 template <> inline void mysimdincprefixmaxndx<0>(const int, float* const, int* const, float* const, int* const) {}
 
 // -------------------------------------------------------------------------

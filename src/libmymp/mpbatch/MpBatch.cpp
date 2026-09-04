@@ -35,6 +35,13 @@
 // -------------------------------------------------------------------------
 // constructor
 //
+/**
+ * @brief 构造 `MpBatch`，初始化其负责的CPU 对齐流水线状态。
+ * @param gmem 供当前步骤读取或更新的 `gmem` 缓冲区。
+ * @param dareano 供该函数读取或更新的 `dareano` 参数。
+ * @param writer 供该函数读取或更新的 `writer` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 MpBatch::MpBatch(
     MpGlobalMemory* gmem, int dareano, TdAlnWriter* writer)
 :
@@ -80,6 +87,12 @@ MpBatch::MpBatch(
 // -------------------------------------------------------------------------
 // destructor
 //
+/**
+ * @brief 销毁 `MpBatch`，释放其管理的CPU 对齐流水线资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 MpBatch::~MpBatch()
 {
     MYMSG("MpBatch::~MpBatch", 4);
@@ -101,6 +114,36 @@ MpBatch::~MpBatch()
 // bdbCpmbeg, beginning addresses of structures read from the database; 
 // bdbCpmend, terminal addresses of structures read from the database;
 //
+/**
+ * @brief 在CPU 对齐流水线中筛选 `MpBatch::FilteroutReferences` 对应的数据。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param querypmend 查询结构打包字段的结束指针数组。
+ * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param ndbCposs2 控制当前步骤范围或规模的 `ndbCposs2`。
+ * @param ndbCstrs2 控制当前步骤范围或规模的 `ndbCstrs2`。
+ * @param dbstr1len2 控制当前步骤范围或规模的 `dbstr1len2`。
+ * @param dbstrnlen2 控制当前步骤范围或规模的 `dbstrnlen2`。
+ * @param dbxpad2 描述参考结构的 `dbxpad2`。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tfmmemory 供当前步骤读取或更新的 `tfmmemory` 缓冲区。
+ * @param auxwrkmemory 供当前步骤读取或更新的 `auxwrkmemory` 缓冲区。
+ * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpBatch::FilteroutReferences(
     char** queryndxpmbeg,
     char** queryndxpmend,
@@ -205,6 +248,23 @@ void MpBatch::FilteroutReferences(
 // bdbCpmbeg, beginning addresses of structures read from the database; 
 // bdbCpmend, terminal addresses of structures read from the database;
 //
+/**
+ * @brief 对一个查询批次与参考批次执行完整 CPU GTAlign 流水线。
+ * @param qrysernrbeg 描述查询结构的 `qrysernrbeg`。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+ * @param querydesc 描述查询结构的 `querydesc`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param querypmend 查询结构打包字段的结束指针数组。
+ * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+ * @param qrscnt 供该函数读取或更新的 `qrscnt` 参数。
+ * @param cnt 供该函数读取或更新的 `cnt` 参数。
+ * @return 无返回值；筛选、种子搜索、DP 精修及最终对齐结果写入共享工作区并交给输出线程。
+ */
 void MpBatch::ProcessBlock(
     int qrysernrbeg,
     char** queryndxpmbeg,
@@ -554,6 +614,26 @@ void MpBatch::ProcessBlock(
 // max number of passed db reference structures (maxnstrs) for each 
 // query in the chunk;
 //
+/**
+ * @brief 在CPU 对齐流水线中处理 `MpBatch::TriggerFinalization` 对应的数据。
+ * @param tdrtn 供该函数读取或更新的 `tdrtn` 参数。
+ * @param qrysernrbeg 描述查询结构的 `qrysernrbeg`。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param querydesc 描述查询结构的 `querydesc`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param querypmend 查询结构打包字段的结束指针数组。
+ * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param qrscnt 供该函数读取或更新的 `qrscnt` 参数。
+ * @param cnt 供该函数读取或更新的 `cnt` 参数。
+ * @param szaligns2 供该函数读取或更新的 `szaligns2` 参数。
+ * @param passedstats 供该函数读取或更新的 `passedstats` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpBatch::TriggerFinalization(
     double tdrtn,
     int qrysernrbeg,

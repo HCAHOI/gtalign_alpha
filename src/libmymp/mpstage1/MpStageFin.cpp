@@ -42,6 +42,18 @@
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase1Kernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase1Kernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -268,6 +280,18 @@ INSTANTIATE_MpStageFin_FinalFragmentBasedDPAlignmentRefinementPhase1Kernel(false
 // tfmmem, memory region for transformation matrices;
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase2Kernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase2Kernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -509,6 +533,18 @@ INSTANTIATE_MpStageFin_FinalFragmentBasedDPAlignmentRefinementPhase2Kernel(false
 // tfmmem, memory region for transformation matrices;
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -745,6 +781,19 @@ INSTANTIATE_MpStageFin_FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearchK
 // alndatamem, memory for full alignment information;
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase1Kernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase1Kernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1007,6 +1056,35 @@ INSTANTIATE_MpStageFin_ProductionFragmentBasedDPAlignmentRefinementPhase1Kernel(
 // tmpdpdiagbuffers, temporary diagonal buffers for positional scores/dsts;
 //
 template<int nEFFDS, int XDIM, int DATALN, bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFin::ProductionRefinementPhase2InnerLoop` 对应的数据。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+ * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @param ccmLast 供该函数读取或更新的 `ccmLast` 参数。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param tfmBest 表示或保存刚体变换的 `tfmBest`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFin::ProductionRefinementPhase2InnerLoop(
     const int sfragfctxndx,
@@ -1094,6 +1172,19 @@ void MpStageFin::ProductionRefinementPhase2InnerLoop(
 // tfmmem, memory for production transformation matrices;
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearchKernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1308,6 +1399,19 @@ INSTANTIATE_MpStageFin_ProductionFragmentBasedDPAlignmentRefinementPhase2_fullse
 // tfmmem, memory for production transformation matrices;
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2Kernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2Kernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1526,6 +1630,19 @@ INSTANTIATE_MpStageFin_ProductionFragmentBasedDPAlignmentRefinementPhase2Kernel(
 // tfmmem, memory for production transformation matrices;
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearchKernel` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearchKernel(
     const int nmaxconvit,
     const char* const * const __RESTRICT__ querypmbeg,
@@ -1720,6 +1837,16 @@ INSTANTIATE_MpStageFin_ProductionFragmentBasedDPAlignmentRefinementPhase2_logsea
 // tfmmem, memory of transformation matrices;
 // alndatamem, memory for full alignment information, including scores;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::Production2TMscoresKernel` 对应的数据。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::Production2TMscoresKernel(
     const char* const * const __RESTRICT__ querypmbeg,
     const char* const * const __RESTRICT__ bdbCpmbeg,
@@ -1832,6 +1959,11 @@ void MpStageFin::Production2TMscoresKernel(
 // tfmmem, memory section for transformation matrices;
 // NOTE: unrolling by a factor of N;
 // 
+/**
+ * @brief 在CPU 候选搜索与精修中并行计算 `MpStageFin::RevertTfmMatricesKernel` 对应的数据。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpStageFin::RevertTfmMatricesKernel(
     float* const __RESTRICT__ tfmmem)
 {

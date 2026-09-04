@@ -23,6 +23,14 @@
 // nstrs, total number of structures in the chunk;
 // str1len, length of the largest structure;
 //
+/**
+ * @brief 在CPU 二级结构计算中并行计算 `MpSecStr::ssk_kernel_helper` 对应的数据。
+ * @param pmbeg 供该函数读取或更新的 `pmbeg` 参数。
+ * @param pmend 供该函数读取或更新的 `pmend` 参数。
+ * @param nstrs 控制当前步骤范围或规模的 `nstrs`。
+ * @param str1len 控制当前步骤范围或规模的 `str1len`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpSecStr::ssk_kernel_helper(
     char* const * const pmbeg, char* const * const /*pmend*/,
     int nstrs, int str1len)
@@ -122,6 +130,15 @@ void MpSecStr::ssk_kernel_helper(
 // nstrs, total number of structures in the chunk;
 // nposs, total number of (query or reference) positions in the chunk;
 // 
+/**
+ * @brief 在CPU 二级结构计算中并行计算 `MpSecStr::nass_calcsecstrs_kernel_helper` 对应的数据。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param pmbeg 供该函数读取或更新的 `pmbeg` 参数。
+ * @param pmend 供该函数读取或更新的 `pmend` 参数。
+ * @param nstrs 控制当前步骤范围或规模的 `nstrs`。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpSecStr::nass_calcsecstrs_kernel_helper(
     const float *const __RESTRICT__ tmpdpdiagbuffers,
     char *const *const pmbeg, char *const *const /*pmend*/,
@@ -209,6 +226,12 @@ void MpSecStr::nass_calcsecstrs_kernel_helper(
 // tmpdpdiagbuffers, temporary buffer for distances and positions;
 // nposs, total number of (query or reference) positions in the chunk;
 //
+/**
+ * @brief 在CPU 二级结构计算中并行计算 `MpSecStr::nass_initialize_kernel_helper` 对应的数据。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpSecStr::nass_initialize_kernel_helper(
     float *const __RESTRICT__ tmpdpdiagbuffers,
     const int nposs)
@@ -247,6 +270,17 @@ void MpSecStr::nass_initialize_kernel_helper(
 // nposs, total number of reference positions in the chunk;
 // atomtype, nucleic acid atom type processed;
 // 
+/**
+ * @brief 在CPU 二级结构计算中并行计算 `MpSecStr::nass_calcdistances_kernel_helper` 对应的数据。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param pmbeg 供该函数读取或更新的 `pmbeg` 参数。
+ * @param pmend 供该函数读取或更新的 `pmend` 参数。
+ * @param nstrs 控制当前步骤范围或规模的 `nstrs`。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @param str1len 控制当前步骤范围或规模的 `str1len`。
+ * @param atomtype 供该函数读取或更新的 `atomtype` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void MpSecStr::nass_calcdistances_kernel_helper(
     float *const __RESTRICT__ tmpdpdiagbuffers,
     const char *const *const pmbeg, const char *const *const /*pmend*/,

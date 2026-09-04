@@ -30,6 +30,48 @@
 //
 class MpStageFrg3: public MpStage1 {
 public:
+    /**
+     * @brief 构造 `MpStageFrg3`，初始化其负责的CPU 候选搜索与精修状态。
+     * @param maxndpiters 动态规划精修允许的最大迭代次数。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param minfraglen 参与初始叠合的最短片段长度。
+     * @param prescore 进入后续精修前要求的预筛选分数阈值。
+     * @param stepinit 供该函数读取或更新的 `stepinit` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+     * @param nqystrs 当前批次中的查询结构数量。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param nqyposs 当前批次中查询结构的总位置数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param qystr1len 批次中最长查询结构的长度。
+     * @param dbstr1len 批次中最长参考结构的长度。
+     * @param qystrnlen 批次中最短查询结构的长度。
+     * @param dbstrnlen 批次中最短参考结构的长度。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param scores 保存或读取对齐分数的缓冲区。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+     * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+     * @param maxscoordsbuf 保存动态规划最大分数坐标的缓冲区。
+     * @param btckdata 保存动态规划回溯方向的缓冲区。
+     * @param wrkmem 当前计算阶段的主工作缓冲区。
+     * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+     * @param wrkmemorytmalt 供当前步骤读取或更新的 `wrkmemorytmalt` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+     * @param alndatamem 保存最终对齐统计量的缓冲区。
+     * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+     * @param globvarsbuf 供当前步骤读取或更新的 `globvarsbuf` 缓冲区。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     MpStageFrg3(
         const int maxndpiters,
         const uint maxnsteps,
@@ -78,6 +120,12 @@ public:
         bdbCndxpmbeg_(bdbCndxpmbeg), bdbCndxpmend_(bdbCndxpmend)
     {}
 
+    /**
+     * @brief 运行第三类片段搜索：先做局部相似性 DP，再从空间近邻片段产生并精修候选叠合。
+     * @par 参数
+     * 无。
+     * @return 无返回值；更细粒度的片段候选、分数与变换写入共享工作缓冲区。
+     */
     virtual void Run() {
         const int simthreshold = CLOptions::GetC_TRIGGER();
         static const float thrsimilarityperc = (float)simthreshold / 100.0f;
@@ -114,6 +162,19 @@ public:
 
 
 protected:
+    /**
+     * @brief 在CPU 候选搜索与精修中并行计算 `ScoreBasedOnFragmatching3Kernel` 对应的数据。
+     * @param thrsimilarityperc 供该函数读取或更新的 `thrsimilarityperc` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ScoreBasedOnFragmatching3Kernel(
         const float thrsimilarityperc,
         const char* const * const __RESTRICT__ querypmbeg,
@@ -125,6 +186,15 @@ protected:
         float* const __RESTRICT__ wrkmemaux,
         const char* const __RESTRICT__ dpscoremtx);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中排序 `SortAmongDPswiftsKernel` 对应的数据。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmtarget 供当前步骤读取或更新的 `wrkmemtmtarget` 缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SortAmongDPswiftsKernel(
         const char* const * const __RESTRICT__ bdbCpmbeg,
         const float* const __RESTRICT__ tmpdpdiagbuffers,
@@ -132,11 +202,34 @@ protected:
         float* const __RESTRICT__ wrkmemtmtarget,
         float* const __RESTRICT__ wrkmemaux);
 
+    /**
+     * @brief 在CPU 候选搜索与精修中精修 `Refine_tfmaltconfig` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Refine_tfmaltconfig();
 
 
 protected:
     template<int nFRGS, int DPSCDIMY, int DPSCDIMX, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcLocalSimilarity2_frg2` 对应的数据。
+     * @param thrsimilarityperc 供该函数读取或更新的 `thrsimilarityperc` 参数。
+     * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+     * @param dpsc 供该函数读取或更新的 `dpsc` 参数。
+     * @param convflags 供该函数读取或更新的 `convflags` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcLocalSimilarity2_frg2(
         const float thrsimilarityperc,
         const int seedapproachstruct,
@@ -151,6 +244,29 @@ protected:
 
 
     template<int SCORDIMX, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProduceAlignmentUsingDynamicIndex2` 对应的数据。
+     * @param secstrmatchaln 供该函数读取或更新的 `secstrmatchaln` 参数。
+     * @param stack 供该函数读取或更新的 `stack` 参数。
+     * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+     * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @param ssas 供该函数读取或更新的 `ssas` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProduceAlignmentUsingDynamicIndex2(
         const bool secstrmatchaln,
         float* const __RESTRICT__ stack,
@@ -169,6 +285,28 @@ protected:
         char* const __RESTRICT__ ssas);
 
     template<int SECSTRFILT, int SCORDIMX, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProduceAlignmentUsingIndex2Reference` 对应的数据。
+     * @param stack 供该函数读取或更新的 `stack` 参数。
+     * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+     * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @param ssas 供该函数读取或更新的 `ssas` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProduceAlignmentUsingIndex2Reference(
         float* const __RESTRICT__ stack,
         const int stacksize,
@@ -186,6 +324,28 @@ protected:
         char* const __RESTRICT__ ssas);
 
     template<int SECSTRFILT, int SCORDIMX, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `ProduceAlignmentUsingIndex2Query` 对应的数据。
+     * @param stack 供该函数读取或更新的 `stack` 参数。
+     * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+     * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+     * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+     * @param qrypos 描述查询结构的 `qrypos`。
+     * @param rfnpos 描述参考结构的 `rfnpos`。
+     * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+     * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @param ssas 供该函数读取或更新的 `ssas` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProduceAlignmentUsingIndex2Query(
         float* const __RESTRICT__ stack,
         const int stacksize,
@@ -204,12 +364,28 @@ protected:
 
 
     template<int nEFFDS, int XDIM, int SCORDIMX>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcCCMatrices_SWFTscan_Complete` 对应的数据。
+     * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcCCMatrices_SWFTscan_Complete(
         const int nalnposs,
         const float* const __RESTRICT__ coords,
         float (* __RESTRICT__ ccm)[XDIM]);
 
     template<int nEFFDS, int XDIM, int SCORDIMX>
+    /**
+     * @brief 在CPU 候选搜索与精修中计算 `CalcScoresUnrl_SWFTscanProgressive_Complete` 对应的数据。
+     * @param d02 供该函数读取或更新的 `d02` 参数。
+     * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param coords 供该函数读取或更新的 `coords` 参数。
+     * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalcScoresUnrl_SWFTscanProgressive_Complete(
         const float d02,
         const int nalnposs,
@@ -219,6 +395,19 @@ protected:
 
 
     template<int N2SCTS, int NTOPTFMS, int SECTION2, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `Save2ndryScoreAndTM_Complete` 对应的数据。
+     * @param best 供该函数读取或更新的 `best` 参数。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param dbstrndx 描述参考结构的 `dbstrndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param nthreads 控制当前步骤范围或规模的 `nthreads`。
+     * @param tid 供该函数读取或更新的 `tid` 参数。
+     * @param tfm 表示或保存刚体变换的 `tfm`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Save2ndryScoreAndTM_Complete(
         const float best,
         const int qryndx,
@@ -231,6 +420,20 @@ protected:
         float* __RESTRICT__ wrkmemtmibest);
 
     template<int NTOPTFMS, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveTopNScoresAndTMsAmongBests` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+     * @param scoN 供该函数读取或更新的 `scoN` 参数。
+     * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveTopNScoresAndTMsAmongBests(
         const int qryndx,
         const int rfnblkndx,
@@ -244,6 +447,21 @@ protected:
         float* __RESTRICT__ wrkmemaux);
 
     template<int N2SCTS, int NTOPTFMS, int SECTION2, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中保存 `SaveTopNScoresAndTMsAmongSecondaryBests` 对应的数据。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+     * @param nthreads 控制当前步骤范围或规模的 `nthreads`。
+     * @param scoN 供该函数读取或更新的 `scoN` 参数。
+     * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+     * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SaveTopNScoresAndTMsAmongSecondaryBests(
         const int qryndx,
         const int rfnblkndx,
@@ -259,6 +477,25 @@ protected:
 
 
     template<int N2SCTS, int NTOPTFMS, int NMAXREFN, int XDIM, int DATALN>
+    /**
+     * @brief 在CPU 候选搜索与精修中排序 `SortBestDPscoresAndTMsAmongDPswifts` 对应的数据。
+     * @param SECTION 供该函数读取或更新的 `SECTION` 参数。
+     * @param nbranches 控制当前步骤范围或规模的 `nbranches`。
+     * @param qryndx 描述查询结构的 `qryndx`。
+     * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+     * @param ndbCstrs 当前批次中的参考结构数量。
+     * @param ndbCposs 当前批次中参考结构的总位置数。
+     * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+     * @param maxnsteps 每对结构保留的候选搜索步数。
+     * @param scoN 供该函数读取或更新的 `scoN` 参数。
+     * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+     * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+     * @param wrkmemtmtarget 供当前步骤读取或更新的 `wrkmemtmtarget` 缓冲区。
+     * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SortBestDPscoresAndTMsAmongDPswifts(
         const int SECTION, 
         const int nbranches,
@@ -279,6 +516,27 @@ protected:
 
 protected:
     template<int SECSTRFILT>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `NNByIndexQuery` 对应的数据。
+     * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+     * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+     * @param qxn 供该函数读取或更新的 `qxn` 参数。
+     * @param qyn 供该函数读取或更新的 `qyn` 参数。
+     * @param qzn 供该函数读取或更新的 `qzn` 参数。
+     * @param rx 供该函数读取或更新的 `rx` 参数。
+     * @param ry 供该函数读取或更新的 `ry` 参数。
+     * @param rz 供该函数读取或更新的 `rz` 参数。
+     * @param rss 供该函数读取或更新的 `rss` 参数。
+     * @param qrydst 描述查询结构的 `qrydst`。
+     * @param root 供该函数读取或更新的 `root` 参数。
+     * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param stack 供该函数读取或更新的 `stack` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void NNByIndexQuery(
         int STACKSIZE,
         int& nestndx,
@@ -292,6 +550,27 @@ protected:
         float* const __RESTRICT__ stack);
 
     template<int SECSTRFILT>
+    /**
+     * @brief 在CPU 候选搜索与精修中处理 `NNByIndexReference` 对应的数据。
+     * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+     * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+     * @param rxn 供该函数读取或更新的 `rxn` 参数。
+     * @param ryn 供该函数读取或更新的 `ryn` 参数。
+     * @param rzn 供该函数读取或更新的 `rzn` 参数。
+     * @param qx 供该函数读取或更新的 `qx` 参数。
+     * @param qy 供该函数读取或更新的 `qy` 参数。
+     * @param qz 供该函数读取或更新的 `qz` 参数。
+     * @param qss 供该函数读取或更新的 `qss` 参数。
+     * @param dbstrdst 描述参考结构的 `dbstrdst`。
+     * @param root 供该函数读取或更新的 `root` 参数。
+     * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param stack 供该函数读取或更新的 `stack` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void NNByIndexReference(
         int STACKSIZE,
         int& nestndx,
@@ -332,6 +611,23 @@ protected:
 // convflags, convergence flags for fragment indices 0 and 1;
 // 
 template<int nFRGS, int DPSCDIMY, int DPSCDIMX, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageFrg3::CalcLocalSimilarity2_frg2` 对应的数据。
+ * @param thrsimilarityperc 供该函数读取或更新的 `thrsimilarityperc` 参数。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+ * @param dpsc 供该函数读取或更新的 `dpsc` 参数。
+ * @param convflags 供该函数读取或更新的 `convflags` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::CalcLocalSimilarity2_frg2(
     const float thrsimilarityperc,
@@ -429,6 +725,29 @@ void MpStageFrg3::CalcLocalSimilarity2_frg2(
 // for parameter description;
 // 
 template<int SCORDIMX, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFrg3::ProduceAlignmentUsingDynamicIndex2` 对应的数据。
+ * @param secstrmatchaln 供该函数读取或更新的 `secstrmatchaln` 参数。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @param ssas 供该函数读取或更新的 `ssas` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::ProduceAlignmentUsingDynamicIndex2(
     const bool secstrmatchaln,
@@ -498,6 +817,28 @@ void MpStageFrg3::ProduceAlignmentUsingDynamicIndex2(
 // ssas, cache for secondary structure assignments;
 // 
 template<int SECSTRFILT, int SCORDIMX, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFrg3::ProduceAlignmentUsingIndex2Reference` 对应的数据。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @param ssas 供该函数读取或更新的 `ssas` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::ProduceAlignmentUsingIndex2Reference(
     float* const __RESTRICT__ stack,
@@ -601,6 +942,28 @@ void MpStageFrg3::ProduceAlignmentUsingIndex2Reference(
 // ssas, cache for secondary structure assignments;
 // 
 template<int SECSTRFILT, int SCORDIMX, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFrg3::ProduceAlignmentUsingIndex2Query` 对应的数据。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @param stacksize 控制当前步骤范围或规模的 `stacksize`。
+ * @param windowsize 控制当前步骤范围或规模的 `windowsize`。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param WRTNDX 供该函数读取或更新的 `WRTNDX` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @param ssas 供该函数读取或更新的 `ssas` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::ProduceAlignmentUsingIndex2Query(
     float* const __RESTRICT__ stack,
@@ -698,6 +1061,13 @@ void MpStageFrg3::ProduceAlignmentUsingIndex2Query(
 // ccm, cache for the cross-covariance matrix and related data;
 // 
 template<int nEFFDS, int XDIM, int SCORDIMX>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageFrg3::CalcCCMatrices_SWFTscan_Complete` 对应的数据。
+ * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::CalcCCMatrices_SWFTscan_Complete(
     const int nalnposs,
@@ -755,6 +1125,15 @@ void MpStageFrg3::CalcCCMatrices_SWFTscan_Complete(
 // ccm, cache for the cross-covariance matrix and related data;
 // 
 template<int nEFFDS, int XDIM, int SCORDIMX>
+/**
+ * @brief 在CPU 候选搜索与精修中计算 `MpStageFrg3::CalcScoresUnrl_SWFTscanProgressive_Complete` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param coords 供该函数读取或更新的 `coords` 参数。
+ * @param XDIM 供该函数读取或更新的 `XDIM` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::CalcScoresUnrl_SWFTscanProgressive_Complete(
     const float d02,
@@ -885,6 +1264,19 @@ void MpStageFrg3::CalcScoresUnrl_SWFTscanProgressive_Complete(
 // wrkmemtmibest, working memory for iteration-best transformation matrices;
 // 
 template<int N2SCTS, int NTOPTFMS, int SECTION2, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFrg3::Save2ndryScoreAndTM_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param nthreads 控制当前步骤范围或规模的 `nthreads`。
+ * @param sid 供该函数读取或更新的 `sid` 参数。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::Save2ndryScoreAndTM_Complete(
     const float best,
@@ -938,6 +1330,20 @@ void MpStageFrg3::Save2ndryScoreAndTM_Complete(
 // wrkmemaux, auxiliary working memory;
 // 
 template<int NTOPTFMS, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFrg3::SaveTopNScoresAndTMsAmongBests` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param scoN 供该函数读取或更新的 `scoN` 参数。
+ * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::SaveTopNScoresAndTMsAmongBests(
     const int qryndx,
@@ -1040,6 +1446,21 @@ void MpStageFrg3::SaveTopNScoresAndTMsAmongBests(
 // wrkmemaux, auxiliary working memory;
 // 
 template<int N2SCTS, int NTOPTFMS, int SECTION2, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中保存 `MpStageFrg3::SaveTopNScoresAndTMsAmongSecondaryBests` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param nthreads 控制当前步骤范围或规模的 `nthreads`。
+ * @param scoN 供该函数读取或更新的 `scoN` 参数。
+ * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::SaveTopNScoresAndTMsAmongSecondaryBests(
     const int qryndx,
@@ -1151,6 +1572,25 @@ void MpStageFrg3::SaveTopNScoresAndTMsAmongSecondaryBests(
 // wrkmemaux, auxiliary working memory;
 //
 template<int N2SCTS, int NTOPTFMS, int NMAXREFN, int XDIM, int DATALN>
+/**
+ * @brief 在CPU 候选搜索与精修中排序 `MpStageFrg3::SortBestDPscoresAndTMsAmongDPswifts` 对应的数据。
+ * @param SECTION 供该函数读取或更新的 `SECTION` 参数。
+ * @param nbranches 控制当前步骤范围或规模的 `nbranches`。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param rfnblkndx 描述参考结构的 `rfnblkndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param scoN 供该函数读取或更新的 `scoN` 参数。
+ * @param ndxN 控制当前步骤范围或规模的 `ndxN`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmtarget 供当前步骤读取或更新的 `wrkmemtmtarget` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::SortBestDPscoresAndTMsAmongDPswifts(
     const int SECTION, 
@@ -1267,6 +1707,27 @@ void MpStageFrg3::SortBestDPscoresAndTMsAmongDPswifts(
 // stack, stack for traversing the index tree iteratively;
 //
 template<int SECSTRFILT>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFrg3::NNByIndexQuery` 对应的数据。
+ * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param qxn 供该函数读取或更新的 `qxn` 参数。
+ * @param qyn 供该函数读取或更新的 `qyn` 参数。
+ * @param qzn 供该函数读取或更新的 `qzn` 参数。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @param rss 供该函数读取或更新的 `rss` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::NNByIndexQuery(
     int STACKSIZE,
@@ -1356,6 +1817,27 @@ void MpStageFrg3::NNByIndexQuery(
 // NNByIndexReference version for reference
 //
 template<int SECSTRFILT>
+/**
+ * @brief 在CPU 候选搜索与精修中处理 `MpStageFrg3::NNByIndexReference` 对应的数据。
+ * @param STACKSIZE 控制当前步骤范围或规模的 `STACKSIZE`。
+ * @param nestndx 控制当前步骤范围或规模的 `nestndx`。
+ * @param rxn 供该函数读取或更新的 `rxn` 参数。
+ * @param ryn 供该函数读取或更新的 `ryn` 参数。
+ * @param rzn 供该函数读取或更新的 `rzn` 参数。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param qss 供该函数读取或更新的 `qss` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param root 供该函数读取或更新的 `root` 参数。
+ * @param dimndx 供该函数读取或更新的 `dimndx` 参数。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param stack 供该函数读取或更新的 `stack` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void MpStageFrg3::NNByIndexReference(
     int STACKSIZE,
