@@ -31,6 +31,16 @@
 // NOTE: unroll by a factor of CUS1_TBINITSP_CCDINIT_XFCT: this number of 
 // structures copied by a thread block
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataRefined` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CopyCCDataRefined(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -93,6 +103,16 @@ __global__ void CopyCCDataRefined(
 // wrkmem2, working memory, including the section of CC data to be written by 
 // field;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataToWrkMem2Refined` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void CopyCCDataToWrkMem2Refined(
     const uint ndbCstrs,
@@ -227,6 +247,16 @@ void CopyCCDataToWrkMem2Refined(
 // structures verified by a thread block
 // 
 template<int CC64Action>
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCopyCheckConvergence64Refined` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemccd 供当前步骤读取或更新的 `wrkmemccd` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void InitCopyCheckConvergence64Refined(
     const uint ndbCstrs,
@@ -409,6 +439,16 @@ INSTANTIATE_InitCopyCheckConvergence64Refined(CC64Action_InitCCData);
 // wrkmemaux, auxiliary working memory;
 // wrkmem, working memory, including the section of CC data;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64Refined` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void CalcCCMatrices64Refined(
     const uint nqystrs,
@@ -567,6 +607,16 @@ void CalcCCMatrices64Refined(
 // wrkmemaux, auxiliary working memory;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中搜索 `FindD02ThresholdsCCMRefined` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void FindD02ThresholdsCCMRefined(
     const uint ndbCstrs,
@@ -756,6 +806,18 @@ INSTANTIATE_FindD02ThresholdsCCMRefined(READCNST_CALC2);
 // wrkmemaux, auxiliary working memory;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64RefinedExtended` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcCCMatrices64RefinedExtended(
     const uint nqystrs,
@@ -982,6 +1044,18 @@ INSTANTIATE_CalcCCMatrices64RefinedExtended(READCNST_CALC2);
 // NOTE: keep #registers <= 32
 // 
 template<int SAVEPOS, int CHCKCONV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrlRefined` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcScoresUnrlRefined(
     const uint nqystrs,

@@ -48,6 +48,16 @@ void FragmentBasedDPAlignmentRefinement(
 // index sfragndx given the total sum of fragment factors sfragfctxndx;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetSubfragFctAndNdx` 对应的数据。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetSubfragFctAndNdx(
     uint& sfragfct,
     uint& sfragndx,
@@ -93,6 +103,23 @@ void GetSubfragFctAndNdx(
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_DPRefined_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64_DPRefined_Complete(
     const uint qryndx,
     const uint ndbCposs,
@@ -194,6 +221,28 @@ void CalcCCMatrices64_DPRefined_Complete(
 //
 template<int CHCKDST = CHCKDST_CHECK>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl_DPRefined_Complete` 对应的数据。
+ * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param scvCache 供该函数读取或更新的 `scvCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcScoresUnrl_DPRefined_Complete(
     const int READCNST,
     const uint qryndx,
@@ -348,6 +397,26 @@ void CalcScoresUnrl_DPRefined_Complete(
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_DPRefinedExtended_Complete` 对应的数据。
+ * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param dst32 接收目标数据的 `dst32`。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64_DPRefinedExtended_Complete(
     const int READCNST,
     const uint qryndx,

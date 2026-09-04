@@ -86,6 +86,12 @@ __global__ void CalcScoresUnrl_frg2(
 // -------------------------------------------------------------------------
 // StoreMinDst: store minimum distances in three cache buffers
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `StoreMinDst` 对应的数据。
+ * @param dstChe 接收目标数据的 `dstChe`。
+ * @param dst 接收目标数据的 `dst`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void StoreMinDst(
     float* __restrict__ dstChe,
     float dst)
@@ -105,6 +111,12 @@ void StoreMinDst(
 // StoreMinDstSrc: store minimum distances from source in three cache 
 // buffers
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `StoreMinDstSrc` 对应的数据。
+ * @param dstChe 接收目标数据的 `dstChe`。
+ * @param dstSrc 接收目标数据的 `dstSrc`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void StoreMinDstSrc(
     float* __restrict__ dstChe,
     const float* __restrict__ dstSrc)
@@ -121,6 +133,13 @@ void StoreMinDstSrc(
 //
 template<int SMIDIM>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetMinScoreOneAlnPos` 对应的数据。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetMinScoreOneAlnPos(
     int scrpos,
     const float* __restrict__ tmpdpdiagbuffers,
@@ -142,6 +161,17 @@ void GetMinScoreOneAlnPos(
 //
 template<int SMIDIM>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMCacheExtended` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMCacheExtended(
     float* __restrict__ ccmCache,
     float qx, float qy, float qz,
@@ -184,6 +214,16 @@ void UpdateCCMCacheExtended(
 //
 template<int SMIDIM>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMOneAlnPosExtended` 对应的数据。
+ * @param d02s 供该函数读取或更新的 `d02s` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMOneAlnPosExtended(
     float d02s,
     int qrypos,
@@ -214,6 +254,11 @@ void UpdateCCMOneAlnPosExtended(
 //
 template<int SMIDIM, int ndxFROM, int ndxTO>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCCMCacheExtended` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InitCCMCacheExtended(float* __restrict__ ccmCache)
 {
     int tslot = threadIdx.x * SMIDIM;

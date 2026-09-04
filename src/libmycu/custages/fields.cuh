@@ -19,6 +19,11 @@
 // GetDbStrField: get a field value of a given reference (db) structure;
 template<typename T, int field>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrField` 对应的数据。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T GetDbStrField(int dbstrndx)
 {
     return ((T*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_+field]))[dbstrndx];
@@ -27,6 +32,12 @@ T GetDbStrField(int dbstrndx)
 // SetDbStrField: set a field value for a given reference (db) structure;
 template<typename T, int field>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetDbStrField` 对应的数据。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetDbStrField(int dbstrndx, T value)
 {
     ((T*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_+field]))[dbstrndx] = value;
@@ -38,6 +49,11 @@ void SetDbStrField(int dbstrndx, T value)
 // GetQueryStrField: get a field value of a given query structure;
 template<typename T, int field>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryStrField` 对应的数据。
+ * @param qrystrndx 描述查询结构的 `qrystrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T GetQueryStrField(int qrystrndx)
 {
     return ((T*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_+field]))[qrystrndx];
@@ -48,6 +64,11 @@ T GetQueryStrField(int qrystrndx)
 // -------------------------------------------------------------------------
 // GetDbStrLength: get the length of the given reference (db) structure;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrLength` 对应的数据。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetDbStrLength(int dbstrndx)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_+pps2DLen]))[dbstrndx];
@@ -55,6 +76,11 @@ INTYPE GetDbStrLength(int dbstrndx)
 
 // GetDbStrDst: get the distance (address) of the given reference structure;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrDst` 对应的数据。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 LNTYPE GetDbStrDst(int dbstrndx)
 {
     return ((LNTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_+pps2DDist]))[dbstrndx];
@@ -62,6 +88,11 @@ LNTYPE GetDbStrDst(int dbstrndx)
 
 // GetQueryLength: get the length of the given query structure;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryLength` 对应的数据。
+ * @param qrystrndx 描述查询结构的 `qrystrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetQueryLength(int qrystrndx)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_+pps2DLen]))[qrystrndx];
@@ -69,6 +100,11 @@ INTYPE GetQueryLength(int qrystrndx)
 
 // GetQueryDst: get the distance (address) of the given query structure;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryDst` 对应的数据。
+ * @param qrystrndx 描述查询结构的 `qrystrndx`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 LNTYPE GetQueryDst(int qrystrndx)
 {
     return ((LNTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_+pps2DDist]))[qrystrndx];
@@ -80,6 +116,12 @@ LNTYPE GetQueryDst(int qrystrndx)
 //
 template<int STRUCTS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnField` 对应的数据。
+ * @param strndx 供该函数读取或更新的 `strndx` 参数。
+ * @param fld 供该函数读取或更新的 `fld` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetQryRfnField(int strndx, int fld)
 {
     return
@@ -96,6 +138,12 @@ INTYPE GetQryRfnField(int strndx, int fld)
 // NOTE: pps2DLen and pps2DDist are written in the first slots of cache;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrLenDst` 对应的数据。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param cache 供该函数读取或更新的 `cache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetDbStrLenDst(int dbstrndx, int* __restrict__ cache)
 {
     cache[threadIdx.x] = 
@@ -107,6 +155,12 @@ void GetDbStrLenDst(int dbstrndx, int* __restrict__ cache)
 // the same notes hold;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryLenDst` 对应的数据。
+ * @param qrystrndx 描述查询结构的 `qrystrndx`。
+ * @param cache 供该函数读取或更新的 `cache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQueryLenDst(int qrystrndx, int* __restrict__ cache)
 {
     cache[threadIdx.x] = 
@@ -118,6 +172,11 @@ void GetQueryLenDst(int qrystrndx, int* __restrict__ cache)
 // GetDbStrSS: get the secondary structure assignment at the given reference 
 // structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrRsd` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 CHTYPE GetDbStrRsd(int pos)
 {
     return ((CHTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_ + pmv2Drsd]))[pos];
@@ -126,6 +185,11 @@ CHTYPE GetDbStrRsd(int pos)
 // GetQuerySS: get the secondary structure assignment at the given query 
 // structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryRsd` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 CHTYPE GetQueryRsd(int pos)
 {
     return ((CHTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_ + pmv2Drsd]))[pos];
@@ -135,6 +199,11 @@ CHTYPE GetQueryRsd(int pos)
 // GetDbStrSS: get the secondary structure assignment at the given reference 
 // structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrSS` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 CHTYPE GetDbStrSS(int pos)
 {
     return ((CHTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_ + pmv2Dss]))[pos];
@@ -143,6 +212,11 @@ CHTYPE GetDbStrSS(int pos)
 // GetQuerySS: get the secondary structure assignment at the given query 
 // structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQuerySS` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 CHTYPE GetQuerySS(int pos)
 {
     return ((CHTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_ + pmv2Dss]))[pos];
@@ -153,6 +227,11 @@ CHTYPE GetQuerySS(int pos)
 //
 template<int STRUCTS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnSS` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 CHTYPE GetQryRfnSS(int pos)
 {
     return (STRUCTS == FLDS_STRUCTS_QRIES)? GetQuerySS(pos): GetDbStrSS(pos);
@@ -164,6 +243,11 @@ CHTYPE GetQryRfnSS(int pos)
 //
 template<int CRD>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetDbStrCoord` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 FPTYPE GetDbStrCoord(int pos)
 {
     return ((FPTYPE*)(dc_pm2dvfields_[
@@ -180,6 +264,11 @@ FPTYPE GetDbStrCoord(int crd, int pos)
 //
 template<int CRD>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQueryCoord` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 FPTYPE GetQueryCoord(int pos)
 {
     return ((FPTYPE*)(dc_pm2dvfields_[
@@ -193,6 +282,13 @@ FPTYPE GetQueryCoord(int crd, int pos)
 }
 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnCoord` 对应的数据。
+ * @param fldsection 供该函数读取或更新的 `fldsection` 参数。
+ * @param crd 供该函数读取或更新的 `crd` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 FPTYPE GetQryRfnCoord(int fldsection, int crd, int pos)
 {
     return ((FPTYPE*)(dc_pm2dvfields_[fldsection + pmv2DCoords + crd]))[pos];
@@ -202,6 +298,12 @@ FPTYPE GetQryRfnCoord(int fldsection, int crd, int pos)
 // SetDbStrSecStr: set secondary structure assignment code at the given 
 // reference (db) structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetDbStrSecStr` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param ss 供该函数读取或更新的 `ss` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetDbStrSecStr(int pos, char ss)
 {
     ((CHTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvfields_ + pmv2Dss]))[pos] = ss;
@@ -210,6 +312,12 @@ void SetDbStrSecStr(int pos, char ss)
 // SetQuerySecStr: set secondary structure assignment code at the given 
 // query structure position;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetQuerySecStr` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param ss 供该函数读取或更新的 `ss` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetQuerySecStr(int pos, char ss)
 {
     ((CHTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvfields_ + pmv2Dss]))[pos] = ss;
@@ -223,6 +331,11 @@ void SetQuerySecStr(int pos, char ss)
 // reference (db) structure;
 template<typename T, int field>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdDbStrField` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T GetIndxdDbStrField(int pos)
 {
     return ((T*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + field]))[pos];
@@ -232,6 +345,12 @@ T GetIndxdDbStrField(int pos)
 // reference (db) structure;
 template<typename T, int field>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetIndxdDbStrField` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SetIndxdDbStrField(int pos, T value)
 {
     ((T*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + field]))[pos] = value;
@@ -244,6 +363,11 @@ void SetIndxdDbStrField(int pos, T value)
 // reference structure;
 template<int CRD>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdDbStrCoord` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 FPTYPE GetIndxdDbStrCoord(int pos)
 {
     return ((FPTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + pmv2DNdxCoords + CRD]))[pos];
@@ -254,6 +378,11 @@ FPTYPE GetIndxdDbStrCoord(int pos)
 //
 template<int CRD>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdQueryCoord` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 FPTYPE GetIndxdQueryCoord(int pos)
 {
     return ((FPTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvndxfds_ + pmv2DNdxCoords + CRD]))[pos];
@@ -269,6 +398,11 @@ FPTYPE GetIndxdQueryCoord(int crd, int pos)
 // indexed reference structure;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdDbStrOrgndx` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdDbStrOrgndx(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + pmv2DNdxOrgndx]))[pos];
@@ -278,6 +412,11 @@ INTYPE GetIndxdDbStrOrgndx(int pos)
 // indexed query structure;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdQueryOrgndx` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdQueryOrgndx(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvndxfds_ + pmv2DNdxOrgndx]))[pos];
@@ -288,11 +427,21 @@ INTYPE GetIndxdQueryOrgndx(int pos)
 // indexed reference structure;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdDbStrBranchLeft` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdDbStrBranchLeft(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + pmv2DNdxLeft]))[pos];
 }
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdDbStrBranchRight` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdDbStrBranchRight(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_dbs_dc_pm2dvndxfds_ + pmv2DNdxRight]))[pos];
@@ -305,6 +454,11 @@ INTYPE GetIndxdDbStrBranchRight(int pos)
 //
 template<int BRANCH>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdQueryBranch` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdQueryBranch(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvndxfds_ + BRANCH]))[pos];
@@ -316,11 +470,21 @@ INTYPE GetIndxdQueryBranch(int branch, int pos)
 }
 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdQueryBranchLeft` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdQueryBranchLeft(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvndxfds_ + pmv2DNdxLeft]))[pos];
 }
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetIndxdQueryBranchRight` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 INTYPE GetIndxdQueryBranchRight(int pos)
 {
     return ((INTYPE*)(dc_pm2dvfields_[ndx_qrs_dc_pm2dvndxfds_ + pmv2DNdxRight]))[pos];
@@ -331,6 +495,12 @@ INTYPE GetIndxdQueryBranchRight(int pos)
 // frequencies
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetGonnetScore` 对应的数据。
+ * @param res1 供该函数读取或更新的 `res1` 参数。
+ * @param res2 供该函数读取或更新的 `res2` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetGonnetScore(char res1, char res2)
 {
     if('A' <= res1 && res1 <= 'Z' && 'A' <= res2 && res2 <= 'Z')

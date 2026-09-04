@@ -48,6 +48,15 @@
 // field;
 // 
 template<int READNPOS>
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataToWrkMem2_SWFTscan` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void CopyCCDataToWrkMem2_SWFTscan(
     const uint ndbCstrs,
@@ -175,6 +184,18 @@ INSTANTIATE_CopyCCDataToWrkMem2_SWFTscan(READNPOS_READ);
 // tmpdpalnpossbuffer, global address of aligned positions;
 // wrkmem, working memory, including the section of CC data;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_SWFTscan` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void CalcCCMatrices64_SWFTscan(
     const uint nqystrs,
@@ -337,6 +358,16 @@ void CalcCCMatrices64_SWFTscan(
 // wrkmemaux, auxiliary working memory;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中搜索 `FindD02ThresholdsCCM_SWFTscan` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void FindD02ThresholdsCCM_SWFTscan(
     const uint ndbCstrs,
@@ -535,6 +566,19 @@ INSTANTIATE_FindD02ThresholdsCCM_SWFTscan(READCNST_CALC2);
 // wrkmem, working memory, including the section of CC data;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_SWFTscanExtended` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcCCMatrices64_SWFTscanExtended(
     const uint nqystrs,
@@ -752,6 +796,20 @@ INSTANTIATE_CalcCCMatrices64_SWFTscanExtended(READCNST_CALC2);
 // NOTE: keep #registers <= 32
 // 
 template<int SAVEPOS, int CHCKALNLEN>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl_SWFTscan` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcScoresUnrl_SWFTscan(
     const uint nqystrs,
@@ -973,6 +1031,20 @@ INSTANTIATE_CalcScoresUnrl_SWFTscan(SAVEPOS_NOSAVE,CHCKALNLEN_CHECK);
 // NOTE: keep #registers <= 32
 // 
 template<int SAVEPOS, int CHCKALNLEN>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl_SWFTscanProgressive` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcScoresUnrl_SWFTscanProgressive(
     const uint nqystrs,

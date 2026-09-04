@@ -31,6 +31,14 @@
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetCurrentFragSpecs` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SetCurrentFragSpecs(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -60,6 +68,14 @@ __global__ void SetCurrentFragSpecs(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中设置 `SetLowScoreConvergenceFlag` 对应的数据。
+ * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SetLowScoreConvergenceFlag(
     const float scorethld,
     const uint ndbCstrs,
@@ -100,6 +116,13 @@ __global__ void SetLowScoreConvergenceFlag(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitWithTypeCompatibility` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitWithTypeCompatibility(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -139,6 +162,15 @@ __global__ void InitWithTypeCompatibility(
 // wrkmemaux, auxiliary working memory;
 // 
 template<int INITOPT>
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitScores` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param checkfragos 控制该处理分支是否启用的 `checkfragos` 标志。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitScores(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -291,6 +323,13 @@ INSTANTIATE_InitScores(INITOPT_BEST|INITOPT_CONVFLAG_FRAGREF|INITOPT_CONVFLAG_SC
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveLastScore0` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SaveLastScore0(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -327,6 +366,15 @@ __global__ void SaveLastScore0(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestScore` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SaveBestScore(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -371,6 +419,14 @@ __global__ void SaveBestScore(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestScoreAmongBests` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SaveBestScoreAmongBests(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -443,6 +499,13 @@ __global__ void SaveBestScoreAmongBests(
 // NOTE: memory pointers should be aligned!
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中检查 `CheckScoreConvergence` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CheckScoreConvergence(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -539,6 +602,16 @@ __global__ void CheckScoreProgression(
 // structures processed by a thread block
 // 
 template<bool WRITEFRAGINFO>
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestScoreAndTM` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void SaveBestScoreAndTM(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -637,6 +710,17 @@ template<
     bool GRANDUPDATE,
     bool FORCEWRITEFRAGINFO,
     int SECONDARYUPDATE>
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestScoreAndTMAmongBests` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmemtmibest2nd 供当前步骤读取或更新的 `wrkmemtmibest2nd` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SaveBestScoreAndTMAmongBests(
     const uint ndbCstrs,
@@ -806,6 +890,17 @@ INSTANTIATE_SaveBestScoreAndTMAmongBests(true,true,true,SECONDARYUPDATE_NOUPDATE
 // tfmmem, memory for transformation matrices;
 // 
 template<bool WRITEFRAGINFO, bool CONDITIONAL>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionSaveBestScoresAndTMAmongBests` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ProductionSaveBestScoresAndTMAmongBests(
     const uint ndbCstrs,
@@ -990,6 +1085,21 @@ INSTANTIATE_ProductionSaveBestScoresAndTMAmongBests(false,true);
 // wrkmemaux, auxiliary working memory;
 // 
 // __launch_bounds__(1024,1)//for tests
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveTopNScoresAndTMsAmongSecondaryBests` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param firstit 供该函数读取或更新的 `firstit` 参数。
+ * @param twoconfs 供该函数读取或更新的 `twoconfs` 参数。
+ * @param rfnfragfctinit 描述参考结构的 `rfnfragfctinit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param effnsteps 供该函数读取或更新的 `effnsteps` 参数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SaveTopNScoresAndTMsAmongSecondaryBests(
     const int depth,
@@ -1206,6 +1316,15 @@ void SaveTopNScoresAndTMsAmongSecondaryBests(
 // wrkmemtm, working memory for selected transformation matrices;
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveTopNScoresAndTMsAmongBests` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SaveTopNScoresAndTMsAmongBests(
     const uint ndbCstrs,
@@ -1502,6 +1621,19 @@ void SaveBestDPscoreAndTMAmongDPswifts(
 // wrkmemtmtarget, working memory for iteration-best (target) transformation matrices;
 // wrkmemaux, auxiliary working memory;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中排序 `SortBestDPscoresAndTMsAmongDPswifts` 对应的数据。
+ * @param nbranches 控制当前步骤范围或规模的 `nbranches`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemtmtarget 供当前步骤读取或更新的 `wrkmemtmtarget` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void SortBestDPscoresAndTMsAmongDPswifts(
     const uint nbranches,

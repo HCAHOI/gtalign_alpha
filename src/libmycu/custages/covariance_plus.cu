@@ -35,6 +35,18 @@
 // wrkmemaux, auxiliary working memory;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中搜索 `FindD02ThresholdsCCM` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void FindD02ThresholdsCCM(
     const uint ndbCstrs,
@@ -240,6 +252,19 @@ INSTANTIATE_FindD02ThresholdsCCM(READCNST_CALC2);
 // wrkmemaux, auxiliary working memory;
 // 
 template<int READCNST>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64Extended` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcCCMatrices64Extended(
     const uint nqystrs,
@@ -425,6 +450,20 @@ INSTANTIATE_CalcCCMatrices64Extended(READCNST_CALC2);
 // NOTE: keep #registers <= 32
 // 
 template<int SAVEPOS, int CHCKALNLEN>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcScoresUnrl(
     const uint nqystrs,
@@ -607,6 +646,20 @@ INSTANTIATE_CalcScoresUnrl(SAVEPOS_NOSAVE,CHCKALNLEN_CHECK);
 // wrkmemaux, auxiliary working memory;
 // NOTE: keep #registers <= 32
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl_frg2` 对应的数据。
+ * @param thrscorefactor 当前步骤使用或写回的 `thrscorefactor` 分数。
+ * @param dynamicorientation 供该函数读取或更新的 `dynamicorientation` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcScoresUnrl_frg2(
     const float thrscorefactor,

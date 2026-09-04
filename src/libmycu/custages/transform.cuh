@@ -66,6 +66,13 @@ void CalcTfmMatrices(
 //
 template<int col_l, int ODIM = CUS1_TBSP_TFM_N>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcPartialA` 对应的数据。
+ * @param d 供该函数读取或更新的 `d` 参数。
+ * @param rr 供该函数读取或更新的 `rr` 参数。
+ * @param a 供该函数读取或更新的 `a` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcPartialA(
     float d,
     const float* __restrict__ rr,
@@ -159,6 +166,13 @@ c-----------------------------------------------------------------------
 */
 template<bool REVERSE, bool REVERT_BACK = false>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcTfmMatricesHelper` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcTfmMatricesHelper(
     const uint ndbCstrs,
     const uint maxnsteps,

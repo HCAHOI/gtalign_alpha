@@ -42,6 +42,23 @@
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionFragmentBasedDPAlignmentRefinementPhase1` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void ProductionFragmentBasedDPAlignmentRefinementPhase1(
     const int nmaxconvit,
@@ -283,6 +300,12 @@ INSTANTIATE_ProductionFragmentBasedDPAlignmentRefinementPhase1(true);
 //
 template<bool TFM_DINV, int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionRefinementPhase2InnerLoop` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void ProductionRefinementPhase2InnerLoop(
     const uint sfragfctxndx,
     const uint qryndx,
@@ -378,6 +401,23 @@ void ProductionRefinementPhase2InnerLoop(
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearch` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnfragfcts 供该函数读取或更新的 `maxnfragfcts` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearch(
     const int nmaxconvit,
@@ -561,6 +601,23 @@ INSTANTIATE_ProductionFragmentBasedDPAlignmentRefinementPhase2_fullsearch(true);
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionFragmentBasedDPAlignmentRefinementPhase2` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnfragfcts 供该函数读取或更新的 `maxnfragfcts` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void ProductionFragmentBasedDPAlignmentRefinementPhase2(
     const int nmaxconvit,
@@ -749,6 +806,24 @@ INSTANTIATE_ProductionFragmentBasedDPAlignmentRefinementPhase2(true);
 // tfmmem, memory for transformation matrices;
 // 
 template<bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearch` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnfragfcts 供该函数读取或更新的 `maxnfragfcts` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearch(
     const int nmaxconvit,

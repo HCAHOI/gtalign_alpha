@@ -42,6 +42,19 @@ void Production2TMscores(
 // scv, address of the vector of scores;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateOneAlnPosScore_2TMscore` 对应的数据。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param po1 供该函数读取或更新的 `po1` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateOneAlnPosScore_2TMscore(
     const uint qrydst, const uint dbstrdst,
     float d02, int pos, int po1, int dblen,
@@ -93,6 +106,24 @@ void UpdateOneAlnPosScore_2TMscore(
 // scvCache, cache for scores;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `Calc2TMscoresUnrl_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param scvCache 供该函数读取或更新的 `scvCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Calc2TMscoresUnrl_Complete(
     const uint qryndx,
     const uint ndbCposs,
@@ -171,6 +202,18 @@ void Calc2TMscoresUnrl_Complete(
 // alndatamem, memory for full alignment information, including scores;
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestQR2TMscores_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+ * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SaveBestQR2TMscores_Complete(
     float best,
     float gbest,

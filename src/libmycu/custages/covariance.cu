@@ -40,6 +40,21 @@
 // 
 template<typename FQryRfnPosGetter, typename FPosInvalidator>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCCData0Helper` 对应的数据。
+ * @param fPosGetter 供该函数读取或更新的 `fPosGetter` 参数。
+ * @param fInvalidator 供该函数读取或更新的 `fInvalidator` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InitCCData0Helper(
     FQryRfnPosGetter fPosGetter,
     FPosInvalidator fInvalidator,
@@ -101,6 +116,15 @@ void InitCCData0Helper(
 // NOTE: memory pointers should be aligned!
 // wrkmem, working memory, including the section of CC data;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCCData0` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitCCData0(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -207,6 +231,17 @@ void InitCCData0_frg(
 // upon lengths;
 // NOTE: memory pointers should be aligned!
 // wrkmem, working memory, including the section of CC data;
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCCData0_frg2` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void InitCCData0_frg2(
     const int depth,
@@ -291,6 +326,14 @@ INSTANTIATE_InitCCData0_var(true);
 // structures initialized by a thread block
 // 
 template<int CHCKCONV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitCCData` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitCCData(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -362,6 +405,22 @@ INSTANTIATE_InitCCData(CHCKCONV_CHECK);
 // wrkmemaux, auxiliary working memory;
 // wrkmem, working memory, including the section of CC data;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64LocallyAligned64` 对应的数据。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param trigger 供该函数读取或更新的 `trigger` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcCCMatrices64LocallyAligned64(
     int seedapproachstruct,
@@ -652,6 +711,22 @@ template<
     typename FQryRfnPosGetter,
     typename FPosInvalidator>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64Helper` 对应的数据。
+ * @param fPosGetter 供该函数读取或更新的 `fPosGetter` 参数。
+ * @param fInvalidator 供该函数读取或更新的 `fInvalidator` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64Helper(
     FQryRfnPosGetter fPosGetter,
     FPosInvalidator fInvalidator,
@@ -808,6 +883,17 @@ void CalcCCMatrices64Helper(
 // NOTE: memory pointers should be aligned!
 // wrkmem, working memory, including the section of CC data;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64` 对应的数据。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CalcCCMatrices64(
     const uint nqystrs,
     const uint ndbCstrs,
@@ -922,6 +1008,19 @@ void CalcCCMatrices64_frg(
 // structure lengths;
 // same as CalcCCMatrices64_var with more extensive parallelization;
 // depth, superposition depth for calculating query and reference positions;
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_frg2` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcCCMatrices64_frg2(
     const int depth,
@@ -1029,6 +1128,25 @@ template<
     typename FPosInvalidator,
     typename FAlnLengthGetter>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataToWrkMem2Helper` 对应的数据。
+ * @param fPosGetter 供该函数读取或更新的 `fPosGetter` 参数。
+ * @param fInvalidator 供该函数读取或更新的 `fInvalidator` 参数。
+ * @param fAlnLenGetter 控制当前步骤范围或规模的 `fAlnLenGetter`。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CopyCCDataToWrkMem2Helper(
     FQryRfnPosGetter fPosGetter,
     FPosInvalidator fInvalidator,
@@ -1167,6 +1285,17 @@ void CopyCCDataToWrkMem2Helper(
 // field;
 // 
 template<int READNPOS>
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataToWrkMem2` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param n1 控制当前步骤范围或规模的 `n1`。
+ * @param step 供该函数读取或更新的 `step` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CopyCCDataToWrkMem2(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -1291,6 +1420,20 @@ void CopyCCDataToWrkMem2_frg(
 // same as CopyCCDataToWrkMem2_var with more extensive parallelization;
 // depth, superposition depth for calculating query and reference positions;
 template<int READNPOS>
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCDataToWrkMem2_frg2` 对应的数据。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param fragndx 供该函数读取或更新的 `fragndx` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param wrkmem 当前计算阶段的主工作缓冲区。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CopyCCDataToWrkMem2_frg2(
     const int seedapproachstruct,
@@ -1391,6 +1534,14 @@ void CopyCCDataToWrkMem2_frgbest(
 // wrkmem2, working memory, the section of transformation data to copy;
 // wrkmemtm, memory for transformation matrices;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyTfmMtsFromWrkMem2` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @param wrkmemtm 保存候选刚体变换的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CopyTfmMtsFromWrkMem2(
     const uint ndbCstrs,
     const uint maxnsteps,

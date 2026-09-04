@@ -29,6 +29,18 @@
 // tfmmem, memory for transformation matrices;
 // alndatamem, memory for full alignment information, including scores;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `Production2TMscores` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void Production2TMscores(
     const uint ndbCstrs,

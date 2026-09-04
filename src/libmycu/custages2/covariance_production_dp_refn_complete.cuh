@@ -124,6 +124,11 @@ void ProductionFragmentBasedDPAlignmentRefinementPhase2_logsearch(
 // Based on the original Kabsch algorithm (see CalcTfmMatrices_Complete);
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcRMSD_Complete` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float CalcRMSD_Complete(float* __restrict__ ccmCache)
 {
     __shared__ float rr[6];//rrCache[6];
@@ -233,6 +238,23 @@ float CalcRMSD_Complete(float* __restrict__ ccmCache)
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcExtCCMatrices64_DPRefined_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcExtCCMatrices64_DPRefined_Complete(
     const uint qryndx,
     const uint ndbCposs,
@@ -330,6 +352,22 @@ void CalcExtCCMatrices64_DPRefined_Complete(
 // 
 template<bool WRITEFRAGINFO, bool CONDITIONAL>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestQRScoresAndTM_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfctxndx 供该函数读取或更新的 `sfragfctxndx` 参数。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SaveBestQRScoresAndTM_Complete(
     const float best,
     const float gbest,
@@ -393,6 +431,20 @@ void SaveBestQRScoresAndTM_Complete(
 // alndatamem, memory for full alignment information, including scores;
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestQRScoresAndTM_Phase2_logsearch_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param gbest 供该函数读取或更新的 `gbest` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param qrylenorg 控制当前步骤范围或规模的 `qrylenorg`。
+ * @param dbstrlenorg 控制当前步骤范围或规模的 `dbstrlenorg`。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SaveBestQRScoresAndTM_Phase2_logsearch_Complete(
     float best,
     float gbest,

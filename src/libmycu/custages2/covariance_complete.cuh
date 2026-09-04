@@ -39,6 +39,12 @@ void FindGaplessAlignedFragment(
 // buffers;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中复制 `CopyCCMDataToTFM_Complete` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CopyCCMDataToTFM_Complete(
     const float* __restrict__ ccmCache,
     float* __restrict__ tfmCache)
@@ -62,6 +68,18 @@ void CopyCCMDataToTFM_Complete(
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64_Complete` 对应的数据。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64_Complete(
     const uint qrydst,
     const uint dbstrdst,
@@ -159,6 +177,12 @@ c
 c-----------------------------------------------------------------------
 */
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcTfmMatricesHelper_Complete` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param nalnposs 控制当前步骤范围或规模的 `nalnposs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcTfmMatricesHelper_Complete(
     float* __restrict__ ccmCache, float nalnposs)
 {
@@ -249,6 +273,13 @@ void CalcTfmMatricesHelper_Complete(
 //
 template<bool DOUBLY_INVERTED = false>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcTfmMatrices_Complete` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcTfmMatrices_Complete(
     float* __restrict__ ccmCache, int qrylen, int dbstrlen)
 {
@@ -299,6 +330,27 @@ void CalcTfmMatrices_Complete(
 //
 template<int SAVEPOS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcScoresUnrl_Complete` 对应的数据。
+ * @param READCNST 供该函数读取或更新的 `READCNST` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param maxnalnposs 供该函数读取或更新的 `maxnalnposs` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tfmCache 表示或保存刚体变换的 `tfmCache`。
+ * @param scvCache 供该函数读取或更新的 `scvCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcScoresUnrl_Complete(
     const int READCNST,
     const uint qryndx,
@@ -434,6 +486,23 @@ void CalcScoresUnrl_Complete(
 // 
 template<int SMIDIM, int NEFFDS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcCCMatrices64Extended_Complete` 对应的数据。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param dst32 接收目标数据的 `dst32`。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CalcCCMatrices64Extended_Complete(
     const uint qryndx,
     const uint ndbCposs,
@@ -513,6 +582,19 @@ void CalcCCMatrices64Extended_Complete(
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中保存 `SaveBestScoreAndPositions_Complete` 对应的数据。
+ * @param best 供该函数读取或更新的 `best` 参数。
+ * @param qryndx 描述查询结构的 `qryndx`。
+ * @param dbstrndx 描述参考结构的 `dbstrndx`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SaveBestScoreAndPositions_Complete(
     float best,
     const uint qryndx,

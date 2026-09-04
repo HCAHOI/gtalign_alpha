@@ -44,6 +44,22 @@
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `FinalFragmentBasedDPAlignmentRefinementPhase1` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void FinalFragmentBasedDPAlignmentRefinementPhase1(
     const int nmaxconvit,
@@ -250,6 +266,23 @@ INSTANTIATE_FinalFragmentBasedDPAlignmentRefinementPhase1(false,CHCKDST_CHECK,tr
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `FinalFragmentBasedDPAlignmentRefinementPhase2` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnfragfcts 供该函数读取或更新的 `maxnfragfcts` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void FinalFragmentBasedDPAlignmentRefinementPhase2(
     const int nmaxconvit,
@@ -461,6 +494,23 @@ INSTANTIATE_FinalFragmentBasedDPAlignmentRefinementPhase2(false,CHCKDST_CHECK,tr
 // wrkmemaux, auxiliary working memory (includes the section of scores);
 // 
 template<bool D0FINAL, int CHCKDST, bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearch` 对应的数据。
+ * @param nmaxconvit 控制当前步骤范围或规模的 `nmaxconvit`。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param nmaxsubfrags 控制当前步骤范围或规模的 `nmaxsubfrags`。
+ * @param maxnfragfcts 供该函数读取或更新的 `maxnfragfcts` 参数。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param maxalnmax 供该函数读取或更新的 `maxalnmax` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ 
 void FinalFragmentBasedDPAlignmentRefinementPhase2_fullsearch(
     const int nmaxconvit,

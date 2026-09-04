@@ -16,6 +16,14 @@
 // alignment of length maxalnlen is not out of bounds;
 // fraglen, fragment length starting at position sfragpos;
 __HDINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `FragPosWithinAlnBoundaries` 对应的数据。
+ * @param maxalnlen 控制当前步骤范围或规模的 `maxalnlen`。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param sfragpos 供该函数读取或更新的 `sfragpos` 参数。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int FragPosWithinAlnBoundaries(int maxalnlen, int sfragstep, int sfragpos, int fraglen)
 {
     return (sfragpos + fraglen < maxalnlen + sfragstep);
@@ -27,6 +35,13 @@ int FragPosWithinAlnBoundaries(int maxalnlen, int sfragstep, int sfragpos, int f
 // calculated so that the following holds:
 // sfragstep * nmaxsteps + minfraglen < maxalnlen + sfragstep
 __HDINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetMaxNFragSteps` 对应的数据。
+ * @param maxalnlen 控制当前步骤范围或规模的 `maxalnlen`。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetMaxNFragSteps(int maxalnlen, int sfragstep, int fraglen)
 {
     //step starts with 0, hence:
@@ -37,6 +52,14 @@ int GetMaxNFragSteps(int maxalnlen, int sfragstep, int fraglen)
 // GetGplAlnLength: get the maximum gapless alignment length given the lengths 
 // and positions of query and reference structures;
 __HDINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetGplAlnLength` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetGplAlnLength(
     int qrylen, int dbstrlen,
     int qrypos, int rfnpos)
@@ -49,6 +72,15 @@ int GetGplAlnLength(
 // lengths and positions of query and reference structures; <1 stops 
 // further processing
 __HDINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetFragLength` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param sfragndx 供该函数读取或更新的 `sfragndx` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetFragLength(
     int qrylen, int dbstrlen,
     int qrypos, int rfnpos,
@@ -74,6 +106,11 @@ int GetFragLength(
 // GetMinFragLengthForAln: return the minimum length of fragment, given max 
 // alignment length maxalnlen;
 inline
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetMinFragLengthForAln` 对应的数据。
+ * @param maxalnlen 控制当前步骤范围或规模的 `maxalnlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetMinFragLengthForAln(int maxalnlen)
 {
     if(maxalnlen < 4) return maxalnlen;
@@ -91,6 +128,15 @@ int GetMinFragLengthForAln(int maxalnlen)
 // reference structures; 
 // NOTE: assumptions: fraglen <= qrylen && fraglen <= dbstrlen
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateLengths` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateLengths(
     int& qrylen, int& dbstrlen,
     int& qrypos, int& rfnpos,

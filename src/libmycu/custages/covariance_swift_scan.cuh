@@ -125,6 +125,14 @@ void CalcScoresUnrl_SWFTscanProgressive(
 //
 template<int SMIDIM>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMOneAlnPos_SWFTRefined` 对应的数据。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMOneAlnPos_SWFTRefined(
     int pos, int dblen,
     const float* __restrict__ tmpdpalnpossbuffer,
@@ -157,6 +165,17 @@ void UpdateCCMOneAlnPos_SWFTRefined(
 //
 template<int SMIDIM>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMOneAlnPos_SWFTExtended` 对应的数据。
+ * @param d02s 供该函数读取或更新的 `d02s` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMOneAlnPos_SWFTExtended(
     float d02s,
     int pos, 
@@ -203,6 +222,19 @@ void UpdateCCMOneAlnPos_SWFTExtended(
 //
 template<int SAVEPOS, int CHCKDST>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateOneAlnPosScore_SWFTRefined` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateOneAlnPosScore_SWFTRefined(
     float d02, float d82,
     int pos, int dblen, int scrpos,
@@ -255,6 +287,19 @@ void UpdateOneAlnPosScore_SWFTRefined(
 //
 template<int SAVEPOS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `CacheAlnPosScore_SWFTProgressive` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scvCache 供该函数读取或更新的 `scvCache` 参数。
+ * @param qnxWrkch 供该函数读取或更新的 `qnxWrkch` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CacheAlnPosScore_SWFTProgressive(
     float d02,
     int pos, int dblen, int scrpos,
@@ -297,6 +342,19 @@ void CacheAlnPosScore_SWFTProgressive(
 // version for using registers instead of smem:
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `CacheAlnPosScore_SWFTProgressive_Reg` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @param dblen 控制当前步骤范围或规模的 `dblen`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param sco 供该函数读取或更新的 `sco` 参数。
+ * @param qnx 供该函数读取或更新的 `qnx` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CacheAlnPosScore_SWFTProgressive_Reg(
     float d02,
     int pos, int dblen, int scrpos,
@@ -334,6 +392,14 @@ void CacheAlnPosScore_SWFTProgressive_Reg(
 // 
 template<int pad, int xdim, int szqnxch, int nwrpsdim, bool UNCND>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中搜索 `FindMax_SWFTProgressive` 对应的数据。
+ * @param qnx 供该函数读取或更新的 `qnx` 参数。
+ * @param qnxCache 供该函数读取或更新的 `qnxCache` 参数。
+ * @param maxCache 供该函数读取或更新的 `maxCache` 参数。
+ * @param tmpSMbuf 供当前步骤读取或更新的 `tmpSMbuf` 缓冲区。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float FindMax_SWFTProgressive(
     float qnx,
     const float* __restrict__ qnxCache,
@@ -365,6 +431,13 @@ float FindMax_SWFTProgressive(
 // version for a single warp:
 template<int xdim, int szqnxch, bool UNCND>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中搜索 `FindMax_SWFTProgressive_Warp` 对应的数据。
+ * @param qnx 供该函数读取或更新的 `qnx` 参数。
+ * @param qnxCache 供该函数读取或更新的 `qnxCache` 参数。
+ * @param maxCache 供该函数读取或更新的 `maxCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float FindMax_SWFTProgressive_Warp(
     float qnx,
     const float* __restrict__ qnxCache,

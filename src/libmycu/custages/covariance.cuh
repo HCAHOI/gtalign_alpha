@@ -254,6 +254,20 @@ __global__ void CopyTfmMtsFromWrkMem2(
 // arg2 is step, step size in positions used to traverse query and reference 
 // ungapped alignments;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param dummy 供该函数读取或更新的 `dummy` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos(
     const int /*depth*/,
     int& qrypos, int& rfnpos,
@@ -269,6 +283,18 @@ void GetQryRfnPos(
 // PositionsOutofBounds: return true if the positions given for query and 
 // reference imply out-of-bounds condition
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `PositionsOutofBounds` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param dummy 供该函数读取或更新的 `dummy` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PositionsOutofBounds(
     int& qrylen, int& dbstrlen,
     int qrypos, int rfnpos,
@@ -288,6 +314,18 @@ bool PositionsOutofBounds(
 // GetNAlnPoss: return the maximum number of alignment positions given the 
 // lengths and start positions of the query and reference structures;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetNAlnPoss` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param dummy 供该函数读取或更新的 `dummy` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetNAlnPoss(
     int qrylen, int dbstrlen,
     int qrypos, int rfnpos,
@@ -304,6 +342,11 @@ int GetNAlnPoss(
 // dependent upon structure lengths;
 // length, structure length;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetFragStepSize_var` 对应的数据。
+ * @param length 控制当前步骤范围或规模的 `length`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetFragStepSize_var(int length)
 {
     if(length > 250) return 45;
@@ -323,6 +366,18 @@ int GetFragStepSize_var(int length)
 // arg2 is rfnfragfct, fragment factor for reference (to be multiplied by step 
 // dependent upon lengths after summation);
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_var` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_var(
     int& qrypos, int& rfnpos,
     int qrylen, int dbstrlen,
@@ -334,6 +389,18 @@ void GetQryRfnPos_var(
 
 // GetQryRfnPos_var5: positions obtained by GetQryRfnPos_var multiplied by 5;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_var5` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_var5(
     int& qrypos, int& rfnpos,
     int qrylen, int dbstrlen,
@@ -347,6 +414,18 @@ void GetQryRfnPos_var5(
 // GetQryRfnPos_varT: template version of GetQryRfnPos_var:
 template<bool STEPx5>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_varT` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_varT(
     int& qrypos, int& rfnpos,
     int qrylen, int dbstrlen,
@@ -358,6 +437,19 @@ void GetQryRfnPos_varT(
 
 // GetQryRfnPos_varP: parameterized version of GetQryRfnPos_var:
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_varP` 对应的数据。
+ * @param STEPx5 供该函数读取或更新的 `STEPx5` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_varP(
     bool STEPx5,
     int& qrypos, int& rfnpos,
@@ -376,6 +468,17 @@ void GetQryRfnPos_varP(
 // arg3 is fragndx, fragment index determining the fragment size dependent 
 // upon lengths;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetNAlnPoss_var` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetNAlnPoss_var(
     int qrylen, int dbstrlen,
     int /*qrypos*/, int /*rfnpos*/,
@@ -400,6 +503,17 @@ int GetNAlnPoss_var(
 // arg2 is fragndx, fragment index determining the fragment size dependent 
 // upon lengths;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `PositionsOutofBounds_var` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PositionsOutofBounds_var(
     int& qrylen, int& dbstrlen,
     int qrypos, int rfnpos,
@@ -431,6 +545,18 @@ bool PositionsOutofBounds_var(
 // arg2 is rfnfragfct, fragment factor for reference (to be multiplied by step 
 // dependent upon lengths after summation);
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_frg` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_frg(
     int& qrypos, int& rfnpos,
     int qrylen, int dbstrlen,
@@ -454,6 +580,18 @@ void GetQryRfnPos_frg(
 // GetQryRfnPos_frg5: reference positions obtained by GetQryRfnPos_frg 
 // multiplied by a step size factor of 5;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_frg5` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_frg5(
     int& qrypos, int& rfnpos,
     int qrylen, int dbstrlen,
@@ -487,6 +625,20 @@ void GetQryRfnPos_frg5(
 // arg2 is rfnfragfct, fragment factor for reference (to be multiplied by step 
 // dependent upon lengths after summation);
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_frg2` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_frg2(
     const int depth,
     int& qrypos, int& rfnpos,
@@ -523,6 +675,20 @@ void GetQryRfnPos_frg2(
 // their lengths and general index sfragfct;
 // arg2, starting fragment factor rfnfragfct for reference;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnFct_frg2` 对应的数据。
+ * @param depth 供该函数读取或更新的 `depth` 参数。
+ * @param qryfragfct 描述查询结构的 `qryfragfct`。
+ * @param rfnfragfct 描述参考结构的 `rfnfragfct`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param pqrystepsz 描述查询结构的 `pqrystepsz`。
+ * @param prfnstepsz 描述参考结构的 `prfnstepsz`。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnFct_frg2(
     const int depth,
     int* qryfragfct, int* rfnfragfct,
@@ -561,6 +727,18 @@ void GetQryRfnFct_frg2(
 // arg2 is fragndx, fragment index determining the fragment size dependent 
 // upon lengths;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `PositionsOutofBounds_frg` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @param seedapproachstruct 供该函数读取或更新的 `seedapproachstruct` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PositionsOutofBounds_frg(
     int& qrylen, int& dbstrlen,
     int qrypos, int rfnpos,
@@ -590,6 +768,17 @@ bool PositionsOutofBounds_frg(
 // GetNAlnPoss_frgbets: return the maximum number of alignment positions 
 // (fragment size) for best fragment identified previously;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetNAlnPoss_frgbest` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int GetNAlnPoss_frgbest(
     int /*qrylen*/, int /*dbstrlen*/,
     int /*qrypos*/, int /*rfnpos*/,
@@ -600,6 +789,18 @@ int GetNAlnPoss_frgbest(
 // GetQryRfnPos_frgbest: return the query and reference positions for best 
 // fragment identified before;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetQryRfnPos_frgbest` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param sfragfct 供该函数读取或更新的 `sfragfct` 参数。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetQryRfnPos_frgbest(
     int& qrypos, int& rfnpos,
     int /*qrylen*/, int /*dbstrlen*/,
@@ -611,6 +812,17 @@ void GetQryRfnPos_frgbest(
 // PositionsOutofBounds_frgbest: return true if the positions given for
 // query and reference imply the out-of-bounds condition;
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `PositionsOutofBounds_frgbest` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param arg1 供该函数读取或更新的 `arg1` 参数。
+ * @param arg2 供该函数读取或更新的 `arg2` 参数。
+ * @param arg3 供该函数读取或更新的 `arg3` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool PositionsOutofBounds_frgbest(
     int& qrylen, int& dbstrlen,
     int qrypos, int rfnpos,
@@ -638,6 +850,17 @@ bool PositionsOutofBounds_frgbest(
 //
 template<int SMIDIM = twmvEndOfCCData, int UPDATENPOS = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMCache` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMCache(
     FPTYPE* __restrict__ ccmCache,
     float qx, float qy, float qz,
@@ -673,6 +896,17 @@ void UpdateCCMCache(
 //
 template<int SMIDIM = twmvEndOfCCData>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateExtCCMCache` 对应的数据。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @param qx 供该函数读取或更新的 `qx` 参数。
+ * @param qy 供该函数读取或更新的 `qy` 参数。
+ * @param qz 供该函数读取或更新的 `qz` 参数。
+ * @param rx 供该函数读取或更新的 `rx` 参数。
+ * @param ry 供该函数读取或更新的 `ry` 参数。
+ * @param rz 供该函数读取或更新的 `rz` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateExtCCMCache(
     float* __restrict__ ccmCache,
     float qx, float qy, float qz,
@@ -695,6 +929,13 @@ void UpdateExtCCMCache(
 //
 template<int SMIDIM = twmvEndOfCCData, int UPDATENPOS = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateCCMOneAlnPos` 对应的数据。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param ccmCache 供该函数读取或更新的 `ccmCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateCCMOneAlnPos(
     int qrypos,
     int rfnpos,

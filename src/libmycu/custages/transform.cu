@@ -23,6 +23,13 @@
 // tfmmem, memory section for transformation matrices;
 // NOTE: unroll by a factor of CUS1_TBINITSP_TFMINIT_XFCT;
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中处理 `RevertTfmMatrices` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void RevertTfmMatrices(
     const uint ndbCstrs,
     const float* __restrict__ wrkmemaux,
@@ -72,6 +79,12 @@ __global__ void RevertTfmMatrices(
 // structures initialized by a thread block
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitGTfmMatrices` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InitGTfmMatrices(
     uint ndbCstrs,
     float* __restrict__ tfmmem)
@@ -113,6 +126,12 @@ void InitGTfmMatrices(
 // structures initialized by a thread block
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitAlnData` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void InitAlnData(
     uint ndbCstrs,
     float* __restrict__ alndatamem)
@@ -174,6 +193,13 @@ void InitAlnData(
 // NOTE: unroll by a factor of CUS1_TBINITSP_TFMINIT_XFCT: this number of 
 // structures initialized by a thread block
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitGTfmMatricesAndAData` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitGTfmMatricesAndAData(
     uint ndbCstrs,
     float* __restrict__ tfmmem,
@@ -199,6 +225,16 @@ __global__ void InitGTfmMatricesAndAData(
 // NOTE: unroll by a factor of CUS1_TBINITSP_TFMINIT_XFCT: this number of 
 // structures initialized by a thread block
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中初始化 `InitTfmMatrices` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param minfraglen 参与初始叠合的最短片段长度。
+ * @param sfragstep 供该函数读取或更新的 `sfragstep` 参数。
+ * @param checkfragos 控制该处理分支是否启用的 `checkfragos` 标志。
+ * @param wrkmemtmibest 保存各候选当前最佳刚体变换的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void InitTfmMatrices(
     const uint ndbCstrs,
     const uint maxnsteps,
@@ -265,6 +301,13 @@ __global__ void InitTfmMatrices(
 // NOTE: thread block is 1D and calculates multiple matrices simulatneously;
 // NOTE: works only for CUS1_TBSP_TFM_N == 32 because of warp sync!
 // 
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcTfmMatrices_DynamicOrientation` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcTfmMatrices_DynamicOrientation(
     const uint ndbCstrs,
@@ -309,6 +352,13 @@ void CalcTfmMatrices_DynamicOrientation(
 // NOTE: keep #registers <64 when CUS1_TBSP_TFM_N == 32!
 // NOTE: Based on the original Kabsch algorithm:
 template<bool REVERSE, bool TFM_DINV>
+/**
+ * @brief 在CUDA 刚体拟合与评分中计算 `CalcTfmMatrices` 对应的数据。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param wrkmem2 供当前步骤读取或更新的 `wrkmem2` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcTfmMatrices(
     const uint ndbCstrs,

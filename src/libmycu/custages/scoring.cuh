@@ -232,6 +232,18 @@ __global__ void SortBestDPscoresAndTMsAmongDPswifts(
 //
 template<int SAVEPOS, int CHCKDST>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateOneAlnPosScore` 对应的数据。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param scrpos 供该函数读取或更新的 `scrpos` 参数。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float UpdateOneAlnPosScore(
     float d02, float d82,
     int qrypos, int rfnpos, int scrpos,
@@ -276,6 +288,17 @@ float UpdateOneAlnPosScore(
 //
 template<int CHCKDST>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 刚体拟合与评分中更新 `UpdateOneAlnPosScore_frg2` 对应的数据。
+ * @param REVERSE 供该函数读取或更新的 `REVERSE` 参数。
+ * @param d02 供该函数读取或更新的 `d02` 参数。
+ * @param d82 供该函数读取或更新的 `d82` 参数。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param tfm 表示或保存刚体变换的 `tfm`。
+ * @param scv 供该函数读取或更新的 `scv` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UpdateOneAlnPosScore_frg2(
     const bool REVERSE,
     float d02, float d82,

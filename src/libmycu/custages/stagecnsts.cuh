@@ -46,6 +46,12 @@
 // query and reference lengths;
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetLnorm` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetLnorm(int qrylen, int dbstrlen)
 {
 //     int minlen = myhdmin(qrylen, dbstrlen);//NOTE: assumed >=3
@@ -58,6 +64,12 @@ float GetLnorm(int qrylen, int dbstrlen)
 // once the rotation matrix has been calculated;
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD8` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD8(int qrylen, int dbstrlen)
 {
     float lnorm = GetLnorm(qrylen, dbstrlen);
@@ -67,6 +79,12 @@ float GetD8(int qrylen, int dbstrlen)
 // GetD82: calculate distance threshold d8 squared
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD82` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD82(int qrylen, int dbstrlen)
 {
     float d8 = GetD8(qrylen, dbstrlen);
@@ -78,6 +96,12 @@ float GetD82(int qrylen, int dbstrlen)
 // GetD0: calculate the distance constant d0 based on the query and
 // reference lengths for final protein alignment refinement
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD0finProtein` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD0finProtein(int qrylen, int dbstrlen)
 {
     float lnorm = GetLnorm(qrylen, dbstrlen);
@@ -92,6 +116,12 @@ float GetD0finProtein(int qrylen, int dbstrlen)
 
 // d0 for final nucleic acid alignment refinement
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD0finNA` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD0finNA(int qrylen, int dbstrlen)
 {
     float lnorm = GetLnorm(qrylen, dbstrlen);
@@ -107,6 +137,13 @@ float GetD0finNA(int qrylen, int dbstrlen)
 // GetD0fin: calculate the distance constant d0 based on the query and
 // reference lengths for final alignment refinement
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD0fin` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param moltype 供该函数读取或更新的 `moltype` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD0fin(int qrylen, int dbstrlen, int moltype = gtmtProtein)
 {
     if(moltype == gtmtNA) return GetD0finNA(qrylen, dbstrlen);
@@ -123,6 +160,12 @@ float GetD0fin(int qrylen, int dbstrlen, int moltype = gtmtProtein)
 
 
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD0` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD0(int qrylen, int dbstrlen)
 {
     float lnorm = GetLnorm(qrylen, dbstrlen);
@@ -137,6 +180,12 @@ float GetD0(int qrylen, int dbstrlen)
 
 // GetD02: calculate d0 squared
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD02` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD02(int qrylen, int dbstrlen)
 {
     float d0 = GetD0(qrylen, dbstrlen);
@@ -146,6 +195,12 @@ float GetD02(int qrylen, int dbstrlen)
 // GetD02_dpscan: calculate d0 squared tuned for the scan by DP
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD02_dpscan` 对应的数据。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD02_dpscan(int qrylen, int dbstrlen)
 {
     float d0 = GetD0(qrylen, dbstrlen) + 1.5f;
@@ -157,6 +212,11 @@ float GetD02_dpscan(int qrylen, int dbstrlen)
 // set of positions on which the rotation matrix is calculated (for search)
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD0s` 对应的数据。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD0s(float d0)
 {
     float d0s = d0;
@@ -168,6 +228,11 @@ float GetD0s(float d0)
 // GetD02s: calculate squared GetD0s
 //
 __DINLINE__
+/**
+ * @brief 在CUDA 刚体拟合与评分中读取 `GetD02s` 对应的数据。
+ * @param d0 供该函数读取或更新的 `d0` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float GetD02s(float d0)
 {
     float d0s = GetD0s(d0);
