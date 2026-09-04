@@ -37,6 +37,20 @@
 // alndatamem, memory for full alignment information;
 // alnsmem, memory for output full alignments;
 // 
+/**
+ * @brief 在CUDA 动态规划中处理 `ProductionMatchToAlignment32x` 对应的数据。
+ * @param nodeletions 控制当前步骤范围或规模的 `nodeletions`。
+ * @param d2equiv 供该函数读取或更新的 `d2equiv` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param tmpdpalnpossbuffer 供当前步骤读取或更新的 `tmpdpalnpossbuffer` 缓冲区。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param alndatamem 保存最终对齐统计量的缓冲区。
+ * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ProductionMatchToAlignment32x(
     const bool nodeletions,

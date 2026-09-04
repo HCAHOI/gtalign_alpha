@@ -44,6 +44,11 @@ void ExecDPSSwBtck3264x(
 //
 template<unsigned int SHFT = 0, char VALUE = pmvLOOP>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocInitSS` 对应的数据。
+ * @param ssCache 供该函数读取或更新的 `ssCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocInitSS(char* __restrict__ ssCache)
 {
     ssCache[threadIdx.x+SHFT] = VALUE;
@@ -61,6 +66,11 @@ void DPLocInitSS(char& qss)
 //
 template<unsigned int SHFT = 0, char VALUE = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocInitRsd` 对应的数据。
+ * @param reCache 供该函数读取或更新的 `reCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocInitRsd(char* __restrict__ reCache)
 {
     reCache[threadIdx.x+SHFT] = VALUE;
@@ -78,6 +88,12 @@ void DPLocInitRsd(char& qre)
 // smem at position pos
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheQrySS` 对应的数据。
+ * @param ssCache 供该函数读取或更新的 `ssCache` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheQrySS(char* __restrict__ ssCache, int pos)
 {
     ssCache[threadIdx.x] = GetQuerySS(pos);
@@ -91,6 +107,12 @@ void DPLocCacheQrySS(char& qss, int pos)
 
 template<unsigned int SHFT = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheRfnSS` 对应的数据。
+ * @param ssCache 供该函数读取或更新的 `ssCache` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheRfnSS(char* __restrict__ ssCache, int pos)
 {
     ssCache[threadIdx.x+SHFT] = GetDbStrSS(pos);
@@ -100,6 +122,12 @@ void DPLocCacheRfnSS(char* __restrict__ ssCache, int pos)
 // DPLocCacheQryRsd/DPLocCacheRfnRsd: cache residue letter to smem at pos
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheQryRsd` 对应的数据。
+ * @param qre 供该函数读取或更新的 `qre` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheQryRsd(char& qre, int pos)
 {
     qre = GetQueryRsd(pos);
@@ -107,6 +135,12 @@ void DPLocCacheQryRsd(char& qre, int pos)
 
 template<unsigned int SHFT = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheRfnRsd` 对应的数据。
+ * @param reCache 供该函数读取或更新的 `reCache` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheRfnRsd(char* __restrict__ reCache, int pos)
 {
     reCache[threadIdx.x+SHFT] = GetDbStrRsd(pos);

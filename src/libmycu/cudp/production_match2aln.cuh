@@ -44,6 +44,20 @@ void ProductionMatchToAlignment32x(
 // 
 template<int blockDim_x1>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中写出 `WriteAlignmentFragment` 对应的数据。
+ * @param qrydst 描述查询结构的 `qrydst`。
+ * @param dbstrdst 描述参考结构的 `dbstrdst`。
+ * @param alnofff 供该函数读取或更新的 `alnofff` 参数。
+ * @param dbalnlen 控制当前步骤范围或规模的 `dbalnlen`。
+ * @param dbalnbeg 描述参考结构的 `dbalnbeg`。
+ * @param written 供该函数读取或更新的 `written` 参数。
+ * @param lentowrite 控制当前步骤范围或规模的 `lentowrite`。
+ * @param lentocheck 控制当前步骤范围或规模的 `lentocheck`。
+ * @param outAlnCache 接收当前步骤输出的 `outAlnCache`。
+ * @param alnsmem 供当前步骤读取或更新的 `alnsmem` 缓冲区。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int WriteAlignmentFragment(
     const uint qrydst, const uint dbstrdst,
     const int alnofff, const int dbalnlen, const int dbalnbeg,

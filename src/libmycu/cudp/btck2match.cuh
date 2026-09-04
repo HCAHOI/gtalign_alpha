@@ -43,6 +43,17 @@ void BtckToMatched32x(
 // 
 template<bool ANCHORRGN, bool BANDED>
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 动态规划中读取 `GetTerminalCellXY` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void GetTerminalCellXY(
     int& x, int& y,
     int qrylen, int dbstrlen,

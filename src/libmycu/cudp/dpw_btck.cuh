@@ -42,6 +42,12 @@ void ExecDPwBtck3264x(
 // GetCoordsNdx: get 1D index of logically 2D coordinates array
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中读取 `GetCoordsNdx` 对应的数据。
+ * @param i 供该函数读取或更新的 `i` 参数。
+ * @param j 供该函数读取或更新的 `j` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 uint GetCoordsNdx(uint i, uint j) {return pmv2DNoElems * j + i;}
 
 // -------------------------------------------------------------------------
@@ -49,6 +55,11 @@ uint GetCoordsNdx(uint i, uint j) {return pmv2DNoElems * j + i;}
 //
 template<unsigned int SHFT = 0, int VALUE = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocInitCoords` 对应的数据。
+ * @param coordsCache 供该函数读取或更新的 `coordsCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocInitCoords(float* __restrict__ coordsCache)
 {
     coordsCache[GetCoordsNdx(pmv2DX,threadIdx.x+SHFT)] = (float)(VALUE);
@@ -76,6 +87,13 @@ void DPLocInitCoords(float& qx, float& qy, float& qz)
 }
 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocAssignCoords` 对应的数据。
+ * @param SHFTTRG 供该函数读取或更新的 `SHFTTRG` 参数。
+ * @param SHFTSRC 供该函数读取或更新的 `SHFTSRC` 参数。
+ * @param coordsCache 供该函数读取或更新的 `coordsCache` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocAssignCoords(
     unsigned int SHFTTRG, unsigned int SHFTSRC,
     float* __restrict__ coordsCache)
@@ -92,6 +110,12 @@ void DPLocAssignCoords(
 
 template<unsigned int CRD>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocGetCoord` 对应的数据。
+ * @param SHFT 供该函数读取或更新的 `SHFT` 参数。
+ * @param coordsCache 供该函数读取或更新的 `coordsCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float DPLocGetCoord(unsigned int SHFT, float* __restrict__ coordsCache)
 {
     return coordsCache[GetCoordsNdx(CRD, SHFT)];
@@ -102,6 +126,12 @@ float DPLocGetCoord(unsigned int SHFT, float* __restrict__ coordsCache)
 // position pos
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheQryCoords` 对应的数据。
+ * @param coordsCache 供该函数读取或更新的 `coordsCache` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheQryCoords(float* __restrict__ coordsCache, int pos)
 {
     coordsCache[GetCoordsNdx(pmv2DX,threadIdx.x)] = GetQueryCoord<pmv2DX>(pos);
@@ -119,6 +149,12 @@ void DPLocCacheQryCoords(float& qx, float& qy, float& qz, int pos)
 
 template<unsigned int SHFT = 0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheRfnCoords` 对应的数据。
+ * @param coordsCache 供该函数读取或更新的 `coordsCache` 参数。
+ * @param pos 供该函数读取或更新的 `pos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheRfnCoords(float* __restrict__ coordsCache, int pos)
 {
     coordsCache[GetCoordsNdx(pmv2DX,threadIdx.x+SHFT)] = GetDbStrCoord<pmv2DX>(pos);
@@ -141,6 +177,12 @@ void DPLocCacheRfnCoords(
 // GetBufferNdx: get 1D index of logically 2D buffer array
 template<unsigned int _2DCACHE_DIM_D>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中读取 `GetBufferNdx` 对应的数据。
+ * @param i 供该函数读取或更新的 `i` 参数。
+ * @param j 供该函数读取或更新的 `j` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 uint GetBufferNdx(uint i, uint j) {return _2DCACHE_DIM_D * i + j;}
 
 __device__ __forceinline__
@@ -151,6 +193,14 @@ uint GetBufferNdx(unsigned int _2DCACHE_DIM_D, uint i, uint j) {return _2DCACHE_
 //
 template<unsigned int LOG2MINDDIM = 5>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocGetCacheVal` 对应的数据。
+ * @param DIM_PD 供该函数读取或更新的 `DIM_PD` 参数。
+ * @param SBCT 供该函数读取或更新的 `SBCT` 参数。
+ * @param SHFT 供该函数读取或更新的 `SHFT` 参数。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float DPLocGetCacheVal(
     unsigned int DIM_PD,
     unsigned int SBCT,
@@ -162,6 +212,15 @@ float DPLocGetCacheVal(
 
 template<unsigned int LOG2MINDDIM = 5>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocSetCacheVal` 对应的数据。
+ * @param DIM_PD 供该函数读取或更新的 `DIM_PD` 参数。
+ * @param SBCT 供该函数读取或更新的 `SBCT` 参数。
+ * @param SHFT 供该函数读取或更新的 `SHFT` 参数。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocSetCacheVal(
     unsigned int DIM_PD,
     unsigned int SBCT,
@@ -181,6 +240,13 @@ template<
     unsigned int SHFT = 0,
     int NSUBCTS = nTDPDiagScoreSubsections>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocInitCache` 对应的数据。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @param initmmval 供该函数读取或更新的 `initmmval` 参数。
+ * @param initval 供该函数读取或更新的 `initval` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocInitCache( 
     float* __restrict__ scmCache,
     float initmmval = 0.0f,
@@ -194,6 +260,15 @@ void DPLocInitCache(
 
 template<int NSUBCTS = nTDPDiagScoreSubsections>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocInitCache512x` 对应的数据。
+ * @param DIM_PD 供该函数读取或更新的 `DIM_PD` 参数。
+ * @param SHFT 供该函数读取或更新的 `SHFT` 参数。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @param initmmval 供该函数读取或更新的 `initmmval` 参数。
+ * @param initval 供该函数读取或更新的 `initval` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocInitCache512x( 
     unsigned int DIM_PD,
     unsigned int SHFT,
@@ -220,6 +295,15 @@ template<
     int SHFT = 0,
     int NSUBCTS = nTDPDiagScoreSubsections>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocCacheBuffer` 对应的数据。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @param gmemtmpbuffer 供当前步骤读取或更新的 `gmemtmpbuffer` 缓冲区。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param stride 供该函数读取或更新的 `stride` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocCacheBuffer( 
     float* __restrict__ scmCache,
     const float* __restrict__ gmemtmpbuffer,
@@ -258,6 +342,15 @@ template<
     int SHFT = 0,
     int NSUBCTS = nTDPDiagScoreSubsections>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocWriteBuffer` 对应的数据。
+ * @param scmCache 供该函数读取或更新的 `scmCache` 参数。
+ * @param gmemtmpbuffer 供当前步骤读取或更新的 `gmemtmpbuffer` 缓冲区。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param stride 供该函数读取或更新的 `stride` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocWriteBuffer( 
     const float* __restrict__ scmCache,
     float* __restrict__ gmemtmpbuffer,
@@ -292,6 +385,14 @@ void DPLocWriteBuffer(
 // MINDDIM1, innermost dimension with padding;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocGetBtckCacheVal` 对应的数据。
+ * @param MINDDIM1 供该函数读取或更新的 `MINDDIM1` 参数。
+ * @param Y 供该函数读取或更新的 `Y` 参数。
+ * @param X 供该函数读取或更新的 `X` 参数。
+ * @param btckCache 供该函数读取或更新的 `btckCache` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 char DPLocGetBtckCacheVal(
     unsigned int MINDDIM1,
     unsigned int Y,
@@ -302,6 +403,15 @@ char DPLocGetBtckCacheVal(
 }
 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 动态规划中处理 `DPLocSetBtckCacheVal` 对应的数据。
+ * @param MINDDIM1 供该函数读取或更新的 `MINDDIM1` 参数。
+ * @param Y 供该函数读取或更新的 `Y` 参数。
+ * @param X 供该函数读取或更新的 `X` 参数。
+ * @param btckCache 供该函数读取或更新的 `btckCache` 参数。
+ * @param value 需要读取、写入或转换的值。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void DPLocSetBtckCacheVal(
     unsigned int MINDDIM1,
     unsigned int Y,
@@ -318,6 +428,15 @@ void DPLocSetBtckCacheVal(
 // value
 template<typename T>
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 动态规划中处理 `dpmaxandcoords` 对应的数据。
+ * @param a 供该函数读取或更新的 `a` 参数。
+ * @param b 供该函数读取或更新的 `b` 参数。
+ * @param xy 供该函数读取或更新的 `xy` 参数。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void dpmaxandcoords(T& a, T b, uint& xy, uint x, uint y)
 {
     //NOTE: for (semi-)global alignment, record match scores unconditionally,
@@ -340,6 +459,17 @@ void dpmaxandcoords(T& a, T b, uint& xy, uint x, uint y)
 // 
 template<bool ANCHORRGN, bool BANDED>
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 动态规划中处理 `CellXYInvalidLowerArea` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool CellXYInvalidLowerArea(
     int x, int y,
     int qrylen, int dbstrlen,
@@ -371,6 +501,17 @@ bool CellXYInvalidLowerArea(
 // 
 template<bool ANCHORRGN, bool BANDED>
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 动态规划中处理 `CellXYInvalidUpperArea` 对应的数据。
+ * @param x 供该函数读取或更新的 `x` 参数。
+ * @param y 供该函数读取或更新的 `y` 参数。
+ * @param qrylen 控制当前步骤范围或规模的 `qrylen`。
+ * @param dbstrlen 控制当前步骤范围或规模的 `dbstrlen`。
+ * @param qrypos 描述查询结构的 `qrypos`。
+ * @param rfnpos 描述参考结构的 `rfnpos`。
+ * @param fraglen 控制当前步骤范围或规模的 `fraglen`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool CellXYInvalidUpperArea(
     int x, int y,
     int qrylen, int dbstrlen,

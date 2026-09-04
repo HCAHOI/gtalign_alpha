@@ -33,6 +33,13 @@ void CalcSecStrs();
 //
 template<int nMAXPOS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKCalcDistances` 对应的数据。
+ * @param cssTotal 供该函数读取或更新的 `cssTotal` 参数。
+ * @param pmv2DNoElems 供该函数读取或更新的 `pmv2DNoElems` 参数。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SSKCalcDistances(
     float (*__restrict__ dstCache)[cssTotal],
     const float (*__restrict__ strCoords)[pmv2DNoElems],
@@ -56,6 +63,12 @@ void SSKCalcDistances(
 //
 template<int nMRG0>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKAassignSecStr` 对应的数据。
+ * @param cssTotal 供该函数读取或更新的 `cssTotal` 参数。
+ * @param trgpos 供该函数读取或更新的 `trgpos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 char SSKAassignSecStr(
     const float (*__restrict__ dstCache)[cssTotal],
     int trgpos)

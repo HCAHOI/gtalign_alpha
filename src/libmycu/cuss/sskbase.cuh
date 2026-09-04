@@ -26,6 +26,13 @@
 //
 template<int STRUCTS>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKCacheCoords` 对应的数据。
+ * @param pmv2DNoElems 供该函数读取或更新的 `pmv2DNoElems` 参数。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @param strpos 供该函数读取或更新的 `strpos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SSKCacheCoords(
     float (*__restrict__ strCoords)[pmv2DNoElems],
     int dstpos, int strpos)
@@ -47,6 +54,13 @@ void SSKCacheCoords(
 // strpos, structure position to read the coordinates at;
 template<int STRUCTS, int YDIMSHIFT>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKCacheCoordsYPrl` 对应的数据。
+ * @param pmv2DNoElems 供该函数读取或更新的 `pmv2DNoElems` 参数。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @param strpos 供该函数读取或更新的 `strpos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SSKCacheCoordsYPrl(
     float (*__restrict__ strCoords)[pmv2DNoElems],
     int dstpos, int strpos)
@@ -69,6 +83,13 @@ void SSKCacheCoordsYPrl(
 // strpos, structure position to read a residue;
 template<int STRUCTS, int YDIMNDX>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKCacheRsds` 对应的数据。
+ * @param rsdCache 供该函数读取或更新的 `rsdCache` 参数。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @param strpos 供该函数读取或更新的 `strpos` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void SSKCacheRsds(
     char* __restrict__ rsdCache,
     int dstpos, int strpos)
@@ -88,6 +109,13 @@ void SSKCacheRsds(
 // seqpos, position several residues apart;
 //
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 二级结构计算中处理 `SSKGetDistance` 对应的数据。
+ * @param pmv2DNoElems 供该函数读取或更新的 `pmv2DNoElems` 参数。
+ * @param dstpos 接收目标数据的 `dstpos`。
+ * @param seqpos 供该函数读取或更新的 `seqpos` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float SSKGetDistance(
     const float (*__restrict__ strCoords)[pmv2DNoElems],
     int dstpos, int seqpos)

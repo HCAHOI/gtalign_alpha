@@ -27,6 +27,21 @@
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 二级结构计算中计算 `cusecstr::calc_secstr` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void cusecstr::calc_secstr(
     cudaStream_t streamproc, 
     uint nqystrs, uint ndbCstrs, 
@@ -55,6 +70,20 @@ void cusecstr::calc_secstr(
 // qystrnlen, length of the smallest query;
 // dbstrnlen, length of the smallest reference;
 //
+/**
+ * @brief 在CUDA 二级结构计算中计算 `cusecstr::calc_secstr_protein` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param nqystrs 当前批次中的查询结构数量。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param nqyposs 当前批次中查询结构的总位置数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param qystr1len 批次中最长查询结构的长度。
+ * @param dbstr1len 批次中最长参考结构的长度。
+ * @param qystrnlen 批次中最短查询结构的长度。
+ * @param dbstrnlen 批次中最短参考结构的长度。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void cusecstr::calc_secstr_protein(
     cudaStream_t streamproc, 
     uint nqystrs, uint ndbCstrs, 
@@ -96,6 +125,16 @@ void cusecstr::calc_secstr_protein(
 // dbstrnlen, length of the smallest reference;
 //
 template<int STRUCTS>
+/**
+ * @brief 在CUDA 二级结构计算中计算 `cusecstr::calc_secstr_na` 对应的数据。
+ * @param streamproc 执行当前计算阶段的 CUDA 流。
+ * @param nstrs 控制当前步骤范围或规模的 `nstrs`。
+ * @param nposs 控制当前步骤范围或规模的 `nposs`。
+ * @param str1len 控制当前步骤范围或规模的 `str1len`。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void cusecstr::calc_secstr_na(
     cudaStream_t streamproc,
     uint nstrs, uint nposs, uint str1len,

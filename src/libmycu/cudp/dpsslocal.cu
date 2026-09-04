@@ -62,6 +62,20 @@
 // dpscoremtx, rounded dp score matrix;
 // 
 template<int NASEQ>
+/**
+ * @brief 在CUDA 动态规划中处理 `ExecDPSSLocal3264x` 对应的数据。
+ * @param blkdiagnum 供该函数读取或更新的 `blkdiagnum` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param gapcost 供该函数读取或更新的 `gapcost` 参数。
+ * @param wrkmemaux 保存分数、收敛标记等辅助状态的工作缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param dpscoremtx 当前步骤使用或写回的 `dpscoremtx` 分数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ExecDPSSLocal3264x(
     const uint blkdiagnum,

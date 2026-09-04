@@ -59,6 +59,23 @@
 // btckdata, backtracking information data;
 // 
 template<bool USESS>
+/**
+ * @brief 在CUDA 动态规划中处理 `ExecDPAGCTFMSSwBtckSpecScores3264x` 对应的数据。
+ * @param blkdiagnum 供该函数读取或更新的 `blkdiagnum` 参数。
+ * @param ndbCstrs 当前批次中的参考结构数量。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param dbxpad 参考数据行末用于对齐访问的填充长度。
+ * @param maxnsteps 每对结构保留的候选搜索步数。
+ * @param ssweight 供该函数读取或更新的 `ssweight` 参数。
+ * @param gapopencost 供该函数读取或更新的 `gapopencost` 参数。
+ * @param gapextcost 供该函数读取或更新的 `gapextcost` 参数。
+ * @param specscores 当前步骤使用或写回的 `specscores` 分数。
+ * @param tfmmem 保存最终刚体变换矩阵的缓冲区。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @param tmpdpbotbuffer 供当前步骤读取或更新的 `tmpdpbotbuffer` 缓冲区。
+ * @param btckdata 保存动态规划回溯方向的缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void ExecDPAGCTFMSSwBtckSpecScores3264x(
     const uint blkdiagnum,

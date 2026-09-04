@@ -25,6 +25,12 @@
 // tmpdpdiagbuffers, temporary buffer for distances and positions;
 // 
 template<int STRUCTS>
+/**
+ * @brief 在CUDA 二级结构计算中计算 `CalcSecStrs_NASS` 对应的数据。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__ void CalcSecStrs_NASS(
     const uint ndbCposs,
     float* __restrict__ tmpdpdiagbuffers)
@@ -112,6 +118,12 @@ INSTANTIATE_CalcSecStrs_NASS(SSK_STRUCTS_REFNS);
 // Initialize_NASS: initialize temporary memory buffer for calculating
 // nucleic acid secondary structures
 // 
+/**
+ * @brief 在CUDA 二级结构计算中初始化 `Initialize_NASS` 对应的数据。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void Initialize_NASS(
     const uint ndbCposs,
@@ -134,6 +146,13 @@ void Initialize_NASS(
 // tmpdpdiagbuffers, temporary buffer for distances and positions;
 // 
 template<int STRUCTS>
+/**
+ * @brief 在CUDA 二级结构计算中计算 `CalcDistances_NASS` 对应的数据。
+ * @param atomtype 供该函数读取或更新的 `atomtype` 参数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcDistances_NASS(
     const int atomtype,
@@ -288,6 +307,13 @@ INSTANTIATE_CalcDistances_NASS(SSK_STRUCTS_REFNS);
 // tmpdpdiagbuffers, temporary buffer for distances and positions;
 // 
 template<int STRUCTS>
+/**
+ * @brief 在CUDA 二级结构计算中计算 `CalcDistances_NASS_CC7` 对应的数据。
+ * @param atomtype 供该函数读取或更新的 `atomtype` 参数。
+ * @param ndbCposs 当前批次中参考结构的总位置数。
+ * @param tmpdpdiagbuffers 供当前步骤读取或更新的 `tmpdpdiagbuffers` 缓冲区。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcDistances_NASS_CC7(
     const int atomtype,

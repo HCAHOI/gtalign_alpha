@@ -28,6 +28,12 @@
 // NOTE: keep #registers below 32!
 // 
 template<int STRUCTS>
+/**
+ * @brief 在CUDA 二级结构计算中计算 `CalcSecStrs` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 __global__
 void CalcSecStrs()
 {
