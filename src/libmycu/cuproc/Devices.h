@@ -27,6 +27,12 @@ struct DeviceProperties {
     enum {
         DEVMEMORYRESERVE = 256 * ONEM
     };
+    /**
+     * @brief 构造 `DeviceProperties`，初始化其负责的CUDA 设备管理状态。
+     * @par 参数
+     * 无。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     DeviceProperties():
         shdcnt_(new TSCounterVar),
         devid_(-1),
@@ -38,6 +44,11 @@ struct DeviceProperties {
     {
         memset(maxGridSize_, 0, 3 * sizeof(int));
     };
+    /**
+     * @brief 构造 `DeviceProperties`，初始化其负责的CUDA 设备管理状态。
+     * @param dprop 供该函数读取或更新的 `dprop` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     DeviceProperties( const DeviceProperties& dprop ):
         shdcnt_(dprop.shdcnt_),
         devid_(dprop.devid_),
@@ -54,8 +65,26 @@ struct DeviceProperties {
     {
         memcpy(maxGridSize_, dprop.maxGridSize_, 3 * sizeof(int));
     };
+    /**
+     * @brief 在CUDA 设备管理中处理 `DevidValid` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool DevidValid() const {return devid_ < 0? false: true;}
+    /**
+     * @brief 在CUDA 设备管理中处理 `GridMaxXdim` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GridMaxXdim() const {return maxGridSize_[0];}
+    /**
+     * @brief 在CUDA 设备管理中处理 `GridMaxYdim` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GridMaxYdim() const {return maxGridSize_[1];}
     //shared device counter for synchronization between worker threads 
     // communicating with the same device:
@@ -86,28 +115,102 @@ struct DeviceProperties {
 class Devices
 {
 public:
+    /**
+     * @brief 构造 `Devices`，初始化其负责的CUDA 设备管理状态。
+     * @param maxdvs 供该函数读取或更新的 `maxdvs` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     Devices( int maxdvs = MAXNDEVS ): 
         maxdevs_(maxdvs),
         maxmem_(-1L)
     {};
+    /**
+     * @brief 销毁 `Devices`，释放其管理的CUDA 设备管理资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~Devices() {};
 
+    /**
+     * @brief 在CUDA 设备管理中设置 `SetMaxMemoryAmount` 对应的数据。
+     * @param mem_in_mb 供当前步骤读取或更新的 `mem_in_mb` 缓冲区。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetMaxMemoryAmount( ssize_t mem_in_mb ) { maxmem_ = mem_in_mb * ONEM; };
 
+    /**
+     * @brief 在CUDA 设备管理中格式化输出 `PrintDevices` 对应的数据。
+     * @param FILE 供该函数读取或更新的 `FILE` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void PrintDevices( FILE* );
+    /**
+     * @brief 在CUDA 设备管理中处理 `PrettyPrintUsedDevices` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void PrettyPrintUsedDevices();
 
+    /**
+     * @brief 在CUDA 设备管理中处理 `RegisterDevices` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void RegisterDevices();
 
+    /**
+     * @brief 在CUDA 设备管理中读取 `GetNDevices` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetNDevices() const;
+    /**
+     * @brief 在CUDA 设备管理中读取 `GetDevicePropertiesAt` 对应的数据。
+     * @param n 控制当前步骤范围或规模的 `n`。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     const DeviceProperties* GetDevicePropertiesAt(size_t n) const;
 
+    /**
+     * @brief 在CUDA 设备管理中读取 `GetDevIdWithMinRequestedMem` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetDevIdWithMinRequestedMem() const;
 
 protected:
+    /**
+     * @brief 在CUDA 设备管理中读取 `ReadDevices` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ReadDevices();
+    /**
+     * @brief 在CUDA 设备管理中排序 `SortDevices` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SortDevices();
+    /**
+     * @brief 在CUDA 设备管理中处理 `RegisterDeviceProperties` 对应的数据。
+     * @param devid 供该函数读取或更新的 `devid` 参数。
+     * @param maxmem 供当前步骤读取或更新的 `maxmem` 缓冲区。
+     * @param checkduplicates 控制该处理分支是否启用的 `checkduplicates` 标志。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool RegisterDeviceProperties( int devid, ssize_t maxmem, bool checkduplicates );
+    /**
+     * @brief 在CUDA 设备管理中处理 `PruneRegisteredDevices` 对应的数据。
+     * @param ndevs 控制当前步骤范围或规模的 `ndevs`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void PruneRegisteredDevices( int ndevs );
 
 private:
@@ -121,6 +224,12 @@ private:
 //
 // -------------------------------------------------------------------------
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `Devices::GetNDevices` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 int Devices::GetNDevices() const
 {
@@ -130,6 +239,11 @@ int Devices::GetNDevices() const
 
 // -------------------------------------------------------------------------
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `Devices::GetDevicePropertiesAt` 对应的数据。
+ * @param n 控制当前步骤范围或规模的 `n`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 inline
 const DeviceProperties* Devices::GetDevicePropertiesAt(size_t n) const
 {

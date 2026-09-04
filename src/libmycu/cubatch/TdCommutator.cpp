@@ -29,6 +29,19 @@
 //
 // Constructor
 //
+/**
+ * @brief 构造 `TdCommutator`，初始化其负责的CUDA 对齐流水线状态。
+ * @param ringsize 控制当前步骤范围或规模的 `ringsize`。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @param dmem 供当前步骤读取或更新的 `dmem` 缓冲区。
+ * @param areano 供该函数读取或更新的 `areano` 参数。
+ * @param writer 供该函数读取或更新的 `writer` 参数。
+ * @param clustwriter 供该函数读取或更新的 `clustwriter` 参数。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 TdCommutator::TdCommutator(
     size_t ringsize,
     int tid, CuDeviceMemory* dmem, int areano,
@@ -100,6 +113,12 @@ TdCommutator::TdCommutator(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `TdCommutator`，释放其管理的CUDA 对齐流水线资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 TdCommutator::~TdCommutator()
 {
     MYMSG("TdCommutator::~TdCommutator", 3);
@@ -113,6 +132,11 @@ TdCommutator::~TdCommutator()
 // -------------------------------------------------------------------------
 // Execute: thread's starting point and execution process
 //
+/**
+ * @brief 在CUDA 对齐流水线中处理 `TdCommutator::Execute` 对应的数据。
+ * @param param1 供该函数读取或更新的 `param1` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdCommutator::Execute( void* )
 {
     MYMSG( "TdCommutator::Execute", 3 );
@@ -242,6 +266,11 @@ void TdCommutator::Execute( void* )
 // CalculateMaxDbDataChunkSize: calculate maximum database data chunk size 
 // given query length previously set by the master thread
 //
+/**
+ * @brief 在CUDA 对齐流水线中计算 `TdCommutator::CalculateMaxDbDataChunkSize` 对应的数据。
+ * @param cbpc 供该函数读取或更新的 `cbpc` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdCommutator::CalculateMaxDbDataChunkSize(CuBatch& /*cbpc*/)
 {
     throw MYRUNTIME_ERROR(
@@ -257,6 +286,11 @@ void TdCommutator::CalculateMaxDbDataChunkSize(CuBatch& /*cbpc*/)
 // ProcessBlock: batch processing of a block of the matrix 
 // formed by the total number of queries and reference structures
 //
+/**
+ * @brief 在CUDA 对齐流水线中处理 `TdCommutator::ProcessBlock` 对应的数据。
+ * @param cbpc 供该函数读取或更新的 `cbpc` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void TdCommutator::ProcessBlock(CuBatch& cbpc)
 {
     bool bdbCinf = PMBatchStrData::ContainsData(bdbCpmbeg_, bdbCpmend_);

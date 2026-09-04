@@ -24,6 +24,13 @@
 // -------------------------------------------------------------------------
 // constructor
 //
+/**
+ * @brief 构造 `CuDeviceMemory`，初始化其负责的CUDA 内存布局状态。
+ * @param dprop 供该函数读取或更新的 `dprop` 参数。
+ * @param deviceallocsize 控制当前步骤范围或规模的 `deviceallocsize`。
+ * @param nareas 控制当前步骤范围或规模的 `nareas`。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 CuDeviceMemory::CuDeviceMemory(
     DeviceProperties dprop, 
     size_t deviceallocsize,
@@ -40,6 +47,12 @@ CuDeviceMemory::CuDeviceMemory(
 // -------------------------------------------------------------------------
 // destructor
 //
+/**
+ * @brief 销毁 `CuDeviceMemory`，释放其管理的CUDA 内存布局资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 CuDeviceMemory::~CuDeviceMemory()
 {
     MYMSG("CuDeviceMemory::~CuDeviceMemory", 4);
@@ -48,6 +61,12 @@ CuDeviceMemory::~CuDeviceMemory()
 // -------------------------------------------------------------------------
 // CacheCompleteData: transfer complete required data to device
 // 
+/**
+ * @brief 在CUDA 内存布局中处理 `CuDeviceMemory::CacheCompleteData` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::CacheCompleteData()
 {
     MYMSG("CuDeviceMemory::CacheCompleteData", 4);
@@ -71,6 +90,12 @@ __constant__ float dc_Gonnet_scores_[NEA * NEA];
 // =========================================================================
 // -------------------------------------------------------------------------
 // AllocateHeap: allocate device memory
+/**
+ * @brief 在CUDA 内存布局中分配 `CuDeviceMemory::AllocateHeap` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void CuDeviceMemory::AllocateHeap()
 {
@@ -85,6 +110,11 @@ void CuDeviceMemory::AllocateHeap()
 
 // -------------------------------------------------------------------------
 // FreeDevicePtr: free device pointer
+/**
+ * @brief 在CUDA 内存布局中释放 `CuDeviceMemory::FreeDevicePtr` 对应的数据。
+ * @param d_ptr 供该函数读取或更新的 `d_ptr` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void CuDeviceMemory::FreeDevicePtr( char*& d_ptr )
 {
@@ -107,6 +137,16 @@ void CuDeviceMemory::FreeDevicePtr( char*& d_ptr )
 // NOTE: memory is allocated for device pointer dev_pckdpm 
 //
 template <size_t NFIELDS>
+/**
+ * @brief 在CUDA 内存布局中复制 `CuDeviceMemory::CopyCPMDataToDevice` 对应的数据。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param dev_pckdpm 供该函数读取或更新的 `dev_pckdpm` 参数。
+ * @param szmaxsize 控制当前步骤范围或规模的 `szmaxsize`。
+ * @param cmbegndx 供该函数读取或更新的 `cmbegndx` 参数。
+ * @param sinfo 供该函数读取或更新的 `sinfo` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::CopyCPMDataToDevice(
     char** bdbCpmbeg,
     char** bdbCpmend,
@@ -185,6 +225,12 @@ void CuDeviceMemory::CopyCPMDataToDevice(
 // TransferQueryPMDataToDevice: transfer a chunk of query db structure 
 // data to device
 // 
+/**
+ * @brief 在CUDA 内存布局中处理 `CuDeviceMemory::TransferQueryPMDataToDevice` 对应的数据。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param querypmend 查询结构打包字段的结束指针数组。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::TransferQueryPMDataToDevice(
     char** querypmbeg, char** querypmend)
 {
@@ -213,6 +259,12 @@ void CuDeviceMemory::TransferQueryPMDataToDevice(
 // TransferQueryPMIndexToDevice: transfer indexed query db structure 
 // data to device
 // 
+/**
+ * @brief 在CUDA 内存布局中处理 `CuDeviceMemory::TransferQueryPMIndexToDevice` 对应的数据。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::TransferQueryPMIndexToDevice(
     char** queryndxpmbeg, char** queryndxpmend)
 {
@@ -241,6 +293,12 @@ void CuDeviceMemory::TransferQueryPMIndexToDevice(
 // TransferCPMDataToDevice: transfer a chunk of target db structure data to 
 // device
 // 
+/**
+ * @brief 在CUDA 内存布局中处理 `CuDeviceMemory::TransferCPMDataToDevice` 对应的数据。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::TransferCPMDataToDevice(
     char** bdbCpmbeg,
     char** bdbCpmend)
@@ -269,6 +327,12 @@ void CuDeviceMemory::TransferCPMDataToDevice(
 // -------------------------------------------------------------------------
 // TransferCPMIndexToDevice: transfer indexed target db structure data to device
 // 
+/**
+ * @brief 在CUDA 内存布局中处理 `CuDeviceMemory::TransferCPMIndexToDevice` 对应的数据。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void CuDeviceMemory::TransferCPMIndexToDevice(
     char** bdbCndxpmbeg, char** bdbCndxpmend)
 {

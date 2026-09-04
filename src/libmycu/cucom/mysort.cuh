@@ -23,6 +23,13 @@
 // iosec, secondary input/output vector; its values are rearranged consistently with ioprm;
 template<int NMAX, bool ASCENDING, typename TPRM, typename TSEC>
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 通用原语中处理 `BatcherSortYDIMparallel` 对应的数据。
+ * @param n 控制当前步骤范围或规模的 `n`。
+ * @param ioprm 供该函数读取或更新的 `ioprm` 参数。
+ * @param iosec 供该函数读取或更新的 `iosec` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void BatcherSortYDIMparallel(
     const int n, TPRM* __restrict__ ioprm, TSEC* __restrict__ iosec)
 {

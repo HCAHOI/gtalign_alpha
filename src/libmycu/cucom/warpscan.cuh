@@ -11,6 +11,11 @@
 // mywarpincprefixmin: inclusive prefix min perfomed in a warp
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarpincprefixmin` 对应的数据。
+ * @param reg 供该函数读取或更新的 `reg` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarpincprefixmin( T reg )
 {
     T tmp;
@@ -26,6 +31,11 @@ T mywarpincprefixmin( T reg )
 // mywarpincprefixsum: inclusive prefix sum perfomed in a warp
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarpincprefixsum` 对应的数据。
+ * @param reg 供该函数读取或更新的 `reg` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarpincprefixsum( T reg )
 {
     T tmp;
@@ -41,6 +51,11 @@ T mywarpincprefixsum( T reg )
 // mywarprevincprefixsum: inclusive prefix sum accumulated in the reversed order
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarprevincprefixsum` 对应的数据。
+ * @param reg 供该函数读取或更新的 `reg` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarprevincprefixsum( T reg )
 {
     T tmp;
@@ -56,6 +71,11 @@ T mywarprevincprefixsum( T reg )
 // mywarpreducemax: warp reduce for the maximum value across a warp
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarpreducemax` 对应的数据。
+ * @param value 需要读取、写入或转换的值。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarpreducemax( T value )
 {
     //warp reduce
@@ -70,6 +90,11 @@ T mywarpreducemax( T value )
 // mywarpreducemin: warp reduce for the minimum value across a warp
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarpreducemin` 对应的数据。
+ * @param value 需要读取、写入或转换的值。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarpreducemin( T value )
 {
     //warp reduce
@@ -84,6 +109,11 @@ T mywarpreducemin( T value )
 // mywarpreducesum: warp reduce for the sum across a warp
 template <typename T> 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中处理 `mywarpreducesum` 对应的数据。
+ * @param value 需要读取、写入或转换的值。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 T mywarpreducesum( T value )
 {
     //warp reduce

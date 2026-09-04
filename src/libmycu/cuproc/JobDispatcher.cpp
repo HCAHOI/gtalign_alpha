@@ -37,6 +37,15 @@
 //
 // Constructors
 //
+/**
+ * @brief 构造 `JobDispatcher`，初始化其负责的CUDA 设备管理状态。
+ * @param inputlist 供该函数读取或更新的 `inputlist` 参数。
+ * @param dnamelist 供该函数读取或更新的 `dnamelist` 参数。
+ * @param sfxlst 供该函数读取或更新的 `sfxlst` 参数。
+ * @param output 接收当前步骤输出的 `output`。
+ * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 JobDispatcher::JobDispatcher(
     const std::vector<std::string>& inputlist,
     const std::vector<std::string>& dnamelist,
@@ -62,6 +71,14 @@ JobDispatcher::JobDispatcher(
     readers_.reserve(16);
 }
 
+/**
+ * @brief 构造 `JobDispatcher`，初始化其负责的CUDA 设备管理状态。
+ * @param clustlist 供该函数读取或更新的 `clustlist` 参数。
+ * @param sfxlst 供该函数读取或更新的 `sfxlst` 参数。
+ * @param output 接收当前步骤输出的 `output`。
+ * @param cachedir 供该函数读取或更新的 `cachedir` 参数。
+ * @return 无返回值；完成对象构造与初始状态设置。
+ */
 JobDispatcher::JobDispatcher(
     const std::vector<std::string>& clustlist,
     const std::vector<std::string>& sfxlst, 
@@ -86,6 +103,12 @@ JobDispatcher::JobDispatcher(
 
 // Destructor
 //
+/**
+ * @brief 销毁 `JobDispatcher`，释放其管理的CUDA 设备管理资源。
+ * @par 参数
+ * 无。
+ * @return 无返回值；对象持有的资源在返回前完成释放。
+ */
 JobDispatcher::~JobDispatcher()
 {
     for(int tid = 0; tid < (int)hostworkers_.size(); tid++ ) {
@@ -127,6 +150,17 @@ JobDispatcher::~JobDispatcher()
 // =========================================================================
 // CreateReader: create the thread for reading reference data from files
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateReader` 对应的数据。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param mapped 供该函数读取或更新的 `mapped` 参数。
+ * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateReader( 
     int maxstrlen, bool mapped, int ndatbufs, int nagents,
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs)
@@ -178,6 +212,14 @@ void JobDispatcher::CreateReader(
 // -------------------------------------------------------------------------
 // CreateQrsReader: create the thread for reading query data from files
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateQrsReader` 对应的数据。
+ * @param maxstrlen 控制当前步骤范围或规模的 `maxstrlen`。
+ * @param mapped 供该函数读取或更新的 `mapped` 参数。
+ * @param ndatbufs 控制当前步骤范围或规模的 `ndatbufs`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateQrsReader( 
     int maxstrlen,
     bool mapped,
@@ -213,6 +255,16 @@ void JobDispatcher::CreateQrsReader(
 // be ready;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `JobDispatcher::GetDataFromReader` 对应的数据。
+ * @param reader 供该函数读取或更新的 `reader` 参数。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool JobDispatcher::GetDataFromReader(
     TdDataReader* reader,
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
@@ -250,6 +302,18 @@ bool JobDispatcher::GetDataFromReader(
 // be ready; version to get index too;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `JobDispatcher::GetDataFromReader` 对应的数据。
+ * @param reader 供该函数读取或更新的 `reader` 参数。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCNdxpmbeg 描述参考结构的 `bdbCNdxpmbeg`。
+ * @param bdbCNdxpmend 描述参考结构的 `bdbCNdxpmend`。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool JobDispatcher::GetDataFromReader(
     TdDataReader* reader,
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
@@ -291,6 +355,22 @@ bool JobDispatcher::GetDataFromReader(
 // be ready; version to get index too;
 // return false if there are no data to be read;
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `JobDispatcher::GetReferenceData` 对应的数据。
+ * @param bdbCdescs 描述参考结构的 `bdbCdescs`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCNdxpmbeg 描述参考结构的 `bdbCNdxpmbeg`。
+ * @param bdbCNdxpmend 描述参考结构的 `bdbCNdxpmend`。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @param rewind 供该函数读取或更新的 `rewind` 参数。
+ * @param ntotqstrs 控制当前步骤范围或规模的 `ntotqstrs`。
+ * @param queryblocks 描述查询结构的 `queryblocks`。
+ * @param querypmbegs 描述查询结构的 `querypmbegs`。
+ * @param querypmends 描述查询结构的 `querypmends`。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool JobDispatcher::GetReferenceData(
     char**& bdbCdescs, char**& bdbCpmbeg, char**& bdbCpmend,
     char**& bdbCNdxpmbeg, char**& bdbCNdxpmend,
@@ -364,6 +444,12 @@ bool JobDispatcher::GetReferenceData(
 // =========================================================================
 // CreateAlnWriter: create a thread for writing results to files
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateAlnWriter` 对应的数据。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param dnamelist 供该函数读取或更新的 `dnamelist` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateAlnWriter( 
     const char* outdirname,
     const std::vector<std::string>& dnamelist)
@@ -378,6 +464,12 @@ void JobDispatcher::CreateAlnWriter(
 // -------------------------------------------------------------------------
 // NotifyAlnWriter: notify the writer of the complete results for a query
 //
+/**
+ * @brief 在CUDA 设备管理中通知 `JobDispatcher::NotifyAlnWriter` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::NotifyAlnWriter()
 {
     MYMSG("JobDispatcher::NotifyAlnWriter", 3);
@@ -395,6 +487,11 @@ void JobDispatcher::NotifyAlnWriter()
 // WaitForAlnWriterToFinish: notify the writer about the process end and 
 // wait for it to finish writings
 //
+/**
+ * @brief 在CUDA 设备管理中等待 `JobDispatcher::WaitForAlnWriterToFinish` 对应的数据。
+ * @param error 供该函数读取或更新的 `error` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::WaitForAlnWriterToFinish(bool error)
 {
     char msgbuf[BUF_MAX];
@@ -441,6 +538,15 @@ void JobDispatcher::WaitForAlnWriterToFinish(bool error)
 // =========================================================================
 // CreateClustWriter: create a thread for clustering and writing
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateClustWriter` 对应的数据。
+ * @param outdirname 接收当前步骤输出的 `outdirname`。
+ * @param clustlist 供该函数读取或更新的 `clustlist` 参数。
+ * @param devnames 供该函数读取或更新的 `devnames` 参数。
+ * @param nmaxchunkqueries 控制当前步骤范围或规模的 `nmaxchunkqueries`。
+ * @param nagents 控制当前步骤范围或规模的 `nagents`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateClustWriter( 
     const char* outdirname,
     const std::vector<std::string>& clustlist,
@@ -458,6 +564,12 @@ void JobDispatcher::CreateClustWriter(
 // -------------------------------------------------------------------------
 // NotifyClustWriter: notify the clusterer of the complete results
 //
+/**
+ * @brief 在CUDA 设备管理中通知 `JobDispatcher::NotifyClustWriter` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::NotifyClustWriter()
 {
     MYMSG("JobDispatcher::NotifyClustWriter", 3);
@@ -475,6 +587,11 @@ void JobDispatcher::NotifyClustWriter()
 // WaitForClustWriterToFinish: notify the clusterer of the process end and 
 // wait for it to finish
 //
+/**
+ * @brief 在CUDA 设备管理中等待 `JobDispatcher::WaitForClustWriterToFinish` 对应的数据。
+ * @param error 供该函数读取或更新的 `error` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::WaitForClustWriterToFinish(bool error)
 {
     char msgbuf[BUF_MAX];
@@ -512,6 +629,11 @@ void JobDispatcher::WaitForClustWriterToFinish(bool error)
 // =========================================================================
 // CreateDevMemoryConfigs: create memory configurations for all devices
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateDevMemoryConfigs` 对应的数据。
+ * @param nareasperdevice 控制当前步骤范围或规模的 `nareasperdevice`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateDevMemoryConfigs(size_t nareasperdevice)
 {
     MYMSG("JobDispatcher::CreateDevMemoryConfigs", 3);
@@ -548,6 +670,13 @@ void JobDispatcher::CreateDevMemoryConfigs(size_t nareasperdevice)
 // =========================================================================
 // CreateWorkerThreads: create worker threads on the host side
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::CreateWorkerThreads` 对应的数据。
+ * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+ * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+ * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::CreateWorkerThreads(
     size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs)
 {
@@ -581,6 +710,28 @@ void JobDispatcher::CreateWorkerThreads(
 // -------------------------------------------------------------------------
 // SubmitWorkerJob: submit a job for the given worker
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::SubmitWorkerJob` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @param chunkno 供该函数读取或更新的 `chunkno` 参数。
+ * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+ * @param newsetqrs 控制当前步骤范围或规模的 `newsetqrs`。
+ * @param qrysernrbeg 描述查询结构的 `qrysernrbeg`。
+ * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+ * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+ * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+ * @param querydesc 描述查询结构的 `querydesc`。
+ * @param querypmbeg 查询结构打包字段的起始指针数组。
+ * @param querypmend 查询结构打包字段的结束指针数组。
+ * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+ * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+ * @param bdbCpmend 参考结构打包字段的结束指针数组。
+ * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+ * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+ * @param qrstscnt 供该函数读取或更新的 `qrstscnt` 参数。
+ * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::SubmitWorkerJob(
     int tid, int chunkno, bool lastchunk,
     bool newsetqrs,
@@ -624,6 +775,11 @@ void JobDispatcher::SubmitWorkerJob(
 // -------------------------------------------------------------------------
 // WaitForWorker: wait until the worker can accept new portion of data
 //
+/**
+ * @brief 在CUDA 设备管理中等待 `JobDispatcher::WaitForWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::WaitForWorker(int tid)
 {
     char msgbuf[BUF_MAX];
@@ -658,6 +814,11 @@ void JobDispatcher::WaitForWorker(int tid)
 // -------------------------------------------------------------------------
 // ProbeWorker: check for whether the worker is in idle state
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::ProbeWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::ProbeWorker(int tid)
 {
     char msgbuf[BUF_MAX];
@@ -703,6 +864,12 @@ void JobDispatcher::ProbeWorker(int tid)
 // -------------------------------------------------------------------------
 // WaitForAllWorkersToFinish: wait until all workers become idle;
 //
+/**
+ * @brief 在CUDA 设备管理中等待 `JobDispatcher::WaitForAllWorkersToFinish` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void JobDispatcher::WaitForAllWorkersToFinish()
 {
@@ -713,6 +880,11 @@ void JobDispatcher::WaitForAllWorkersToFinish()
 // -------------------------------------------------------------------------
 // TerminateWorker: terminate a worker
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::TerminateWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::TerminateWorker(int tid)
 {
     char msgbuf[BUF_MAX];
@@ -740,6 +912,12 @@ void JobDispatcher::TerminateWorker(int tid)
 // -------------------------------------------------------------------------
 // TerminateAllWorkers: terminate all workers
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `JobDispatcher::TerminateAllWorkers` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::TerminateAllWorkers()
 {
     for(int tid = 0; tid < (int)hostworkers_.size(); tid++)
@@ -752,6 +930,11 @@ void JobDispatcher::TerminateAllWorkers()
 // GetAvailableWorker: identify a worker ready to accept new data for 
 // processing
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `JobDispatcher::GetAvailableWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::GetAvailableWorker(int* tid)
 {
     MYMSG("JobDispatcher::GetAvailableWorker", 7);
@@ -798,6 +981,11 @@ void JobDispatcher::GetAvailableWorker(int* tid)
 // -------------------------------------------------------------------------
 // WaitForAvailableWorker: wait until a worker becomes ready to process data
 // or accept new data for processing
+/**
+ * @brief 在CUDA 设备管理中等待 `JobDispatcher::WaitForAvailableWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void JobDispatcher::WaitForAvailableWorker(int* tid)
 {
@@ -820,6 +1008,11 @@ void JobDispatcher::WaitForAvailableWorker(int* tid)
 // GetNextWorker: get the next worker irrespective of its busy or idle 
 // status;
 // NOTE: tid, the address of the current busy worker should be initialized
+/**
+ * @brief 在CUDA 设备管理中读取 `JobDispatcher::GetNextWorker` 对应的数据。
+ * @param tid 供该函数读取或更新的 `tid` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline
 void JobDispatcher::GetNextWorker(int* tid)
 {
@@ -867,6 +1060,12 @@ void JobDispatcher::GetNextWorker(int* tid)
 // =========================================================================
 // Run: starting point for structure search and alignment
 //
+/**
+ * @brief 在CUDA 设备管理中运行 `JobDispatcher::Run` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void JobDispatcher::Run()
 {
     MYMSG( "JobDispatcher::Run", 3 );

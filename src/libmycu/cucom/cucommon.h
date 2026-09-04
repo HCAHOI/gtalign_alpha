@@ -24,6 +24,14 @@ enum {
 #define MYCUDACHECKLAST mycudaCheck(cudaGetLastError(),__FILE__,__LINE__,__func__)
 #define MYCUDACHECK(err) mycudaCheck(err,__FILE__,__LINE__,__func__)
 
+/**
+ * @brief 在CUDA 通用原语中处理 `mycudaCheck` 对应的数据。
+ * @param err 供该函数读取或更新的 `err` 参数。
+ * @param file 供该函数读取或更新的 `file` 参数。
+ * @param line 供该函数读取或更新的 `line` 参数。
+ * @param func 供该函数读取或更新的 `func` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 inline __host__ __device__ void mycudaCheck( 
     cudaError_t err,
     const char* file, unsigned int line, const char* func )

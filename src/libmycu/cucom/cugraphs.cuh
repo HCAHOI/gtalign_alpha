@@ -22,6 +22,12 @@ struct CGKey {
 };
 
 inline
+/**
+ * @brief 在CUDA 通用原语中处理 `operator` 对应的数据。
+ * @param left 供该函数读取或更新的 `left` 参数。
+ * @param right 供该函数读取或更新的 `right` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool operator<(const CGKey& left, const CGKey& right)
 {
     return 

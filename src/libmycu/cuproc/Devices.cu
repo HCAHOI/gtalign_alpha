@@ -24,6 +24,11 @@ Devices DEVPROPs;
 // _________________________________________________________________________
 // Class DeviceProperties
 //
+/**
+ * @brief 在CUDA 设备管理中格式化输出 `Devices::PrintDevices` 对应的数据。
+ * @param fp 供该函数读取或更新的 `fp` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::PrintDevices( FILE* fp )
 {
     MYMSG( "Devices::PrintDevices", 6 );
@@ -57,6 +62,12 @@ void Devices::PrintDevices( FILE* fp )
 // -------------------------------------------------------------------------
 // RegisterDevices: register devices scheduled for use
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `Devices::RegisterDevices` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::RegisterDevices()
 {
     MYMSG( "Devices::RegisterDevices", 6 );
@@ -113,6 +124,12 @@ void Devices::RegisterDevices()
 // -------------------------------------------------------------------------
 // ReadDevices: read all CUDA-capable devices available on the system
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `Devices::ReadDevices` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::ReadDevices()
 {
     MYMSG( "Devices::ReadDevices", 6 );
@@ -134,6 +151,12 @@ void Devices::ReadDevices()
 // GetDevIdWithMinRequestedMem: get id of a device with minimum requested 
 // memory
 //
+/**
+ * @brief 在CUDA 设备管理中读取 `Devices::GetDevIdWithMinRequestedMem` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 int Devices::GetDevIdWithMinRequestedMem() const
 {
     MYMSG( "Devices::GetDevIdWithMinRequestedMem", 7 );
@@ -151,6 +174,12 @@ int Devices::GetDevIdWithMinRequestedMem() const
 // -------------------------------------------------------------------------
 // SortDevices: sort CUDA-capable devices that have been saved in the list
 //
+/**
+ * @brief 在CUDA 设备管理中排序 `Devices::SortDevices` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::SortDevices()
 {
     MYMSG( "Devices::SortDevices", 6 );
@@ -170,6 +199,13 @@ void Devices::SortDevices()
 // -------------------------------------------------------------------------
 // RegisterDeviceProperties: register the properties of device with id devid
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `Devices::RegisterDeviceProperties` 对应的数据。
+ * @param devid 供该函数读取或更新的 `devid` 参数。
+ * @param maxmem 供当前步骤读取或更新的 `maxmem` 缓冲区。
+ * @param checkduplicates 控制该处理分支是否启用的 `checkduplicates` 标志。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 bool Devices::RegisterDeviceProperties( int devid, ssize_t maxmem, bool checkduplicates )
 {
     MYMSG( "Devices::RegisterDeviceProperties", 6 );
@@ -248,6 +284,11 @@ bool Devices::RegisterDeviceProperties( int devid, ssize_t maxmem, bool checkdup
 // PruneRegisteredDevices: prune registered devices so that their number 
 // does not exceed the allowed number
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `Devices::PruneRegisteredDevices` 对应的数据。
+ * @param ndevs 控制当前步骤范围或规模的 `ndevs`。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::PruneRegisteredDevices( int ndevs )
 {
     MYMSG( "Devices::PruneRegisteredDevices", 6 );
@@ -264,6 +305,12 @@ void Devices::PruneRegisteredDevices( int ndevs )
 // -------------------------------------------------------------------------
 // PrintSavedDevicesTest: print devices that are currently in the list
 //
+/**
+ * @brief 在CUDA 设备管理中处理 `Devices::PrettyPrintUsedDevices` 对应的数据。
+ * @par 参数
+ * 无。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void Devices::PrettyPrintUsedDevices()
 {
     MYMSGBEGl(1)

@@ -50,6 +50,19 @@ public:
     };
 
 public:
+    /**
+     * @brief 构造 `TdCommutator`，初始化其负责的CUDA 对齐流水线状态。
+     * @param ringsize 控制当前步骤范围或规模的 `ringsize`。
+     * @param tid 供该函数读取或更新的 `tid` 参数。
+     * @param dmem 供当前步骤读取或更新的 `dmem` 缓冲区。
+     * @param areano 供该函数读取或更新的 `areano` 参数。
+     * @param TdAlnWriter 供该函数读取或更新的 `TdAlnWriter` 参数。
+     * @param TdClustWriter 供该函数读取或更新的 `TdClustWriter` 参数。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 无返回值；完成对象构造与初始状态设置。
+     */
     TdCommutator(
         size_t ringsize,
         int tid, CuDeviceMemory* dmem, int areano,
@@ -57,12 +70,24 @@ public:
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs
     );
 
+    /**
+     * @brief 销毁 `TdCommutator`，释放其管理的CUDA 对齐流水线资源。
+     * @par 参数
+     * 无。
+     * @return 无返回值；对象持有的资源在返回前完成释放。
+     */
     ~TdCommutator();
 
 //     std::mutex& GetPrivateMutex() {return mx_rsp_msg_;}
 //     std::condition_variable& GetPrivateCV() {return cv_rsp_msg_;}
 
     //{{NOTE: messaging functions accessed from outside!
+    /**
+     * @brief 在CUDA 对齐流水线中通知 `Notify` 对应的数据。
+     * @param msg 供该函数读取或更新的 `msg` 参数。
+     * @param adr 供该函数读取或更新的 `adr` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Notify(int msg, int adr) {
         {//mutex must be unlocked before notifying
             std::lock_guard<std::mutex> lck(mx_rsp_msg_);
@@ -71,6 +96,12 @@ public:
         }
         cv_rsp_msg_.notify_one();
     }
+    /**
+     * @brief 在CUDA 对齐流水线中等待 `waitForDataAccess` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int waitForDataAccess() {
         int rsp = GetResponseAsync();
         if(rsp == THREAD_MSG_ERROR)
@@ -81,6 +112,11 @@ public:
         }
         return GetResponseAsync();
     }
+    /**
+     * @brief 在CUDA 对齐流水线中等待 `Wait` 对应的数据。
+     * @param rsp 供该函数读取或更新的 `rsp` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int Wait(int rsp) {
         //wait for the response
         std::unique_lock<std::mutex> lck_msg(mx_rsp_msg_);
@@ -96,6 +132,12 @@ public:
             rsp_msg_ = THREAD_MSG_UNSET;
         return rspmsg;
     }
+    /**
+     * @brief 在CUDA 对齐流水线中处理 `IsIdle` 对应的数据。
+     * @param mstr_set_data_empty 供该函数读取或更新的 `mstr_set_data_empty` 参数。
+     * @param wait 供该函数读取或更新的 `wait` 参数。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool IsIdle(bool* mstr_set_data_empty, bool wait = false) {
         std::unique_lock<std::mutex> lck_busy(mx_rsp_msg_, std::defer_lock);
         if(mstr_set_data_empty)
@@ -113,6 +155,12 @@ public:
         return lck_acquired;
         //release of the mutex if locked
     }
+    /**
+     * @brief 在CUDA 对齐流水线中读取 `GetResponseAsync` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponseAsync() const {
         //get a response if available
         std::unique_lock<std::mutex> lck_busy(mx_rsp_msg_, std::defer_lock);
@@ -121,6 +169,12 @@ public:
             rsp = rsp_msg_;
         return rsp;
     }
+    /**
+     * @brief 在CUDA 对齐流水线中读取 `GetResponse` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     int GetResponse() const {
         std::lock_guard<std::mutex> lck(mx_rsp_msg_);
         return rsp_msg_;
@@ -147,6 +201,11 @@ public:
 //     //}}
 
 
+    /**
+     * @brief 在CUDA 对齐流水线中设置 `SetQueryLen` 对应的数据。
+     * @param nqrsposs 控制当前步骤范围或规模的 `nqrsposs`。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetQueryLen(size_t nqrsposs)
     {
         //safely read locked data
@@ -155,6 +214,27 @@ public:
     }
 
 
+    /**
+     * @brief 在CUDA 对齐流水线中设置 `SetMstrQueryBDbdata` 对应的数据。
+     * @param chunkno 供该函数读取或更新的 `chunkno` 参数。
+     * @param lastchunk 供该函数读取或更新的 `lastchunk` 参数。
+     * @param newsetqrs 控制当前步骤范围或规模的 `newsetqrs`。
+     * @param qrysernrbeg 描述查询结构的 `qrysernrbeg`。
+     * @param scorethld 当前步骤使用或写回的 `scorethld` 分数。
+     * @param queryndxpmbeg 描述查询结构的 `queryndxpmbeg`。
+     * @param queryndxpmend 描述查询结构的 `queryndxpmend`。
+     * @param querydesc 描述查询结构的 `querydesc`。
+     * @param querypmbeg 查询结构打包字段的起始指针数组。
+     * @param querypmend 查询结构打包字段的结束指针数组。
+     * @param bdbCdesc 描述参考结构的 `bdbCdesc`。
+     * @param bdbCpmbeg 参考结构打包字段的起始指针数组。
+     * @param bdbCpmend 参考结构打包字段的结束指针数组。
+     * @param bdbCndxpmbeg 描述参考结构的 `bdbCndxpmbeg`。
+     * @param bdbCndxpmend 描述参考结构的 `bdbCndxpmend`。
+     * @param qrstscnt 供该函数读取或更新的 `qrstscnt` 参数。
+     * @param tscnt 供该函数读取或更新的 `tscnt` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetMstrQueryBDbdata(
         int chunkno,
         bool lastchunk,
@@ -206,6 +286,13 @@ public:
     }
 
 
+    /**
+     * @brief 在CUDA 对齐流水线中读取 `GetChunkDataAttributes` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetChunkDataAttributes(
         size_t* chunkdatasize, size_t* chunkdatalen, size_t* chunknstrs)
     {
@@ -217,11 +304,21 @@ public:
 
 
 protected:
+    /**
+     * @brief 在CUDA 对齐流水线中处理 `Execute` 对应的数据。
+     * @param args 供该函数读取或更新的 `args` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void Execute(void* args);
 
 
     // GetArgsOnMsgGetDataChunkSize: copy data set by the master on
     // acceptance of the message tthreadmsgGetDataChunkSize
+    /**
+     * @brief 在CUDA 对齐流水线中读取 `GetArgsOnMsgGetDataChunkSize` 对应的数据。
+     * @param cbpc 供该函数读取或更新的 `cbpc` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void GetArgsOnMsgGetDataChunkSize(CuBatch& /*cbpc*/)
     {
         //safely read locked data
@@ -231,8 +328,20 @@ protected:
         mstr_set_nqrsposs_ = 0;
     }
 
+    /**
+     * @brief 在CUDA 对齐流水线中计算 `CalculateMaxDbDataChunkSize` 对应的数据。
+     * @param CuBatch 供该函数读取或更新的 `CuBatch` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CalculateMaxDbDataChunkSize(CuBatch&);
 
+    /**
+     * @brief 在CUDA 对齐流水线中设置 `SetChunkDataAttributes` 对应的数据。
+     * @param chunkdatasize 控制当前步骤范围或规模的 `chunkdatasize`。
+     * @param chunkdatalen 控制当前步骤范围或规模的 `chunkdatalen`。
+     * @param chunknstrs 供该函数读取或更新的 `chunknstrs` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void SetChunkDataAttributes( 
         size_t chunkdatasize, size_t chunkdatalen, size_t chunknstrs)
     {
@@ -246,6 +355,11 @@ protected:
     // CopyDataOnMsgProcessNewData: copy data set by the master on
     // acceptance of the message tthreadmsgProcessNewData
     //
+    /**
+     * @brief 在CUDA 对齐流水线中复制 `CopyDataOnMsgProcessNewData` 对应的数据。
+     * @param CuBatch 供该函数读取或更新的 `CuBatch` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void CopyDataOnMsgProcessNewData(CuBatch&)
     {
         //safely read and write addresses written by the master
@@ -276,6 +390,12 @@ protected:
         ResetMasterData();
     }
 
+    /**
+     * @brief 在CUDA 对齐流水线中重置 `ResetMasterData` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ResetMasterData()
     {
         {   std::lock_guard<std::mutex> lck(mx_dataccess_);
@@ -302,6 +422,12 @@ protected:
         cv_dataccess_.notify_one();
     }
 
+    /**
+     * @brief 在CUDA 对齐流水线中读取 `GetMstrDataEmpty` 对应的数据。
+     * @par 参数
+     * 无。
+     * @return 返回该步骤计算、查询或状态判断的结果。
+     */
     bool GetMstrDataEmpty() {
         return 
             mstr_set_querydesc_ == NULL && 
@@ -312,6 +438,11 @@ protected:
                 mstr_set_bdbCpmbeg_[0] == NULL && mstr_set_bdbCpmend_[0] == NULL;
     }
 
+    /**
+     * @brief 在CUDA 对齐流水线中处理 `ProcessBlock` 对应的数据。
+     * @param CuBatch 供该函数读取或更新的 `CuBatch` 参数。
+     * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+     */
     void ProcessBlock(CuBatch&);
 
 private:

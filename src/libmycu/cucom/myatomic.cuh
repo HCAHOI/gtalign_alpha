@@ -11,6 +11,12 @@
 // guide (B14.Atomic Functions) and Bonsai github
 // 
 __device__ __forceinline__
+/**
+ * @brief 在CUDA 通用原语中处理 `atomicMinFloat` 对应的数据。
+ * @param address 供该函数读取或更新的 `address` 参数。
+ * @param val 供该函数读取或更新的 `val` 参数。
+ * @return 返回该步骤计算、查询或状态判断的结果。
+ */
 float atomicMinFloat(float* address, float val)
 {
     int* address_as_int = (int*)address;

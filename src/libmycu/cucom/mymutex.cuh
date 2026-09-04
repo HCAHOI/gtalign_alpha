@@ -8,6 +8,11 @@
 
 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中加锁 `LOCK` 对应的数据。
+ * @param mutex 供该函数读取或更新的 `mutex` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void LOCK(unsigned int* mutex)
 {
     //unsigned int ns = 8;
@@ -20,6 +25,11 @@ void LOCK(unsigned int* mutex)
 }
 
 __device__ __forceinline__ 
+/**
+ * @brief 在CUDA 通用原语中解锁 `UNLOCK` 对应的数据。
+ * @param mutex 供该函数读取或更新的 `mutex` 参数。
+ * @return 无返回值；结果写入传入缓冲区、输出参数或对象状态。
+ */
 void UNLOCK(unsigned int* mutex)
 {
     atomicExch(mutex, 0);
