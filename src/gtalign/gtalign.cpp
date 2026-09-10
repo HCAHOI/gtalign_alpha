@@ -11,6 +11,11 @@
 #include <stdlib.h>
 
 #include <string>
+#include <fstream>
+#include <sstream>
+#ifdef GPUINUSE
+#include "libmycu/culayout/CuDeviceMemory.cuh"
+#endif
 #include <vector>
 #include <thread>
 #include <algorithm>
@@ -954,7 +959,38 @@ printf(" %f %f %f   %d %d %d\n",sum1,sum2,sum3, sum1==sum2,sum1==sum3,sum2==sum3
 
     TRY
 #ifdef GPUINUSE
-        if(clsdblst.empty()) {
+        if(const char* pairlist = getenv("GTALIGN_PAIR_LIST")) {
+            extern bool ERRORSRECORDED;
+            if(!clsdblst.empty())
+                throw MYRUNTIME_ERROR("Pair-list mode requires alignment inputs.");
+            std::ifstream input(pairlist);
+            if(!input)
+                throw MYRUNTIME_ERROR("Cannot open GTALIGN_PAIR_LIST.");
+            std::vector<std::unique_ptr<CuDeviceMemory>> memory;
+            std::string line, query, target, output;
+            size_t count = 0;
+            while(std::getline(input, line)) {
+                if(!line.empty() && line.back() == '\r') line.pop_back();
+                std::istringstream fields(line);
+                if(!std::getline(fields, query, '\t') || query.empty() ||
+                   !std::getline(fields, target, '\t') || target.empty() ||
+                   !std::getline(fields, output) || output.empty() ||
+                   output.find('\t') != std::string::npos)
+                    throw MYRUNTIME_ERROR("Expected query, target, output TSV fields.");
+                if(!directory_exists(output.c_str()) && mymkdir(output.c_str()) < 0)
+                    throw MYRUNTIME_ERROR("Failed to create pair output directory.");
+                {
+                    JobDispatcher jdisp({query}, {target}, sfxlst,
+                        output.c_str(), cachedir.c_str(), &memory);
+                    jdisp.Run();
+                }
+                if(ERRORSRECORDED) return EXIT_FAILURE;
+                fprintf(stderr, "PAIR_COMPLETE %zu\n", ++count);
+                fflush(stderr);
+            }
+            if(input.bad() || count == 0)
+                throw MYRUNTIME_ERROR("Empty or unreadable GTALIGN_PAIR_LIST.");
+        } else if(clsdblst.empty()) {
             JobDispatcher jdisp(qrydblst, refdblst, sfxlst, outdir.c_str(), cachedir.c_str());
             jdisp.Run();
         } else {
@@ -962,8 +998,31 @@ printf(" %f %f %f   %d %d %d\n",sum1,sum2,sum3, sum1==sum2,sum1==sum3,sum2==sum3
             jdisp.RunClust();
         }
 #else
+        if(const char* pairlist = getenv("GTALIGN_PAIR_LIST")) {
+            extern bool ERRORSRECORDED;
+            std::ifstream input(pairlist);
+            if(!input) throw MYRUNTIME_ERROR("Cannot open GTALIGN_PAIR_LIST.");
+            std::string line, query, target, output;
+            size_t count = 0;
+            while(std::getline(input, line)) {
+                std::istringstream fields(line);
+                if(!std::getline(fields, query, '\t') || query.empty() ||
+                   !std::getline(fields, target, '\t') || target.empty() ||
+                   !std::getline(fields, output) || output.empty() ||
+                   output.find('\t') != std::string::npos)
+                    throw MYRUNTIME_ERROR("Expected query, target, output TSV fields.");
+                {
+                    TaskScheduler ts({query}, {target}, sfxlst, output.c_str(), cachedir.c_str());
+                    ts.Run();
+                }
+                if(ERRORSRECORDED) return EXIT_FAILURE;
+                fprintf(stderr, "PAIR_COMPLETE %zu\n", ++count);
+            }
+            if(input.bad() || count == 0) throw MYRUNTIME_ERROR("Empty or unreadable pair list.");
+        } else {
         TaskScheduler ts(qrydblst, refdblst, sfxlst, outdir.c_str(), cachedir.c_str());
         ts.Run();
+        }
 #endif
     CATCH_ERROR_RETURN(;);
 

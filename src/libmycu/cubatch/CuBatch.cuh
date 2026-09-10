@@ -186,11 +186,12 @@ protected:
     void HostAllocResults(size_t szresults)
     {
         HostFreeResults();
-        lockedresmem_ = true;
-        if(cudaSuccess !=
+        lockedresmem_ = CLOptions::GetIO_UNPINNED() == 0;
+        if(!lockedresmem_ || cudaSuccess !=
            cudaHostAlloc((void**)&h_results_, szresults, cudaHostAllocDefault))
         {
-            cudaGetLastError();
+            if(lockedresmem_)
+                cudaGetLastError();
             h_results_ = NULL;
             lockedresmem_ = false;
             h_results_ = (char*)malloc(szresults);

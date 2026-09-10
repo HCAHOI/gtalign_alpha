@@ -85,6 +85,7 @@ MpBatch::~MpBatch()
     MYMSG("MpBatch::~MpBatch", 4);
 
     if(cbpfin_) {
+        cbpfin_->waitForDataAccess();
         cbpfin_->Notify(TdFinalizer::cubpthreadmsgTerminate);
         cbpfin_.reset();
     }

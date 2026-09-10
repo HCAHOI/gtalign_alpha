@@ -57,7 +57,8 @@ public:
             const std::vector<std::string>& dnamelist,
             const std::vector<std::string>& sfxlst, 
             const char* output,
-            const char* cachedir
+            const char* cachedir,
+            std::vector<std::unique_ptr<CuDeviceMemory>>* sharedmemory = nullptr
     );
 
     JobDispatcher(
@@ -199,6 +200,8 @@ protected:
     }
 
 private:
+    size_t reference_reader_index_ = 0;
+    std::vector<std::unique_ptr<CuDeviceMemory>>* sharedmemory_ = nullptr;
     const char* output_;//pattern for output file (null=standard output)
     const char* cachedir_;//directory for cached data
     std::vector<std::string> inputlist_;//input files/databases

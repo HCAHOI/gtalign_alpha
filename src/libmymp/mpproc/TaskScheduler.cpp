@@ -247,7 +247,7 @@ bool TaskScheduler::GetReferenceData(
     MYMSG("TaskScheduler::GetReferenceData", 3);
     static const std::string preamb = "TaskScheduler::GetReferenceData ";
     int ret = 0;//no data
-    static size_t nit = 0;
+    size_t& nit = reference_reader_index_;
 
     //message-broadcast functional
     std::function<void()> lfGetDataBcst = 

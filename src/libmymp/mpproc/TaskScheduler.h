@@ -123,6 +123,7 @@ protected:
     }
 
 private:
+    size_t reference_reader_index_ = 0;
     const char* output_;//pattern for output file (null=standard output)
     const char* cachedir_;//directory for cached data
     std::vector<std::string> inputlist_;//input files/databases

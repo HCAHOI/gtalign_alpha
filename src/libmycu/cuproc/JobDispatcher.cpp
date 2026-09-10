@@ -42,8 +42,10 @@ JobDispatcher::JobDispatcher(
     const std::vector<std::string>& dnamelist,
     const std::vector<std::string>& sfxlst, 
     const char* output,
-    const char* cachedir)
+    const char* cachedir,
+    std::vector<std::unique_ptr<CuDeviceMemory>>* sharedmemory)
 :
+    sharedmemory_(sharedmemory),
     output_(output),
     cachedir_(cachedir),
     inputlist_(inputlist),
@@ -95,7 +97,7 @@ JobDispatcher::~JobDispatcher()
         }
     }
     for(int d = 0; d < (int)memdevs_.size(); d++ ) {
-        if( memdevs_[d]) {
+        if( memdevs_[d] && !sharedmemory_) {
             delete memdevs_[d];
             memdevs_[d] = NULL;
         }
@@ -302,7 +304,7 @@ bool JobDispatcher::GetReferenceData(
     MYMSG("JobDispatcher::GetReferenceData", 3);
     static const std::string preamb = "JobDispatcher::GetReferenceData ";
     int ret = 0;//no data
-    static size_t nit = 0;
+    size_t& nit = reference_reader_index_;
 
     //message-broadcast functional
     std::function<void()> lfGetDataBcst = 
@@ -517,6 +519,11 @@ void JobDispatcher::CreateDevMemoryConfigs(size_t nareasperdevice)
     MYMSG("JobDispatcher::CreateDevMemoryConfigs", 3);
     static const std::string preamb = "JobDispatcher::CreateDevMemoryConfigs: ";
 
+    if(sharedmemory_ && !sharedmemory_->empty()) {
+        for(auto& memory: *sharedmemory_) memdevs_.push_back(memory.get());
+        return;
+    }
+
     for(int tid = 0; tid < DEVPROPs.GetNDevices(); tid++) {
         const DeviceProperties* dprop = DEVPROPs.GetDevicePropertiesAt(tid);
 
@@ -538,6 +545,7 @@ void JobDispatcher::CreateDevMemoryConfigs(size_t nareasperdevice)
         }
 
         memdevs_.push_back(dmem);
+        if(sharedmemory_) sharedmemory_->emplace_back(dmem);
         dmem->CacheCompleteData();
 
     }
