@@ -36,6 +36,7 @@ MpGlobalMemory::MpGlobalMemory(
 MpGlobalMemory::~MpGlobalMemory()
 {
     MYMSG("MpGlobalMemory::~MpGlobalMemory", 4);
+    DeallocateHeap();
 }
 
 

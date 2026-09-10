@@ -43,6 +43,7 @@ CuDeviceMemory::CuDeviceMemory(
 CuDeviceMemory::~CuDeviceMemory()
 {
     MYMSG("CuDeviceMemory::~CuDeviceMemory", 4);
+    DeallocateHeap();
 }
 
 // -------------------------------------------------------------------------
@@ -292,4 +293,3 @@ void CuDeviceMemory::TransferCPMIndexToDevice(
         ndx_dbs_dc_pm2dvndxfds_,
         "Db index");
 }
-
